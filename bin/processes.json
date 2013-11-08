@@ -1,0 +1,20 @@
+[
+  {
+    "name"     : "controller",
+    "script"   : "../backend/main.js",
+    "args"     : "['../config/controller.js']",
+    "instances": "1"
+  },
+  {
+    "name"     : "frontend",
+    "script"   : "../backend/main.js",
+    "args"     : "['../config/frontend.js']",
+    "instances": "1"
+  },
+  {
+    "name"     : "alarms",
+    "script"   : "../backend/main.js",
+    "args"     : "['../config/alarms.js']",
+    "instances": "1"
+  }
+]

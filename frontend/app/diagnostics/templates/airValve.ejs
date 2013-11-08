@@ -1,0 +1,40 @@
+<div>
+  <div class="well fixed-column-right diag-manual-controls">
+    <div class="diag-manual-asset" data-tag="airValve.switch">
+      <img class="diag-manual-asset-image diag-air-valve-switch-image" src="/assets/img/switch.svg?value=0">
+      <span class="diag-manual-asset-label"><%- t('diagnostics', 'AIR_VALVE_SWITCH') %></span>
+    </div>
+    <div class="diag-manual-asset" data-tag="airValve.status">
+      <img class="diag-manual-asset-image diag-air-valve-status-image" src="/assets/img/led.svg?color=grey">
+      <span class="diag-manual-asset-label"><%- t('diagnostics', 'AIR_VALVE_STATUS') %></span>
+    </div>
+    <hr>
+    <div class="diag-state-switch make-switch switch-large btn-block"
+         data-tag="airValve.state"
+         data-text-label="<%- t('diagnostics', 'STATE_SWITCH_LABEL') %>"
+         data-on-label="<%- t('diagnostics', 'STATE_SWITCH_LABEL_ON') %>"
+         data-off-label="<%- t('diagnostics', 'STATE_SWITCH_LABEL_OFF') %>"
+         data-on="success"
+         data-off="danger">
+      <input type="checkbox">
+    </div>
+    <div class="diag-mode-switch make-switch switch-large btn-block"
+         data-tag="airValve.mode"
+         data-text-label="<%- t('diagnostics', 'MODE_SWITCH_LABEL') %>"
+         data-on-label="<%- t('diagnostics', 'MODE_SWITCH_LABEL_ON') %>"
+         data-off-label="<%- t('diagnostics', 'MODE_SWITCH_LABEL_OFF') %>"
+         data-on="primary"
+         data-off="warning">
+      <input type="checkbox">
+    </div>
+    <hr>
+    <button class="btn btn-large btn-block diag-manual-button diag-control-button" data-tag="airValve.control">
+      <img class="diag-manual-button-image diag-air-valve-control-image" src="/assets/img/led.svg?color=grey">
+      <span class="diag-manual-button-label"><%- t('diagnostics', 'AIR_VALVE_CONTROL_BUTTON') %></span>
+      <i class="icon-spinner icon-spin"></i>
+    </button>
+  </div>
+  <div class="well fluid-column-right">
+    <p>-</p>
+  </div>
+</div>

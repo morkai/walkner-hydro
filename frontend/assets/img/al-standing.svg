@@ -1,0 +1,84 @@
+<svg
+   xmlns="http://www.w3.org/2000/svg"
+   version="1.0"
+   width="100%"
+   height="100%"
+   viewBox="0 0 41 192">
+  <defs>
+    <style>
+      .al-standing path {
+        fill: none;
+        stroke: #000;
+      }
+      .al-standing .al-standing-limb {
+        fill: #000;
+      }
+    </style>
+  </defs>
+  <g class="al-standing" transform="translate(-30.964074,-20.588805)">
+    <path
+      d="m 447,365 a 12.85,25 0 1 1 -0.12,0.22"
+      transform="matrix(1.07,0.11,-0.12,0.99,-385.65,-382.09)"
+      style="stroke-width:2.35;stroke-linecap:round" />
+    <path
+      d="m 53.1,72.03 c -11.62,8.41 -9.37,73.52 -4.29,71.01 7.61,-3.77 -6.53,-65.43 4.29,-70.5"
+      style="stroke-width:3" />
+    <path
+      d="m 50.9,37.88 a 3.57,4.64 0 1 1 -0.03,0.04"
+      style="stroke-width:2.05;stroke-linecap:round" />
+    <path
+      d="m 62.54,37.88 a 3.57,4.64 0 1 1 -0.03,0.04"
+      style="stroke-width:2.05;stroke-linecap:round" />
+    <path
+      d="m 59.6,61.75 c -3.57,0 -15,0.71 -15,0.71"
+      style="stroke-width:1.25" />
+    <path
+      d="M 48.43,77.66 C 27.54,138.05 33.79,145.33 33.79,145.34"
+      style="stroke-width:1.9" />
+    <g id="left">
+    <path
+      class="al-standing-arm-left"
+      d="m 50.95,85.23 c 5.05,32.82 13.13,51.01 13.13,51.01"
+      style="stroke-width:1.9" />
+    <path
+      class="al-standing-limb al-standing-hand-left"
+      d="m 66.81,136.28 c -3.48,0.17 -5.41,-8.24 -4.55,-5.33 1.78,5.99 -3.2,12.91 1.99,12.58 5.66,-0.35 10,8.51 2.55,-7.25 z" />
+      <animateTransform
+        id="up"
+        attributeType="xml"
+        attributeName="transform"
+        begin="0s;down.end"
+        dur="0.4s"
+        type="rotate"
+        from="-80 48.95 85.23"
+        to="-100 48.95 85.23"
+        repeatCount="1" />
+      <animateTransform
+        id="down"
+        attributeType="xml"
+        attributeName="transform"
+        begin="up.end"
+        dur="0.4s"
+        type="rotate"
+        to="-80 48.95 85.23"
+        from="-100 48.95 85.23"
+        repeatCount="1" />
+    </g>
+    <path
+      d="m 45.1,138.71 c 3.57,67.98 -5.76,61.68 -5.25,63.19 0.5,1.51 1.01,3.53 1.01,3.53"
+      style="stroke-width:1.9" />
+    <path
+      d="m 48.78,139.73 c 11.68,30.18 -1.84,59.66 -1.4,62.27 0.26,1.57 13.2,1.48 13.2,1.48"
+      style="stroke-width:1.9" />
+    <path
+      class="al-standing-limb"
+      d="m 39.34,202.41 c -2.44,2.48 -8.16,2.48 -5.55,4.04 5.36,3.2 4.97,6.79 8.58,3.03 3.93,-4.09 13.13,-0.5 -3.03,-7.07 z"
+      id="path3049" />
+    <path
+      class="al-standing-limb"
+      d="m 52.34,199.84 c -2.44,2.48 -5.66,1.05 -3.05,2.61 5.36,3.2 12.83,6.07 16.44,2.31 3.93,-4.09 2.77,1.63 -13.38,-4.92 z" />
+    <path
+      class="al-standing-limb"
+      d="m 37.89,145.37 c -3.48,0.17 -5.41,-8.24 -4.55,-5.33 1.78,5.99 -3.2,12.91 1.99,12.58 5.66,-0.35 10,8.51 2.55,-7.25 z" />
+  </g>
+</svg>

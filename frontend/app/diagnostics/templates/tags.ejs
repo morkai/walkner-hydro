@@ -1,0 +1,30 @@
+<div>
+  <table class="table table-bordered table-striped table-hover diag-tags-table">
+    <thead>
+      <tr>
+        <th data-sort-property="name"><%- t('diagnostics', 'TAGS_HEADER_NAME') %>
+        <th data-sort-property="value"><%- t('diagnostics', 'TAGS_HEADER_VALUE') %>
+        <th data-sort-property="description"><%- t('diagnostics', 'TAGS_HEADER_DESCRIPTION') %>
+        <th data-sort-property="type"><%- t('diagnostics', 'TAGS_HEADER_TYPE') %>
+        <th data-sort-property="kind"><%- t('diagnostics', 'TAGS_HEADER_KIND') %>
+        <th data-sort-property="master"><%- t('diagnostics', 'TAGS_HEADER_MASTER') %>
+        <th data-sort-property="unit"><%- t('diagnostics', 'TAGS_HEADER_UNIT') %>
+        <th data-sort-property="address"><%- t('diagnostics', 'TAGS_HEADER_ADDRESS') %>
+      </tr>
+    </thead>
+    <tbody>
+      <% tags.forEach(function(tag) { %>
+      <tr data-tag="<%- tag.name %>">
+        <td class="tag-name"><%- tag.name %></td>
+        <td class="tag-value <%- tag.writable ? 'tag-writable' : 'tag-not-writable' %>"><%- tag.value %></td>
+        <td><%- tag.description %></td>
+        <td><%- tag.type %></td>
+        <td><%- tag.kind %></td>
+        <td><%- tag.master %></td>
+        <td><%- tag.unit %></td>
+        <td><%- tag.address %></td>
+      </tr>
+      <% }) %>
+    </tbody>
+  </table>
+</div>

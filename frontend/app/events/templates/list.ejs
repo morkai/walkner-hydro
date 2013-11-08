@@ -1,0 +1,35 @@
+<div class="list events-list">
+  <table class="table table-bordered table-hover table-condensed">
+    <thead>
+    <tr>
+      <th><%-t ('events', 'PROPERTY_TIME') %>
+      <th><%-t ('events', 'PROPERTY_TYPE') %>
+      <th><%-t ('events', 'PROPERTY_USER') %>
+      <th><%-t ('events', 'PROPERTY_TEXT') %>
+    </tr>
+    </thead>
+    <tbody>
+    <% events.forEach(function(event) { %>
+    <tr class="<%- event.severity %>">
+      <td><%- event.time %>
+      <td><%- event.type %>
+      <td>
+        <% if (event.user) { %>
+        <% if (event.user.login === 'root') { %>
+        <%- event.user.login %>
+        <% } else { %>
+        <a href="#users/<%- event.user._id %>"><%- event.user.login %></a>
+        <% } %>
+        <% if (event.user.ipAddress) { %>
+        (<%- event.user.ipAddress %>)
+        <% } %>
+        <% } else { %>
+        -
+        <% } %>
+      <td><%- event.text %>
+    </tr>
+    <% }) %>
+    </tbody>
+  </table>
+  <div class="pagination pagination-centered"></div>
+</div>

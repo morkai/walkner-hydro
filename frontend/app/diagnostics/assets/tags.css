@@ -1,0 +1,13 @@
+.diag-tags-table th {
+  width: 1%;
+  white-space: nowrap;
+}
+.diag-tags-table th[data-sort-property="description"] {
+  width: auto;
+  white-space: normal;
+}
+.tag-name,
+.tag-value {
+  font-family: Consolas, monospace;
+  white-space: nowrap;
+}

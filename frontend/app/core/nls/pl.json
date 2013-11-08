@@ -1,0 +1,70 @@
+{
+  "TITLE": "Stacja uzdatniania wody w Chełstach",
+
+  "MSG_LOADING": "Ładowanie...",
+  "MSG_LOADING_FAILED": "Ładowanie nie powiodło się :(",
+
+  "PAGE_ACTION_FILTER": "Filtruj",
+
+  "TH_ACTIONS": "Akcje",
+
+  "ACTION_VIEW_DETAILS": "Pokaż szczegóły",
+  "ACTION_EDIT": "Edytuj",
+  "ACTION_DELETE": "Usuń",
+
+  "BREADCRUMBS_EDIT": "Edycja",
+  "BREADCRUMBS_DELETE": "Usuwanie",
+  "BREADCRUMBS_ERROR": "Błąd {code}: {codeStr, select, e401{nieautoryzowany dostęp} e404{nie znaleziono} other{nieprawidłowe zapytanie}}",
+
+  "ERROR_400": "Żądanie nie może być obsłużone z powodu błędnej składni zapytania :(",
+  "ERROR_401": "Niestety, ale nie masz wystarczających uprawnień do wykonania żądanej akcji :(",
+  "ERROR_404": "Wybrana strona nie istnieje :(",
+
+  "PAGINATION_FIRST_PAGE": "Pierwsza strona",
+  "PAGINATION_PREV_PAGE": "Poprzednia strona",
+  "PAGINATION_NEXT_PAGE": "Następna strona",
+  "PAGINATION_LAST_PAGE": "Ostatnia strona",
+
+  "NAVBAR_DASHBOARD": "Dashboard",
+  "NAVBAR_EVENTS": "Zdarzenia",
+  "NAVBAR_MONITORING": "Monitoring",
+  "NAVBAR_DIAGNOSTICS": "Diagnostyka",
+  "NAVBAR_DIAGNOSTICS_TECH": "Szafa technologiczna",
+  "NAVBAR_DIAGNOSTICS_HYDRO": "Szafa zestawu pomp hydroforowych",
+  "NAVBAR_DIAGNOSTICS_INPUT_PUMPS": "Pompy głębinowe",
+  "NAVBAR_DIAGNOSTICS_INPUT_PUMP": "Pompa {id}",
+  "NAVBAR_DIAGNOSTICS_AIR_VALVE": "Elektrozawór powietrza",
+  "NAVBAR_DIAGNOSTICS_BLOWER": "Zestaw dmuchowy",
+  "NAVBAR_DIAGNOSTICS_UV_LAMP": "Lampa UV",
+  "NAVBAR_DIAGNOSTICS_WASHING_PUMP": "Pompa płuczna",
+  "NAVBAR_DIAGNOSTICS_FILTER_SETS": "Zestawy filtracyjne",
+  "NAVBAR_DIAGNOSTICS_FILTER_SET": "Filtr {id}",
+  "NAVBAR_DIAGNOSTICS_RESERVOIRS": "Zbiorniki retencyjne",
+  "NAVBAR_DIAGNOSTICS_OUTPUT_PUMPS": "Pompy hydroforowe",
+  "NAVBAR_DIAGNOSTICS_OUTPUT_PUMP": "Pompa {id}",
+  "NAVBAR_DIAGNOSTICS_TAGS": "Tagi",
+  "NAVBAR_DIAGNOSTICS_VFD": "Falowniki",
+  "NAVBAR_ANALYTICS": "Analiza",
+  "NAVBAR_ANALYTICS_CHARTS": "Wykresy",
+  "NAVBAR_ANALYTICS_CHANGES": "Historia zmian",
+  "NAVBAR_ALARMS": "Alarmy",
+  "NAVBAR_USERS": "Użytkownicy",
+  "NAVBAR_MY_ACCOUNT": "Moje konto",
+  "NAVBAR_UI_LOCALE": "Lokalizacja UI",
+  "NAVBAR_LOCALE_PL": "Po polsku",
+  "NAVBAR_LOCALE_US": "Po angielsku",
+  "NAVBAR_LOG_IN": "Zaloguj się",
+  "NAVBAR_LOG_OUT": "Wyloguj się",
+
+  "ACTION_FORM_BUTTON": "Wykonaj akcję",
+  "ACTION_FORM_BUTTON:delete": "Usuń",
+  "ACTION_FORM_BUTTON:cancel": "Anuluj",
+  "ACTION_FORM_MESSAGE": "Czy na pewno chcesz wykonać żądaną akcję?",
+  "ACTION_FORM_MESSAGE_FAILURE": "Wykonywanie akcji nie powiodło się :(",
+
+  "BREAKIN_HEADER": "Nieuprawnione wejście",
+  "BREAKIN_MESSAGE_CAN_STOP": "Wykryto nieuprawnione wejście. Podaj kod w celu wyłączenia alarmu:",
+  "BREAKIN_MESSAGE_CANT_STOP": "Wykryto nieuprawnione wejście. Nie masz uprawnień do wyłączenia alarmu.",
+  "BREAKIN_STOP_ALARM_ACTION": "Wyłącz alarm",
+  "BREAKIN_LOGOUT_ACTION": "Wyloguj się"
+}

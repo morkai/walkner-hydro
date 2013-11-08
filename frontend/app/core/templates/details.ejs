@@ -1,0 +1,14 @@
+<div class="well">
+  <dl>
+    <% lodash.each(data, function(value, name) { %>
+    <dt><%= name %>
+    <% if (lodash.isArray(value)) { %>
+    <% lodash.each(value, function(entry) { %>
+    <dd><%- entry %>
+    <% }) %>
+    <% } else { %>
+    <dd><%= value %>
+    <% } %>
+    <% }) %>
+  </dl>
+</div>

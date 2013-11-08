@@ -1,0 +1,23 @@
+<form class="modal hide fade breakin-form" method="post" action="">
+  <div class="modal-header">
+    <% if (showCloseButton) { %>
+    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+    <% } %>
+    <h3><%- t('core', 'BREAKIN_HEADER') %></h3>
+  </div>
+  <div class="modal-body">
+    <% if (canStopAlarm) { %>
+    <p><%- t('core', 'BREAKIN_MESSAGE_CAN_STOP') %></p>
+    <input class="input-block-level breakin-code" type="password" autofocus>
+    <% } else { %>
+    <%- t('core', 'BREAKIN_MESSAGE_CANT_STOP') %>
+    <% } %>
+  </div>
+  <div class="modal-footer">
+    <% if (canStopAlarm) { %>
+    <input class="btn btn-danger" type="submit" value="<%- t('core', 'BREAKIN_STOP_ALARM_ACTION') %>">
+    <% } else { %>
+    <a href="/logout" class="btn btn-primary"><%- t('core', 'BREAKIN_LOGOUT_ACTION') %></a>
+    <% } %>
+  </div>
+</form>

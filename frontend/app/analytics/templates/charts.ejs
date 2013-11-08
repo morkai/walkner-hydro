@@ -1,0 +1,56 @@
+<div class="analytics-charts">
+  <form class="well analytics-charts-controls form-inline">
+    <label for="<%- idPrefix %>-controls-tag"><%- t('analytics', 'CHART_CONTROLS_TAG') %></label>
+    <select id="<%- idPrefix %>-controls-tag">
+      <option value=""></option>
+      <optgroup label="<%- t('tags', 'GROUP:inputPumps') %>">
+        <option value="inputPumps.1.current"><%- t('tags', 'TAG:inputPumps.1.current') %></option>
+        <option value="inputPumps.1.waterLevel"><%- t('tags', 'TAG:inputPumps.1.waterLevel') %></option>
+        <option value="inputPumps.2.current"><%- t('tags', 'TAG:inputPumps.2.current') %></option>
+        <option value="inputPumps.2.waterLevel"><%- t('tags', 'TAG:inputPumps.2.waterLevel') %></option>
+      </optgroup>
+      <optgroup label="<%- t('tags', 'GROUP:outputPumps') %>">
+        <option value="outputPumps.current"><%- t('tags', 'TAG:outputPumps.current') %></option>
+        <option value="outputPumps.outputFrequency"><%- t('tags', 'TAG:outputPumps.outputFrequency') %></option>
+        <option value="outputPumps.presetRef"><%- t('tags', 'TAG:outputPumps.presetRef') %></option>
+      </optgroup>
+      <optgroup label="<%- t('tags', 'GROUP:reservoirs') %>">
+        <option value="reservoirs.1.waterLevel"><%- t('tags', 'TAG:reservoirs.1.waterLevel') %></option>
+        <option value="reservoirs.2.waterLevel"><%- t('tags', 'TAG:reservoirs.2.waterLevel') %></option>
+      </optgroup>
+      <optgroup label="<%- t('tags', 'GROUP:pressureSensors') %>">
+        <option value="compressorPressure"><%- t('tags', 'TAG:compressorPressure') %></option>
+        <option value="outputPressure"><%- t('tags', 'TAG:outputPressure') %></option>
+      </optgroup>
+      <optgroup label="<%- t('tags', 'GROUP:flowMeters') %>">
+        <option value="inputFlow"><%- t('tags', 'TAG:inputFlow') %></option>
+        <option value="inputFlow.total.forwards" data-value-field="max"><%- t('tags', 'TAG:inputFlow.total.forwards') %></option>
+        <option value="washingFlow"><%- t('tags', 'TAG:washingFlow') %></option>
+        <option value="washingFlow.total.forwards" data-value-field="max"><%- t('tags', 'TAG:washingFlow.total.forwards') %></option>
+        <option value="outputFlow"><%- t('tags', 'TAG:outputFlow') %></option>
+        <option value="outputFlow.total.forwards" data-value-field="max"><%- t('tags', 'TAG:outputFlow.total.forwards') %></option>
+      </optgroup>
+      <optgroup label="<%- t('tags', 'GROUP:health') %>">
+        <option value="health.os.cpu"><%- t('tags', 'TAG:health.os.cpu') %></option>
+        <option value="health.os.memory"><%- t('tags', 'TAG:health.os.memory') %></option>
+        <option value="health.controller.memory"><%- t('tags', 'TAG:health.controller.memory') %></option>
+        <option value="health.alarms.memory"><%- t('tags', 'TAG:health.alarms.memory') %></option>
+        <option value="health.frontend.memory"><%- t('tags', 'TAG:health.frontend.memory') %></option>
+        <option value="health.frontend.websockets" data-value-field="max"><%- t('tags', 'TAG:health.frontend.websockets') %></option>
+      </optgroup>
+    </select>
+    <label for="<%- idPrefix %>-controls-from"><%- t('analytics', 'CHART_CONTROLS_FROM') %></label>
+    <input id="<%- idPrefix %>-controls-from" name="from" type="text" placeholder="YYYY-MM-DD HH:mm" value="<%- from %>">
+    <label for="<%- idPrefix %>-controls-to"><%- t('analytics', 'CHART_CONTROLS_TO') %></label>
+    <input id="<%- idPrefix %>-controls-to" name="to" type="text" placeholder="YYYY-MM-DD HH:mm" value="<%- to %>">
+    <button id="<%- idPrefix %>-controls-plot" class="btn btn-primary" type="submit">
+      <i class="icon-bar-chart"></i>
+      <%- t('analytics', 'CHART_CONTROLS_PLOT') %>
+    </button>
+    <button id="<%- idPrefix %>-controls-reset" class="btn btn-danger" type="button">
+      <i class="icon-remove"></i>
+      <%- t('analytics', 'CHART_CONTROLS_RESET') %>
+    </button>
+  </form>
+  <div class="analytics-charts-plot"></div>
+</div>

@@ -1,0 +1,6 @@
+.idea/
+node_modules/
+build/
+frontend-build/
+config/chelsty/
+bin/processes-chelsty.json

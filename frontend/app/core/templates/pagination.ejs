@@ -1,0 +1,47 @@
+<ul>
+
+  <% if (firstLastLinksVisible) { %>
+    <% if (firstPageLinkAvailable) { %>
+    <li><a href="<%- firstPageHref %>" title="<%- t('core', 'PAGINATION_FIRST_PAGE') %>" data-page="1">&laquo;</a>
+    <% } else { %>
+    <li class="disabled"><span>&laquo;</span>
+    <% } %>
+  <% } %>
+
+  <% if (prevNextLinksVisible) { %>
+    <% if (prevPageLinkAvailable) { %>
+    <li><a href="<%- prevPageHref %>" title="<%- t('core', 'PAGINATION_PREV_PAGE') %>" data-page="<%- page - 1 %>">&lsaquo;</a>
+    <% } else { %>
+    <li class="disabled"><span>&lsaquo;</span>
+    <% } %>
+  <% } %>
+
+  <% if (leftDotsVisible) { %>
+  <li><span class="pagination-dots">...</span>
+  <% } %>
+
+  <% pages.forEach(function(page) { %>
+  <li class="<%- page.active ? 'active' : '' %>"><a href="<%- page.href %>" data-page="<%- page.no %>"><%- page.no %></a>
+  <% }) %>
+
+  <% if (rightDotsVisible) { %>
+  <li><span class="pagination-dots">...</span>
+  <% } %>
+
+  <% if (prevNextLinksVisible) { %>
+    <% if (nextPageLinkAvailable) { %>
+    <li><a href="<%- nextPageHref %>" title="<%- t('core', 'PAGINATION_NEXT_PAGE') %>" data-page="<%- page + 1 %>">&rsaquo;</a>
+    <% } else { %>
+    <li class="disabled"><span>&rsaquo;</span>
+    <% } %>
+  <% } %>
+
+  <% if (firstLastLinksVisible) { %>
+    <% if (lastPageLinkAvailable) { %>
+    <li><a href="<%- lastPageHref %>" title="<%- t('core', 'PAGINATION_LAST_PAGE') %>" data-page="<%- pageCount %>">&raquo;</a>
+    <% } else { %>
+    <li class="disabled"><span>&raquo;</span>
+    <% } %>
+  <% } %>
+
+</ul>

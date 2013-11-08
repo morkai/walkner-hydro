@@ -1,0 +1,41 @@
+<div class="list <%- typeof className === 'undefined' ? '' : className %>">
+  <table class="table table-bordered table-striped table-hover table-condensed">
+    <thead>
+    <tr>
+      <% columns.forEach(function(column) { %>
+      <th><%- column.label %></th>
+      <% }) %>
+      <% if (typeof actions === 'function') { %>
+      <th class="actions"><%- t('core', 'TH_ACTIONS') %></th>
+      <% } %>
+    </tr>
+    </thead>
+    <tbody>
+    <% rows.forEach(function(row) { %>
+    <tr class="<%- row.className ? row.className : '' %>"
+      <% if (row.data) { %>
+      <% Object.keys(row.data).forEach(function(property) { %>
+      data-<%- property %>="<%= row.data[property] %>"
+      <% }) %>
+      <% } %>
+    >
+      <% columns.forEach(function(column) { %>
+      <td><%= row[column.id] %></td>
+      <% }) %>
+      <% if (typeof actions === 'function') { %>
+      <td class="actions">
+        <% actions(row).forEach(function(action) { %>
+        <% if (action.href) { %>
+        <a href="<%- action.href %>" class="btn action-<%- action.id %>" title="<%= action.label %>"><i class="icon-<%- action.icon %>"></i></a>
+        <% } else { %>
+        TODO
+        <% } %>
+        <% }) %>
+      </td>
+      <% } %>
+    </tr>
+    <% }) %>
+    </tbody>
+  </table>
+  <div class="pagination pagination-centered"></div>
+</div>

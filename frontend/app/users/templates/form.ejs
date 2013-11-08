@@ -1,0 +1,105 @@
+<form class="form-horizontal users-form" method="post" action="<%- formAction %>">
+  <input type="hidden" name="_method" value="<%- formMethod %>">
+  <div class="control-group">
+    <label class="control-label" for="user-login"><%- t('users', 'PROPERTY_LOGIN') %></label>
+    <div class="controls">
+      <input id="user-login" type="text" name="login" value="<%- user.login %>" autofocus required maxlength="50">
+    </div>
+  </div>
+  <div class="control-group">
+    <label class="control-label" for="user-password"><%- t('users', 'PROPERTY_PASSWORD') %></label>
+    <div class="controls">
+      <input id="user-password" type="password" name="password" value="">
+    </div>
+  </div>
+  <div class="control-group">
+    <label class="control-label" for="user-password2"><%- t('users', 'FORM_PASSWORD_CONFIRM') %></label>
+    <div class="controls">
+      <input id="user-password2" type="password" value="">
+    </div>
+  </div>
+  <div class="control-group">
+    <label class="control-label" for="user-email"><%- t('users', 'PROPERTY_EMAIL') %></label>
+    <div class="controls">
+      <input id="user-email" type="email" name="email" value="<%- user.email %>" required maxlength="100">
+    </div>
+  </div>
+  <div class="control-group">
+    <label class="control-label" for="user-mobile"><%- t('users', 'PROPERTY_MOBILE') %></label>
+    <div class="controls">
+      <input id="user-mobile" type="tel" name="mobile" value="<%- user.mobile %>" maxlength="20">
+    </div>
+  </div>
+  <div class="control-group">
+    <label class="control-label"><%- t('users', 'PROPERTY_PRIVILEGES') %></label>
+    <div class="controls">
+      <label class="checkbox">
+        <input type="checkbox" name="privileges[]" value="SETTINGS_VIEW">
+        <%- t('users', 'PRIVILEGE:SETTINGS_VIEW') %>
+      </label>
+      <label class="checkbox">
+        <input type="checkbox" name="privileges[]" value="SETTINGS_MANAGE">
+        <%- t('users', 'PRIVILEGE:SETTINGS_MANAGE') %>
+      </label>
+    </div>
+    <div class="controls">
+      <label class="checkbox">
+        <input type="checkbox" name="privileges[]" value="MONITORING_VIEW">
+        <%- t('users', 'PRIVILEGE:MONITORING_VIEW') %>
+      </label>
+    </div>
+    <div class="controls">
+      <label class="checkbox">
+        <input type="checkbox" name="privileges[]" value="DIAGNOSTICS_VIEW">
+        <%- t('users', 'PRIVILEGE:DIAGNOSTICS_VIEW') %>
+      </label>
+    </div>
+    <div class="controls">
+      <label class="checkbox">
+        <input type="checkbox" name="privileges[]" value="ANALYTICS_VIEW">
+        <%- t('users', 'PRIVILEGE:ANALYTICS_VIEW') %>
+      </label>
+    </div>
+    <div class="controls">
+      <label class="checkbox">
+        <input type="checkbox" name="privileges[]" value="EVENTS_VIEW">
+        <%- t('users', 'PRIVILEGE:EVENTS_VIEW') %>
+      </label>
+      <label class="checkbox">
+        <input type="checkbox" name="privileges[]" value="EVENTS_MANAGE">
+        <%- t('users', 'PRIVILEGE:EVENTS_MANAGE') %>
+      </label>
+    </div>
+    <div class="controls">
+      <label class="checkbox">
+        <input type="checkbox" name="privileges[]" value="ALARMS_VIEW">
+        <%- t('users', 'PRIVILEGE:ALARMS_VIEW') %>
+      </label>
+      <label class="checkbox">
+        <input type="checkbox" name="privileges[]" value="ALARMS_MANAGE">
+        <%- t('users', 'PRIVILEGE:ALARMS_MANAGE') %>
+      </label>
+      <label class="checkbox">
+        <input type="checkbox" name="privileges[]" value="ALARMS_ACK">
+        <%- t('users', 'PRIVILEGE:ALARMS_ACK') %>
+      </label>
+      <label class="checkbox">
+        <input type="checkbox" name="privileges[]" value="ALARMS_BREAKIN">
+        <%- t('users', 'PRIVILEGE:ALARMS_BREAKIN') %>
+      </label>
+    </div>
+    <div class="controls">
+      <label class="checkbox">
+        <input type="checkbox" name="privileges[]" value="USERS_VIEW">
+        <%- t('users', 'PRIVILEGE:USERS_VIEW') %>
+      </label>
+      <label class="checkbox">
+        <input type="checkbox" name="privileges[]" value="USERS_MANAGE">
+        <%- t('users', 'PRIVILEGE:USERS_MANAGE') %>
+      </label>
+    </div>
+  </div>
+  <div class="form-actions">
+    <button type="submit" class="btn btn-primary"><%- formActionText %></button>
+  </div>
+</form>

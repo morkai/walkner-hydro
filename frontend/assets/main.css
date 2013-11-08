@@ -1,0 +1,37 @@
+@import url("../vendor/bootstrap/css/bootstrap.css");
+@import url("../vendor/bootstrap-switch/bootstrap-switch.css");
+@import url("../vendor/jquery/jquery.typeahead.css");
+@import url("../vendor/font-awesome/css/font-awesome.css");
+@import url("../app/core/assets/core.css");
+@import url("../app/monitoring/assets/monitoring.css");
+@import url("../app/events/assets/events.css");
+@import url("../app/diagnostics/assets/diagnostics.css");
+@import url("../app/alarms/assets/alarms.css");
+@import url("../app/analytics/assets/analytics.css");
+
+body > .loading {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  margin: -32px 0 0 -200px;
+  font-size: 64px;
+  width: 400px;
+  height: 64px;
+  text-align: center;
+  text-shadow: 0 0 3px #999;
+}
+body > .loading p {
+  margin: 0;
+  padding: 0;
+}
+.loading .error {
+  line-height: 1;
+  font-family: Consolas, monospace;
+  font-size: 14px;
+  margin-top: .75em;
+  text-shadow: none;
+}
+.loading .error-type {
+  color: red;
+  font-weight: bold;
+}

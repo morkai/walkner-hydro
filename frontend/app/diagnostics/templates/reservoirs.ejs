@@ -1,0 +1,118 @@
+<div>
+  <div class="well fixed-column-right diag-manual-controls">
+    <h3 class="diag-manual-header"><%- t('diagnostics', 'RESERVOIRS_CONTROLS_HEADER', {id: 1}) %></h3>
+    <div class="diag-state-switch make-switch switch-large btn-block"
+         data-tag="reservoirs.1.state"
+         data-text-label="<%- t('diagnostics', 'STATE_SWITCH_LABEL') %>"
+         data-on-label="<%- t('diagnostics', 'STATE_SWITCH_LABEL_ON') %>"
+         data-off-label="<%- t('diagnostics', 'STATE_SWITCH_LABEL_OFF') %>"
+         data-on="success"
+         data-off="danger">
+      <input type="checkbox">
+    </div>
+    <h3 class="diag-manual-header"><%- t('diagnostics', 'RESERVOIRS_CONTROLS_HEADER', {id: 2}) %></h3>
+    <div class="diag-state-switch make-switch switch-large btn-block"
+         data-tag="reservoirs.2.state"
+         data-text-label="<%- t('diagnostics', 'STATE_SWITCH_LABEL') %>"
+         data-on-label="<%- t('diagnostics', 'STATE_SWITCH_LABEL_ON') %>"
+         data-off-label="<%- t('diagnostics', 'STATE_SWITCH_LABEL_OFF') %>"
+         data-on="success"
+         data-off="danger">
+      <input type="checkbox">
+    </div>
+  </div>
+  <div class="fluid-column-right diag-el-container">
+    <svg class="diag-reservoir" width="100%" height="100%" viewBox="0 0 600 400" xmlns="http://www.w3.org/2000/svg">
+      <defs>
+        <linearGradient id="<%- idPrefix %>-reservoirs-1-waterLevel-fill" x1="0" x2="0" y1="0" y2="1">
+          <stop offset="0.1" stop-color="#fff"></stop>
+          <stop offset="0.1" stop-color="#aef"></stop>
+          <stop offset="1" stop-color="#acf"></stop>
+        </linearGradient>
+        <linearGradient id="<%- idPrefix %>-reservoirs-2-waterLevel-fill" x1="0" x2="0" y1="0" y2="1">
+          <stop offset="0.1" stop-color="#fff"></stop>
+          <stop offset="0.1" stop-color="#aef"></stop>
+          <stop offset="1" stop-color="#acf"></stop>
+        </linearGradient>
+        <%- renderPathEnding({dir: 'lr', type: null}) %>
+        <%- renderPathEnding({dir: 'lr', type: 'cleanWater'}) %>
+        <%- renderPathEnding({dir: 'bt', type: null}) %>
+      </defs>
+
+      <path id="<%- idPrefix %>-reservoir1-valve-reservoir2-path" class="el-path" d="M 236 234 h 114" />
+
+      <g id="<%- idPrefix %>-reservoir1-valve-reservoir2" class="el-valve" transform="translate(277, 226)">
+        <path d="M 0 0 L 0 16 L 16 8 Z" />
+        <path d="M 32 0 L 32 16 L 16 8 Z" />
+      </g>
+
+      <g id="<%- idPrefix %>-reservoirs-1" class="el-reservoir" transform="translate(100, 100)">
+        <rect x="57.5" y="-20" width="20" height="10" />
+        <path d="M 51.5 -20 h 32 l -16 -10 z" />
+        <path d="M 0 0 Q 67.5 -20, 135 0" />
+        <rect class="el-reservoir-outerContainer" x="0" y="0" width="135" height="200" />
+        <rect class="el-reservoir-innerContainer" x="1" y="1" width="133" height="198" fill="url(#<%- idPrefix %>-reservoirs-1-waterLevel-fill)" data-tag="reservoirs.1.height" />
+        <g id="<%- idPrefix %>-reservoirs-1-min" class="el-extreme" transform="translate(0, 198)" data-tag="reservoirs.1.waterLevel.min">
+          <path d="M 0 0 h -10 h -20 l 10 10 l 10 -10 m 10 0 h 10 m 5 0 h 10 m 5 0 h 10 m 5 0 h 10 m 5 0 h 10 m 5 0 h 10 m 5 0 h 10 m 5 0 h 10 m 5 0 h 10" />
+        </g>
+        <g id="<%- idPrefix %>-reservoirs-1-max" class="el-extreme el-active" transform="translate(0, 0)" data-tag="reservoirs.1.waterLevel.max">
+          <path d="M 0 0 h -10 h -20 l 10 -10 l 10 10 m 10 0 h 10 m 5 0 h 10 m 5 0 h 10 m 5 0 h 10 m 5 0 h 10 m 5 0 h 10 m 5 0 h 10 m 5 0 h 10 m 5 0 h 10" />
+        </g>
+      </g>
+      <g id="<%- idPrefix %>-reservoirs-1-left-valve" class="el-valve" transform="translate(78, 300) rotate(90)">
+        <path d="M 0 0 L 0 16 L 16 8 Z" />
+        <path d="M 32 0 L 32 16 L 16 8 Z" />
+      </g>
+      <path id="<%- idPrefix %>-reservoirs-1-to-left-valve" class="el-path" d="M 70 299 v -26 h 59" />
+      <rect id="<%- idPrefix %>-path-to-left-reservoirs-1-valve" class="diag-path-ending diag-path-ending-bt" x="68" y="333" width="4" height="30" data-dir="bt" />
+      <g id="<%- idPrefix %>-reservoirs-1-triangle" class="el-reservoir-triangle" transform="translate(208, 274)">
+        <path d="M 8 0 L 16 16 L 0 16 Z" />
+      </g>
+
+      <g id="<%- idPrefix %>-reservoirs-2" class="el-reservoir" transform="translate(351, 100)">
+        <rect x="57.5" y="-20" width="20" height="10" />
+        <path d="M 51.5 -20 h 32 l -16 -10 z" />
+        <path d="M 0 0 Q 67.5 -20, 135 0" />
+        <rect class="el-reservoir-outerContainer" x="0" y="0" width="135" height="200" />
+        <rect class="el-reservoir-innerContainer" x="1" y="1" width="133" height="198" fill="url(#<%- idPrefix %>-reservoirs-2-waterLevel-fill)" data-tag="reservoirs.2.height" />
+        <g id="<%- idPrefix %>-reservoirs-2-min" class="el-extreme" transform="translate(0, 198)" data-tag="reservoirs.2.waterLevel.min">
+          <path d="M 0 0 h -10 h -20 l 10 10 l 10 -10 m 10 0 h 10 m 5 0 h 10 m 5 0 h 10 m 5 0 h 10 m 5 0 h 10 m 5 0 h 10 m 5 0 h 10 m 5 0 h 10 m 5 0 h 10" />
+        </g>
+        <g id="<%- idPrefix %>-reservoirs-2-max" class="el-extreme el-active" transform="translate(0, 0)" data-tag="reservoirs.2.waterLevel.max">
+          <path d="M 0 0 h -10 h -20 l 10 -10 l 10 10 m 10 0 h 10 m 5 0 h 10 m 5 0 h 10 m 5 0 h 10 m 5 0 h 10 m 5 0 h 10 m 5 0 h 10 m 5 0 h 10 m 5 0 h 10" />
+        </g>
+      </g>
+      <g id="<%- idPrefix %>-reservoirs-2-left-valve" class="el-valve" transform="translate(329, 300) rotate(90)">
+        <path d="M 0 0 L 0 16 L 16 8 Z" />
+        <path d="M 32 0 L 32 16 L 16 8 Z" />
+      </g>
+      <path id="<%- idPrefix %>-reservoirs-2-to-left-valve" class="el-path" d="M 321 299 v -26 h 59" />
+      <rect id="<%- idPrefix %>-path-to-left-reservoirs-2-valve" class="diag-path-ending diag-path-ending-bt" x="318" y="333" width="4" height="30" data-dir="bt" />
+      <g id="<%- idPrefix %>-reservoirs-2-triangle" class="el-reservoir-triangle" transform="translate(459, 274)">
+        <path d="M 8 0 L 16 16 L 0 16 Z" />
+      </g>
+
+      <path id="<%- idPrefix %>-reservoirs-v25-v15" class="el-path" d="M 531 40 h -276 v 70 h -41 m 292 -70 v 70 h -41" data-tag="inputFlow" />
+
+      <path id="<%- idPrefix %>-reservoirs-hydroSet" class="el-path" d="M 216 276 v -22 h 39 v 119 h 251 v -119 h -39 v 22 m 39 97 h 25" data-tag="outputFlow" />
+
+      <g id="<%- idPrefix %>-reservoirs-1-triangle-valve" class="el-valve" transform="translate(263, 300) rotate(90)">
+        <path d="M 0 0 L 0 16 L 16 8 Z" />
+        <path d="M 32 0 L 32 16 L 16 8 Z" />
+      </g>
+      <g id="<%- idPrefix %>-reservoirs-2-triangle-valve" class="el-valve" transform="translate(514, 300) rotate(90)">
+        <path d="M 0 0 L 0 16 L 16 8 Z" />
+        <path d="M 32 0 L 32 16 L 16 8 Z" />
+      </g>
+
+      <rect id="<%- idPrefix %>-input" class="diag-path-ending diag-path-ending-lr" x="530" y="38" width="50" height="4" data-dir="lr" />
+      <rect id="<%- idPrefix %>-output" class="diag-path-ending diag-path-ending-lr" x="530" y="371" width="50" height="4" data-dir="lr" />
+
+      <text x="168" y="63" text-anchor="middle"><%- t('diagnostics', 'RESERVOIRS_SYMBOL', {id: 1}) %></text>
+      <text x="419" y="63" text-anchor="middle"><%- t('diagnostics', 'RESERVOIRS_SYMBOL', {id: 2}) %></text>
+
+      <text x="168" y="320" text-anchor="middle"><%- t('diagnostics', 'RESERVOIRS_WATER_LEVEL') %> <tspan data-tag="reservoirs.1.waterLevel">0.00</tspan>m</text>
+      <text x="419" y="320" text-anchor="middle"><%- t('diagnostics', 'RESERVOIRS_WATER_LEVEL') %> <tspan data-tag="reservoirs.2.waterLevel">0.00</tspan>m</text>
+    </svg>
+  </div>
+</div>

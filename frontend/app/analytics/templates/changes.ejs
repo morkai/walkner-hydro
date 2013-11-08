@@ -1,0 +1,30 @@
+<div class="analytics-changes">
+  <table class="table table-bordered table-striped table-hover table-condensed">
+    <thead>
+    <tr>
+      <th><%= t('analytics', 'CHANGES_COLUMN_NAME') %>
+      <th><%= t('analytics', 'CHANGES_COLUMN_DESCRIPTION') %>
+    </tr>
+    </thead>
+    <tbody>
+    <% Object.keys(groups).forEach(function(group) { %>
+    <tr>
+      <td class="analytics-changes-group" colspan="2"><%= t('tags', 'GROUP:' + group) %>
+      <% groups[group].tags.forEach(function(tag) { %>
+    <tr>
+      <td class="analytics-changes-tag"><%- tag %>
+      <td><a><%= t('tags', 'TAG:' + tag) %></a>
+      <% }) %>
+      <% Object.keys(groups[group].groups).forEach(function(subgroup) { %>
+    <tr>
+      <td class="analytics-changes-group" colspan="2"><%= t('tags', 'SUBGROUP:' + group, {id: subgroup}) %>
+        <% groups[group].groups[subgroup].forEach(function(tag) { %>
+    <tr>
+      <td class="analytics-changes-tag"><%- tag %>
+      <td><a><%= t('tags', 'TAG:' + tag) %></a>
+        <% }) %>
+      <% }) %>
+    <% }) %>
+    </tbody>
+  </table>
+</div>

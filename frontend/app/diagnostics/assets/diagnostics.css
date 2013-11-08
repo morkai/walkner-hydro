@@ -1,0 +1,216 @@
+@import url(./cabinet.css);
+@import url(./inputPumps.css);
+@import url(./outputPumps.css);
+@import url(./filterSet.css);
+@import url(./settings.css);
+@import url(./tags.css);
+@import url(./vfd.css);
+
+.tag-writable {
+  cursor: pointer;
+}
+
+.diag-boxes {
+  text-align: center;
+}
+.diag-box {
+  display: inline-block;
+  width: 256px;
+  margin: 1em 2em;
+}
+.diag-box:hover {
+  text-decoration: none;
+}
+.diag-box-label {
+  display: block;
+  margin-top: .5em;
+  padding: .25em .5em;
+  font-weight: bold;
+  background: #999;
+  color: #fff;
+  text-shadow: 0 1px 3px rgba(0, 0, 0, .25);
+  border-radius: .25em;
+}
+.diag-box:hover .diag-box-label {
+  background-color: #333;
+}
+.diag-manual-header {
+  margin: .75em 0 .25em 0;
+  font-variant: small-caps;
+  text-transform: lowercase;
+  text-rendering: auto;
+  line-height: 1;
+}
+.diag-manual-header:first-child {
+  margin-top: 0;
+}
+.diag-manual-header-image {
+  width: 1em;
+  height: 1em;
+  vertical-align: text-bottom;
+}
+.diag-manual-button {
+  text-align: left;
+  padding: .5em;
+}
+.diag-manual-button-image {
+  width: 1.3em;
+  height: 1.3em;
+  margin-right: .2em;
+}
+.diag-manual-button-label {
+  font-size: 1.1em;
+  font-weight: bold;
+  font-variant: small-caps;
+  text-transform: lowercase;
+}
+.diag-manual-button .icon-spinner {
+  display: none!important;
+}
+.diag-manual-button.loading .icon-spinner {
+  display: inline-block!important;
+}
+.diag-manual-controls .switch-large {
+  font-weight: bold;
+  font-variant: small-caps;
+  text-transform: lowercase;
+  font-size: 1.1em!important;
+}
+.diag-manual-controls .has-switch label {
+  text-shadow: 0 1px 1px rgba(255, 255, 255, 0.75);
+}
+.diag-manual-textline {
+  margin-bottom: .25em;
+}
+.diag-manual-textline:last-child {
+  margin-bottom: 0;
+}
+.diag-manual-textline-image {
+  width: 1.65em;
+  height: 1.65em;
+}
+.diag-manual-property {
+  margin-bottom: .25em;
+}
+.diag-manual-property-label {
+  font-weight: bold;
+  display: block;
+}
+.diag-manual-property-value {
+  margin-top: .25em;
+  padding-left: .5em;
+  display: block;
+}
+.diag-manual-asset {
+  text-align: center;
+  margin-bottom: 1em;
+}
+.diag-manual-asset-image {
+  width: auto;
+  height: 160px;
+}
+.diag-manual-asset-label {
+  display: block;
+  margin-top: .5em;
+  padding: .25em .5em;
+  font-weight: bold;
+  background: #999;
+  color: #fff;
+  text-shadow: 0 1px 3px rgba(0, 0, 0, .25);
+  border-radius: .25em;
+}
+.diag-manual-asset-group {
+  margin-bottom: 1em;
+}
+.diag-manual-asset-group .diag-manual-asset {
+  display: inline-block;
+  text-align: center;
+  width: 115px;
+  margin: auto auto auto 10px;
+}
+.diag-manual-asset-group .diag-manual-asset:first-child {
+  margin-left: 0;
+}
+.diag-manual-asset-group .diag-manual-asset-image {
+  height: 80px;
+}
+.diag-manual-controls hr {
+  border-top-color: #e0e0e0;
+  margin: 1em 0;
+}
+
+.diag-path-ending {
+  stroke-width: 0;
+}
+.diag-path-ending-lr {
+  fill: url(#diag-path-ending-lr);
+}
+.diag-path-ending-lr-air {
+  fill: url(#diag-path-ending-lr-air);
+}
+.diag-path-ending-lr-rawWater {
+  fill: url(#diag-path-ending-lr-rawWater);
+}
+.diag-path-ending-lr-dirtyWater {
+  fill: url(#diag-path-ending-lr-dirtyWater);
+}
+.diag-path-ending-lr-cleanWater {
+  fill: url(#diag-path-ending-lr-cleanWater);
+}
+.diag-path-ending-lr-chlor {
+  fill: url(#diag-path-ending-lr-chlor);
+}
+.diag-path-ending-rl {
+  fill: url(#diag-path-ending-rl);
+}
+.diag-path-ending-rl-air {
+  fill: url(#diag-path-ending-rl-air);
+}
+.diag-path-ending-rl-rawWater {
+  fill: url(#diag-path-ending-rl-rawWater);
+}
+.diag-path-ending-rl-dirtyWater {
+  fill: url(#diag-path-ending-rl-dirtyWater);
+}
+.diag-path-ending-rl-cleanWater {
+  fill: url(#diag-path-ending-rl-cleanWater);
+}
+.diag-path-ending-rl-chlor {
+  fill: url(#diag-path-ending-rl-chlor);
+}
+.diag-path-ending-tb {
+  fill: url(#diag-path-ending-tb);
+}
+.diag-path-ending-tb-air {
+  fill: url(#diag-path-ending-tb-air);
+}
+.diag-path-ending-tb-rawWater {
+  fill: url(#diag-path-ending-tb-rawWater);
+}
+.diag-path-ending-tb-dirtyWater {
+  fill: url(#diag-path-ending-tb-dirtyWater);
+}
+.diag-path-ending-tb-cleanWater {
+  fill: url(#diag-path-ending-tb-cleanWater);
+}
+.diag-path-ending-tb-chlor {
+  fill: url(#diag-path-ending-tb-chlor);
+}
+.diag-path-ending-bt {
+  fill: url(#diag-path-ending-bt);
+}
+.diag-path-ending-bt-air {
+  fill: url(#diag-path-ending-bt-air);
+}
+.diag-path-ending-bt-rawWater {
+  fill: url(#diag-path-ending-bt-rawWater);
+}
+.diag-path-ending-bt-dirtyWater {
+  fill: url(#diag-path-ending-bt-dirtyWater);
+}
+.diag-path-ending-bt-cleanWater {
+  fill: url(#diag-path-ending-bt-cleanWater);
+}
+.diag-path-ending-bt-chlor {
+  fill: url(#diag-path-ending-bt-chlor);
+}

@@ -1,0 +1,22 @@
+.diag-outputPumps-picker {
+  width: 100%;
+  text-align: center;
+  margin-bottom: 1em;
+}
+.diag-outputPumps-picker .btn {
+  text-transform: lowercase;
+  font-variant: small-caps;
+  width: 33.333%;
+  box-sizing: border-box;
+  -moz-box-sizing: border-box;
+}
+.diag-outputPumps-presetRef-slider {
+  margin: .5em 0;
+  width: 100%;
+}
+.diag-outputPumps-presetRef {
+  margin-bottom: 0;
+}
+.diag-outputPumps-presetRef input {
+  width: 200px;
+}

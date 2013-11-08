@@ -1,0 +1,166 @@
+<div>
+  <div class="well fixed-column-right diag-manual-controls">
+    <div class="diag-manual-asset" data-tag="washingPump.switch">
+      <img class="diag-manual-asset-image diag-washingPump-switch-image" src="/assets/img/switch.svg?value=0">
+      <span class="diag-manual-asset-label"><%- t('diagnostics', 'WASHING_PUMP_SWITCH') %></span>
+    </div>
+    <div class="diag-manual-asset-group">
+      <div class="diag-manual-asset" data-tag="washingPump.status">
+        <img class="diag-manual-asset-image diag-washingPump-status-image" src="/assets/img/led.svg?color=grey">
+        <span class="diag-manual-asset-label"><%- t('diagnostics', 'WASHING_PUMP_STATUS') %></span>
+      </div><div class="diag-manual-asset" data-tag="washingPump.failure">
+        <img class="diag-manual-asset-image diag-washingPump-failure-image" src="/assets/img/led.svg?color=grey" data-on-color="red">
+        <span class="diag-manual-asset-label"><%- t('diagnostics', 'WASHING_PUMP_FAILURE') %></span>
+      </div>
+    </div>
+    <hr>
+    <div class="diag-state-switch make-switch switch-large btn-block"
+         data-tag="washingPump.state"
+         data-text-label="<%- t('diagnostics', 'STATE_SWITCH_LABEL') %>"
+         data-on-label="<%- t('diagnostics', 'STATE_SWITCH_LABEL_ON') %>"
+         data-off-label="<%- t('diagnostics', 'STATE_SWITCH_LABEL_OFF') %>"
+         data-on="success"
+         data-off="danger">
+      <input type="checkbox">
+    </div>
+    <div class="diag-mode-switch make-switch switch-large btn-block"
+         data-tag="washingPump.mode"
+         data-text-label="<%- t('diagnostics', 'MODE_SWITCH_LABEL') %>"
+         data-on-label="<%- t('diagnostics', 'MODE_SWITCH_LABEL_ON') %>"
+         data-off-label="<%- t('diagnostics', 'MODE_SWITCH_LABEL_OFF') %>"
+         data-on="primary"
+         data-off="warning">
+      <input type="checkbox">
+    </div>
+    <hr>
+    <button class="btn btn-large btn-block diag-manual-button diag-control-button" data-tag="washingPump.control">
+      <img class="diag-manual-button-image diag-washingPump-control-image" src="/assets/img/led.svg?color=grey">
+      <span class="diag-manual-button-label"><%- t('diagnostics', 'WASHING_PUMP_CONTROL_BUTTON') %></span>
+      <i class="icon-spinner icon-spin"></i>
+    </button>
+  </div>
+  <div class="fluid-column-right diag-el-container">
+    <svg width="100%" height="100%" viewBox="0 0 700 360" xmlns="http://www.w3.org/2000/svg">
+      <defs>
+        <linearGradient id="<%- idPrefix %>-reservoirs-waterLevel-fill" x1="0" x2="0" y1="0" y2="1">
+          <stop offset="0" stop-color="#fff"></stop>
+          <stop offset="0" stop-color="#aef"></stop>
+          <stop offset="1" stop-color="#acf"></stop>
+        </linearGradient>
+        <%- renderPathEnding({dir: 'lr', type: null}) %>
+        <%- renderPathEnding({dir: 'lr', type: 'air'}) %>
+        <%- renderPathEnding({dir: 'lr', type: 'rawWater'}) %>
+        <%- renderPathEnding({dir: 'lr', type: 'dirtyWater'}) %>
+        <%- renderPathEnding({dir: 'lr', type: 'cleanWater'}) %>
+        <%- renderPathEnding({dir: 'rl', type: null}) %>
+        <%- renderPathEnding({dir: 'rl', type: 'air'}) %>
+        <%- renderPathEnding({dir: 'rl', type: 'rawWater'}) %>
+        <%- renderPathEnding({dir: 'rl', type: 'dirtyWater'}) %>
+        <%- renderPathEnding({dir: 'rl', type: 'cleanWater'}) %>
+        <%- renderPathEnding({dir: 'tb', type: null}) %>
+        <%- renderPathEnding({dir: 'tb', type: 'cleanWater'}) %>
+      </defs>
+
+      <g id="<%- idPrefix %>-reservoirs" class="el-reservoir" transform="translate(550, 24) scale(0.75)">
+        <rect x="57.5" y="-20" width="20" height="10" />
+        <path d="M 51.5 -20 h 32 l -16 -10 z" />
+        <path d="M 0 0 Q 67.5 -20, 135 0" />
+        <rect class="el-reservoir-outerContainer" x="0" y="0" width="135" height="200" data-tag="reservoirs.1.height" />
+        <rect class="el-reservoir-innerContainer" x="1" y="1" width="133" height="198" fill="url(#<%- idPrefix %>-reservoirs-waterLevel-fill)" data-tag="reservoirs.1.waterLevel" />
+      </g>
+
+      <rect id="<%- idPrefix %>-reservoirs-in" class="diag-path-ending" data-dir="lr" x="637" y="30" width="54" height="4" />
+      <rect id="<%- idPrefix %>-reservoirs-hydroSet" class="diag-path-ending-tb" data-dir="tb" x="685" y="86" width="4" height="50" />
+
+      <path id="<%- idPrefix %>-reservoirs-out" class="el-path" d="M 637 157 v -21 h 50 v 164 h -125" />
+
+      <g id="<%- idPrefix %>-reservoirs-triangle" class="el-reservoir-triangle" transform="translate(631, 155) scale(0.75)">
+        <path d="M 8 0 L 16 16 L 0 16 Z" />
+      </g>
+
+      <path id="<%- idPrefix %>-pump-out" class="el-path" d="M 562 300 h -214 v -125 h -50 m 50 125 h -186 v -125 h -50" />
+
+      <rect id="<%- idPrefix %>-v12-left" class="diag-path-ending" data-dir="rl" x="33" y="87" width="50" height="4" />
+      <rect id="<%- idPrefix %>-v12-right" class="diag-path-ending" data-dir="lr" x="117" y="87" width="52" height="4" />
+      <rect id="<%- idPrefix %>-v16-left" class="diag-path-ending" data-dir="rl" x="33" y="173" width="50" height="4" />
+
+      <rect id="<%- idPrefix %>-v22-left" class="diag-path-ending" data-dir="rl" x="219" y="87" width="50" height="4" />
+      <rect id="<%- idPrefix %>-v22-right" class="diag-path-ending" data-dir="lr" x="303" y="87" width="52" height="4" />
+      <rect id="<%- idPrefix %>-v26-left" class="diag-path-ending" data-dir="rl" x="219" y="173" width="50" height="4" />
+
+      <rect class="diag-path-ending diag-path-ending-lr diag-washingPump-air-path" x="105" y="72" width="64" height="4" />
+      <rect class="diag-path-ending diag-path-ending-lr diag-washingPump-air-path" x="105" y="158" width="64" height="4" />
+      <rect class="diag-path-ending diag-path-ending-lr diag-washingPump-air-path" x="291" y="72" width="64" height="4" />
+      <rect class="diag-path-ending diag-path-ending-lr diag-washingPump-air-path" x="291" y="158" width="64" height="4" />
+
+      <g class="el-pump el-washingPump diag-washingPump-symbol" transform="translate(621, 300) rotate(-90)">
+        <circle r="16" cx="0" cy="0"></circle>
+        <path d="M 0 -16 l 14 24 h -28 z"></path>
+      </g>
+
+      <g class="el-flowMeter" transform="translate(431, 308) scale(1 -1) rotate(-90)">
+        <circle r="12" cx="-8" cy="61"></circle>
+        <path d="M 7 76 L -23 46 h 7 m -7 0 v 7"></path>
+        <path d="M 2 34 h -20 M 2 88 h -20"></path>
+      </g>
+
+      <g class="el-valve el-valve-left" transform="translate(546, 292)">
+        <path d="M 0 0 L 0 16 L 16 8 Z" />
+        <path d="M 32 0 L 32 16 L 16 8 Z" />
+      </g>
+
+      <g class="el-valve" transform="translate(406, 292)">
+        <path d="M 0 0 L 0 16 L 16 8 Z" />
+        <path d="M 32 0 L 32 16 L 16 8 Z" />
+      </g>
+
+      <text x="99" y="30" text-anchor="middle"><%- t('diagnostics', 'WASHING_PUMP_FILTER_SET1') %></text>
+      <text x="285" y="30" text-anchor="middle"><%- t('diagnostics', 'WASHING_PUMP_FILTER_SET2') %></text>
+      <text x="621" y="275" text-anchor="middle"><%- t('diagnostics', 'WASHING_PUMP_SYMBOL') %></text>
+      <text transform="translate(491, 241)" text-anchor="middle"><%- t('diagnostics', 'WASHING_PUMP_FLOW_METER_SYMBOL') %></text>
+      <text x="491" y="331" text-anchor="end"><%- t('diagnostics', 'WASHING_PUMP_OUTPUT_FLOW') %></text>
+      <text x="491" y="355" text-anchor="end"><%- t('diagnostics', 'WASHING_PUMP_OUTPUT_FLOW_TOTAL') %></text>
+      <text x="497" y="331" text-anchor="start" data-tag="washingFlow" data-unit="m3/h">0.0 m3/h</text>
+      <text x="497" y="355" text-anchor="start" data-tag="washingFlow.total.forwards" data-unit="m3">0.0 m3</text>
+      <text x="540" y="35" text-anchor="end"><%- t('diagnostics', 'WASHING_PUMP_RESERVOIRS') %></text>
+      <text x="540" y="55" text-anchor="end">
+        <tspan data-tag="reservoirs.waterLevel" data-unit="m">0.00 m</tspan>
+        /
+        <tspan data-tag="reservoirs.height" data-unit="m">0.00 m</tspan>
+      </text>
+
+      <g class="el-valve" transform="translate(84, 81)" data-tag="filterSets.1.valves.2.status">
+        <path d="M 0 0 L 0 16 L 16 8 Z"></path>
+        <path d="M 32 0 L 32 16 L 16 8 Z"></path>
+        <path d="M 16 8 v -10 a 5 -5 0 0 0 0 -10 a 5 5 0 0 0 0 10"></path>
+        <text x="15" y="34" text-anchor="middle"><%- t('diagnostics', 'WASHING_PUMP_FILTER_SET_V2') %></text>
+      </g>
+
+      <g class="el-valve" transform="translate(84, 167)" data-tag="filterSets.1.valves.6.status">
+        <path d="M 0 0 L 0 16 L 16 8 Z"></path>
+        <path d="M 32 0 L 32 16 L 16 8 Z"></path>
+        <path d="M 16 8 v -10 a 5 -5 0 0 0 0 -10 a 5 5 0 0 0 0 10"></path>
+        <text x="15" y="34" text-anchor="middle"><%- t('diagnostics', 'WASHING_PUMP_FILTER_SET_V6') %></text>
+      </g>
+
+      <g class="el-valve" transform="translate(270, 81)" data-tag="filterSets.2.valves.2.status">
+        <path d="M 0 0 L 0 16 L 16 8 Z"></path>
+        <path d="M 32 0 L 32 16 L 16 8 Z"></path>
+        <path d="M 16 8 v -10 a 5 -5 0 0 0 0 -10 a 5 5 0 0 0 0 10"></path>
+        <text x="15" y="34" text-anchor="middle"><%- t('diagnostics', 'WASHING_PUMP_FILTER_SET_V2') %></text>
+      </g>
+
+      <g class="el-valve" transform="translate(270, 167)" data-tag="filterSets.2.valves.6.status">
+        <path d="M 0 0 L 0 16 L 16 8 Z"></path>
+        <path d="M 32 0 L 32 16 L 16 8 Z"></path>
+        <path d="M 16 8 v -10 a 5 -5 0 0 0 0 -10 a 5 5 0 0 0 0 10"></path>
+        <text x="15" y="34" text-anchor="middle"><%- t('diagnostics', 'WASHING_PUMP_FILTER_SET_V6') %></text>
+      </g>
+
+      <rect class="el-group" x="210" y="2" width="154" height="208" />
+      <rect class="el-group" x="24" y="2" width="154" height="208" />
+
+      <g data-tag="compressorPressure" />
+    </svg>
+  </div>
+</div>

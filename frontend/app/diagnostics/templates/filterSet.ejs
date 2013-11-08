@@ -1,0 +1,187 @@
+<div>
+  <div class="well fixed-column-right diag-manual-controls">
+    <div class="diag-state-switch make-switch switch-large btn-block"
+         data-tag="filterSets.<%- index %>.state"
+         data-text-label="<%- t('diagnostics', 'STATE_SWITCH_LABEL') %>"
+         data-on-label="<%- t('diagnostics', 'STATE_SWITCH_LABEL_ON') %>"
+         data-off-label="<%- t('diagnostics', 'STATE_SWITCH_LABEL_OFF') %>"
+         data-on="success"
+         data-off="danger">
+      <input type="checkbox">
+    </div>
+    <div class="diag-mode-switch make-switch switch-large btn-block"
+         data-tag="filterSets.<%- index %>.mode"
+         data-text-label="<%- t('diagnostics', 'MODE_SWITCH_LABEL') %>"
+         data-on-label="<%- t('diagnostics', 'MODE_SWITCH_LABEL_ON') %>"
+         data-off-label="<%- t('diagnostics', 'MODE_SWITCH_LABEL_OFF') %>"
+         data-on="primary"
+         data-off="warning">
+      <input type="checkbox">
+    </div>
+
+    <button class="btn btn-large btn-block diag-manual-button diag-filterSet-washing-button">
+      <span class="diag-manual-button-label"><%- t('diagnostics', 'FILTER_SET_WASHING_START') %></span>
+      <i class="icon-spinner icon-spin"></i>
+    </button>
+
+    <h3 class="diag-manual-header diag-filterSet-currentPhase-header" data-tag="filterSets.<%- index %>.currentPhase">
+      <span class="diag-manual-header-text"><%- t('diagnostics', 'FILTER_SET_PHASES_HEADER') %></span>
+    </h3>
+    <p class="diag-manual-textline">
+      <img class="diag-manual-textline-image" src="/assets/img/led.svg?color=grey" data-phase="treatment">
+      <span class="diag-manual-textline-text"><%- t('diagnostics', 'FILTER_SET_PHASES_TREATMENT') %></span>
+    </p>
+    <p class="diag-manual-textline">
+      <img class="diag-manual-textline-image" src="/assets/img/led.svg?color=grey" data-phase="washingWait">
+      <span class="diag-manual-textline-text"><%- t('diagnostics', 'FILTER_SET_PHASES_WASHING_WAIT') %></span>
+    </p>
+    <p class="diag-manual-textline">
+      <img class="diag-manual-textline-image" src="/assets/img/led.svg?color=grey" data-phase="draining">
+      <span class="diag-manual-textline-text"><%- t('diagnostics', 'FILTER_SET_PHASES_DRAINING') %></span>
+    </p>
+    <p class="diag-manual-textline">
+      <img class="diag-manual-textline-image" src="/assets/img/led.svg?color=grey" data-phase="blowing">
+      <span class="diag-manual-textline-text"><%- t('diagnostics', 'FILTER_SET_PHASES_BLOWING') %></span>
+    </p>
+    <p class="diag-manual-textline">
+      <img class="diag-manual-textline-image" src="/assets/img/led.svg?color=grey" data-phase="stabilization">
+      <span class="diag-manual-textline-text"><%- t('diagnostics', 'FILTER_SET_PHASES_STABILIZATION') %></span>
+    </p>
+    <p class="diag-manual-textline">
+      <img class="diag-manual-textline-image" src="/assets/img/led.svg?color=grey" data-phase="rinsing">
+      <span class="diag-manual-textline-text"><%- t('diagnostics', 'FILTER_SET_PHASES_RINSING') %></span>
+    </p>
+    <p class="diag-manual-textline">
+      <img class="diag-manual-textline-image" src="/assets/img/led.svg?color=grey" data-phase="treatmentWait">
+      <span class="diag-manual-textline-text"><%- t('diagnostics', 'FILTER_SET_PHASES_TREATMENT_WAIT') %></span>
+    </p>
+
+    <h3 class="diag-manual-header"><%- t('diagnostics', 'FILTER_SET_VALVES_HEADER') %></h3>
+    <button class="btn btn-large btn-block diag-manual-button diag-filterSet-valve-button" data-tag="filterSets.<%- index %>.valves.1.control">
+      <img class="diag-manual-button-image" src="/assets/img/led.svg?color=grey">
+      <span class="diag-manual-button-label"><%- t('diagnostics', 'FILTER_SET_V1') %></span>
+      <i class="icon-spinner icon-spin"></i>
+    </button>
+    <button class="btn btn-large btn-block diag-manual-button diag-filterSet-valve-button" data-tag="filterSets.<%- index %>.valves.2.control">
+      <img class="diag-manual-button-image" src="/assets/img/led.svg?color=grey">
+      <span class="diag-manual-button-label"><%- t('diagnostics', 'FILTER_SET_V2') %></span>
+      <i class="icon-spinner icon-spin"></i>
+    </button>
+    <button class="btn btn-large btn-block diag-manual-button diag-filterSet-valve-button" data-tag="filterSets.<%- index %>.valves.3.control">
+      <img class="diag-manual-button-image" src="/assets/img/led.svg?color=grey">
+      <span class="diag-manual-button-label"><%- t('diagnostics', 'FILTER_SET_V3') %></span>
+      <i class="icon-spinner icon-spin"></i>
+    </button>
+    <button class="btn btn-large btn-block diag-manual-button diag-filterSet-valve-button" data-tag="filterSets.<%- index %>.valves.4.control">
+      <img class="diag-manual-button-image" src="/assets/img/led.svg?color=grey">
+      <span class="diag-manual-button-label"><%- t('diagnostics', 'FILTER_SET_V4') %></span>
+      <i class="icon-spinner icon-spin"></i>
+    </button>
+    <button class="btn btn-large btn-block diag-manual-button diag-filterSet-valve-button" data-tag="filterSets.<%- index %>.valves.5.control">
+      <img class="diag-manual-button-image" src="/assets/img/led.svg?color=grey">
+      <span class="diag-manual-button-label"><%- t('diagnostics', 'FILTER_SET_V5') %></span>
+      <i class="icon-spinner icon-spin"></i>
+    </button>
+    <button class="btn btn-large btn-block diag-manual-button diag-filterSet-valve-button" data-tag="filterSets.<%- index %>.valves.6.control">
+      <img class="diag-manual-button-image" src="/assets/img/led.svg?color=grey">
+      <span class="diag-manual-button-label"><%- t('diagnostics', 'FILTER_SET_V6') %></span>
+      <i class="icon-spinner icon-spin"></i>
+    </button>
+  </div>
+  <div class="fluid-column-right diag-el-container">
+    <svg class="diag-filterSet" width="100%" height="100%" viewBox="0 0 525 360" xmlns="http://www.w3.org/2000/svg">
+      <defs>
+        <pattern id="<%- idPrefix %>-symbol-fill" x="0" y="0" width="15" height="15" patternUnits="userSpaceOnUse" patternTransform="rotate(45)">
+          <path d="M 0 0 v 15 h 15" stroke-width="2" stroke="#000" fill="none" />
+        </pattern>
+        <%- renderPathEnding({dir: 'lr', type: null}) %>
+        <%- renderPathEnding({dir: 'lr', type: 'air'}) %>
+        <%- renderPathEnding({dir: 'lr', type: 'rawWater'}) %>
+        <%- renderPathEnding({dir: 'lr', type: 'dirtyWater'}) %>
+        <%- renderPathEnding({dir: 'lr', type: 'cleanWater'}) %>
+        <%- renderPathEnding({dir: 'rl', type: null}) %>
+        <%- renderPathEnding({dir: 'tb', type: null}) %>
+        <%- renderPathEnding({dir: 'tb', type: 'air'}) %>
+      </defs>
+
+      <rect id="<%- idPrefix %>-top-out" class="diag-path-ending diag-path-ending-rl" x="0" y="65" width="50" height="4" data-dir="rl" />
+
+      <path id="<%- idPrefix %>-v1-v2" class="el-path" d="M 100 87 v -20 h 109 m -20 0 v 53 h 20" />
+
+      <path id="<%- idPrefix %>-bottom" class="el-path" d="M 100 259 v 20 h 89 v -106 h 20 m -20 53 h 20 m -20 53 h 20 m -109 0 h -41 m 41 0 v 53 h 109" />
+
+      <path id="<%- idPrefix %>-pneumaticDistributor-v" class="el-path" d="M 230 52 h 80 v 53 h -80 m 80 0 v 53 h -80 m 80 0 v 53 h -80 m 80 0 v 53 h -80 m 80 0 v 53 h -80" />
+      <rect id="<%- idPrefix %>-pneumaticDistributor-v-out" class="diag-path-ending diag-path-ending-tb" x="308" y="0" width="4" height="55" data-tag="compressorPressure" data-dir="tb" />
+
+      <rect id="<%- idPrefix %>-v1-out" class="diag-path-ending diag-path-ending-lr" x="243" y="65" width="50" height="4" data-tag="inputFlow" data-dir="lr" />
+      <rect id="<%- idPrefix %>-v4-out" class="diag-path-ending diag-path-ending-lr" x="243" y="224" width="50" height="4" data-tag="blower.status" data-dir="lr" />
+      <rect id="<%- idPrefix %>-v5-out" class="diag-path-ending diag-path-ending-lr" x="243" y="277" width="50" height="4" data-dir="lr" />
+      <rect id="<%- idPrefix %>-v6-out" class="diag-path-ending diag-path-ending-lr" x="243" y="330" width="50" height="4" data-tag="washingFlow" data-dir="lr" />
+
+      <path id="<%- idPrefix %>-settler-v" class="el-path" d="M 243 120 h 63 m 8 0 h 16 v 53 h -16 m -8 0 h -63" />
+      <rect id="<%- idPrefix %>-settler-v-out" class="diag-path-ending diag-path-ending-lr" x="330" y="144" width="50" height="4" data-dir="lr" />
+
+      <g id="<%- idPrefix %>-symbol" class="el-filterSet" transform="translate(32, 87)">
+        <rect class="el-filterSet-container" x="0" y="0" width="137" height="172" rx="10" ry="10" />
+        <rect class="el-filterSet-fill" x="0" y="25" width="137" height="148" rx="10" ry="10" fill="url(#<%- idPrefix %>-symbol-fill)" />
+        <path class="el-filterSet-separator" d="M 0 26 h 137" />
+        <g transform="translate(20, 0)">
+          <path d="M 5 0 v -10" />
+          <rect x="-1" y="-29" width="12" height="18" />
+        </g>
+        <g class="el-filterSet-bot" transform="translate(47, 192)">
+          <circle r="5" cx="0" ry="0"></circle>
+          <path d="M 0 -5 v -5 m -7 0 h 14" />
+        </g>
+      </g>
+
+      <g transform="translate(210, 59)">
+        <g id="<%- idPrefix %>-v1" class="el-valve" transform="translate(0, 0)" data-tag="filterSets.<%- index %>.valves.1.status">
+          <path d="M 0 0 L 0 16 L 16 8 Z" />
+          <path d="M 32 0 L 32 16 L 16 8 Z" />
+          <path d="M 16 8 v -10 a 5 -5 0 0 0 0 -10 a 5 5 0 0 0 0 10" />
+          <text x="0" y="28"><%- t('diagnostics', 'FILTER_SET_V1') %></text>
+        </g>
+        <g id="<%- idPrefix %>-v2" class="el-valve" transform="translate(0, 53)" data-tag="filterSets.<%- index %>.valves.2.status">
+          <path d="M 0 0 L 0 16 L 16 8 Z" />
+          <path d="M 32 0 L 32 16 L 16 8 Z" />
+          <path d="M 16 8 v -10 a 5 -5 0 0 0 0 -10 a 5 5 0 0 0 0 10" />
+          <text x="0" y="28"><%- t('diagnostics', 'FILTER_SET_V2') %></text>
+        </g>
+        <g id="<%- idPrefix %>-v3" class="el-valve" transform="translate(0, 106)" data-tag="filterSets.<%- index %>.valves.3.status">
+          <path d="M 0 0 L 0 16 L 16 8 Z" />
+          <path d="M 32 0 L 32 16 L 16 8 Z" />
+          <path d="M 16 8 v -10 a 5 -5 0 0 0 0 -10 a 5 5 0 0 0 0 10" />
+          <text x="0" y="28"><%- t('diagnostics', 'FILTER_SET_V3') %></text>
+        </g>
+        <g id="<%- idPrefix %>-v4" class="el-valve" transform="translate(0, 159)" data-tag="filterSets.<%- index %>.valves.4.status">
+          <path d="M 0 0 L 0 16 L 16 8 Z" />
+          <path d="M 32 0 L 32 16 L 16 8 Z" />
+          <path d="M 16 8 v -10 a 5 -5 0 0 0 0 -10 a 5 5 0 0 0 0 10" />
+          <text x="0" y="28"><%- t('diagnostics', 'FILTER_SET_V4') %></text>
+        </g>
+        <g id="<%- idPrefix %>-v5" class="el-valve" transform="translate(0, 212)" data-tag="filterSets.<%- index %>.valves.5.status">
+          <path d="M 0 0 L 0 16 L 16 8 Z" />
+          <path d="M 32 0 L 32 16 L 16 8 Z" />
+          <path d="M 16 8 v -10 a 5 -5 0 0 0 0 -10 a 5 5 0 0 0 0 10" />
+          <text x="0" y="28"><%- t('diagnostics', 'FILTER_SET_V5') %></text>
+        </g>
+        <g id="<%- idPrefix %>-v6" class="el-valve" transform="translate(0, 265)" data-tag="filterSets.<%- index %>.valves.6.status">
+          <path d="M 0 0 L 0 16 L 16 8 Z" />
+          <path d="M 32 0 L 32 16 L 16 8 Z" />
+          <path d="M 16 8 v -10 a 5 -5 0 0 0 0 -10 a 5 5 0 0 0 0 10" />
+          <text x="0" y="28"><%- t('diagnostics', 'FILTER_SET_V6') %></text>
+        </g>
+      </g>
+
+      <g transform="translate(340, 190)">
+        <text x="0" y="0"><%- t('diagnostics', 'FILTER_SET_WASHING_TIME') %></text>
+        <text x="10" y="18" data-tag="filterSets.<%- index %>.lastWashTime">0000-00-00 00:00:00</text>
+        <text x="0" y="42"><%- t('diagnostics', 'FILTER_SET_WASHING_TIME_SINCE') %></text>
+        <text x="10" y="60" data-tag="filterSets.<%- index %>.timeSinceLastWash">0s</text>
+        <text x="0" y="82"><%- t('diagnostics', 'FILTER_SET_WASHING_FLOW_SINCE') %></text>
+        <text x="10" y="100" data-unit="m3"><tspan data-tag="filterSets.<%- index %>.flowSinceLastWash">0.00</tspan> m3</text>
+      </g>
+    </svg>
+  </div>
+</div>

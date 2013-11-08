@@ -1,0 +1,28 @@
+<div>
+  <form class="diag-vfd-read-form" method="get" action="/tags/vfd" autocomplete="off">
+    <div class="controls controls-row">
+      <input class="span2" type="text" name="master" value="vfd" placeholder="<%- t('diagnostics', 'VFD_READ_MASTER_PLACEHOLDER') %>">
+      <input class="span2" type="text" name="unit" value="1" placeholder="<%- t('diagnostics', 'VFD_READ_UNIT_PLACEHOLDER') %>">
+      <input class="span2" type="text" name="param" value="" placeholder="<%- t('diagnostics', 'VFD_READ_PARAM_PLACEHOLDER') %>" autofocus>
+      <input class="btn span4" type="submit" name="submit" value="<%- t('diagnostics', 'VFD_READ_PARAM_BUTTON') %>">
+      <input class="btn span4 action-compare-params" type="button" name="submit" value="<%- t('diagnostics', 'VFD_COMPARE_PARAMS_BUTTON') %>" disabled>
+    </div>
+  </form>
+  <table class="table table-bordered table-striped table-hover diag-vfd-params">
+    <thead>
+      <tr>
+        <th><%- t('diagnostics', 'VFD_PARAM_MASTER') %>
+        <th><%- t('diagnostics', 'VFD_PARAM_UNIT') %>
+        <th><%- t('diagnostics', 'VFD_PARAM_NO') %>
+        <th><%- t('diagnostics', 'VFD_PARAM_VALUE') %>
+        <th><%- t('diagnostics', 'VFD_PARAM_NAME') %>
+        <th><%- t('diagnostics', 'VFD_PARAM_SETS') %>
+        <th><%- t('diagnostics', 'VFD_PARAM_WORK_WRITE') %>
+        <th><%- t('diagnostics', 'VFD_PARAM_CONVERSION_IDX') %>
+        <th><%- t('diagnostics', 'VFD_PARAM_TYPE') %>
+        <th class="actions"><%- t('core', 'TH_ACTIONS') %>
+      </tr>
+    </thead>
+    <tbody></tbody>
+  </table>
+</div>

@@ -1,0 +1,115 @@
+.page[data-id="monitoring"] .ft {
+  display: none;
+}
+.page[data-id="monitoring"] .bd {
+  margin-bottom: 0;
+  position: relative;
+}
+.page[data-id="monitoring"] {
+  min-width: 1903px;
+}
+.page[data-id="monitoring"] .alarms-list {
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 797px;
+}
+.page[data-id="monitoring"] .alarms-list td:first-child {
+  max-width: 545px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+ }
+.monitoring {
+  text-align: center;
+  position: relative;
+}
+
+.monitoring-charts-container {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  width: 0;
+  height: 87px;
+}
+.monitoring-charts {
+  position: relative;
+  height: 100%;
+}
+.monitoring-charts .axis {
+  font: 10px sans-serif;
+  pointer-events: none;
+  z-index: 2;
+}
+.monitoring-charts .axis text {
+  -webkit-transition: fill-opacity 250ms linear;
+}
+.monitoring-charts .axis path {
+  display: none;
+}
+.monitoring-charts .axis line {
+  stroke: #000;
+  shape-rendering: crispEdges;
+}
+.monitoring-charts .axis.top {
+  position: absolute;
+  top: -5px;
+  padding: 0;
+}
+.monitoring-charts .axis.bottom {
+  bottom: 0;
+  padding: 24px 0 0 0;
+}
+.monitoring-charts .horizon {
+  overflow: hidden;
+  position: absolute;
+  border-top: solid 1px #000;
+  background: #333;
+  bottom: -62px;
+}
+.monitoring-charts .horizon canvas {
+  display: block;
+}
+.monitoring-charts .horizon .title,
+.monitoring-charts .horizon .value {
+  bottom: 0;
+  line-height: 60px;
+  font-size: 1.5em;
+  margin: 0 6px;
+  position: absolute;
+  white-space: nowrap;
+  color: #FFF;
+  text-shadow: 1px 1px 3px #000;
+}
+.monitoring-charts .horizon .title {
+  left: 0;
+}
+.monitoring-charts .horizon .value {
+  right: 0;
+}
+.monitoring-charts .line {
+  background: #fff;
+  z-index: 100;
+  top: 16px!important;
+  box-shadow: 0 1px 2px #000;
+}
+
+.monitoring-svg {
+  background: transparent;
+  margin: 0 auto;
+}
+.monitoring .tooltip.in {
+  opacity: .9;
+}
+.monitoring .tooltip.left {
+  margin-left: -9px;
+}
+.monitoring .tooltip.bottom {
+  margin-top: 0;
+}
+.monitoring .tooltip.right {
+  margin-left: 0;
+}
+.monitoring-svg .el-settler-innerContainer {
+  fill: #f5f5f5;
+}

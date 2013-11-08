@@ -1,0 +1,37 @@
+.diag-cabinet-row {
+  display: block;
+  text-align: center;
+}
+.diag-cabinet-column {
+  display: inline-block;
+  margin: 0 auto 1.5em auto;
+  background: #f0f0f0;
+  vertical-align: top;
+}
+.diag-cabinet-column:hover {
+  background: #e6e6e6;
+  text-decoration: none;
+}
+.diag-cabinet-row:last-child .diag-cabinet-column {
+  margin-bottom: 0;
+}
+.diag-cabinet-control {
+  margin-bottom: 1em;
+}
+.diag-cabinet-control:last-child {
+  margin-bottom: 0;
+}
+.diag-cabinet-control-image {
+  width: 115px;
+  height: 115px;
+}
+.diag-cabinet-control-label {
+  display: block;
+  margin-top: .5em;
+  padding: .25em .5em;
+  font-weight: bold;
+  background: #999;
+  color: #fff;
+  text-shadow: 0 1px 3px rgba(0, 0, 0, .25);
+  border-radius: .25em;
+}

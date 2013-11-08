@@ -1,0 +1,14 @@
+<div class="well users-details">
+  <dl>
+    <dt><%- t('users', 'PROPERTY_LOGIN') %>
+    <dd><%- user.login %>
+    <dt><%- t('users', 'PROPERTY_EMAIL') %>
+    <dd><%- user.email %>
+    <dt><%- t('users', 'PROPERTY_MOBILE') %>
+    <dd><%- user.mobile %>
+    <dt><%- t('users', 'PROPERTY_PRIVILEGES') %></dt>
+    <% user.privileges.forEach(function(privilege) { %>
+    <dd><%- t('users', 'PRIVILEGE:' + privilege) %>
+    <% }) %>
+  </dl>
+</div>

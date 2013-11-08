@@ -1,0 +1,826 @@
+0-0* Ustawienia podstawowe
+0-01 Język [0] Angielski 1 zestaw parametrów PRAWDA - Uint8
+0-02 Jednostka prędkości silnika [0] obr/min 2 zestawy parametrów FAŁSZ - Uint8
+0-03 Ustawienia regionalne [0] Międzynarodowy 2 zestawy parametrów FAŁSZ - Uint8
+0-04 Stan pracy przy zał. zasilania [0] Wznów Wszystkie zestawy parametrów PRAWDA - Uint8
+0-05 Jednostka lokalnego trybu [0] Jako jednostka prędkości silnika 2 zestawy parametrów FAŁSZ - Uint8
+0-1* Obsługa zestawu parametrów
+0-10 Aktywny zestaw parametrów [1] Zestaw parametrów 1 1 zestaw parametrów PRAWDA - Uint8
+0-11 Programowanie zestawu parametrów [9] Aktywny zestaw parametrów Wszystkie zestawy parametrów PRAWDA - Uint8
+0-12 Ten zestaw parametrów jest połączony z [0] Nie połączony Wszystkie zestawy parametrów FAŁSZ - Uint8
+0-13 Odczyt: połączone zest. parametrów 0 b.d. Wszystkie zestawy parametrów FAŁSZ 0 Uint16
+0-14 Odczyt: prog. zestawy parametrów / kanał 0 b.d. Wszystkie zestawy parametrów PRAWDA 0 Int32
+0-2* Wyświetlacz LCP
+0-20 Linia wyświetlacza 1.1, mała 1601 Wszystkie zestawy parametrów PRAWDA - Uint16
+0-21 Linia wyświetlacza 1.2, mała 1662 Wszystkie zestawy parametrów PRAWDA - Uint16
+0-22 Linia wyświetlacza 1.3, mała 1614 Wszystkie zestawy parametrów PRAWDA - Uint16
+0-23 Linia wyświetlacza 2, duża 1613 Wszystkie zestawy parametrów PRAWDA - Uint16
+0-24 Linia wyświetlacza 3, duża 1652 Wszystkie zestawy parametrów PRAWDA - Uint16
+0-25 Moje menu osobiste SR 1 zestaw parametrów PRAWDA 0 Uint16
+0-3* Odczyt LCP definiowany przez użytkownika
+0-30 Urządzenie odczytu definiowane przez użytkownika [1] % Wszystkie zestawy parametrów PRAWDA - Uint8
+0-31 Minimalna wartość odczytu definiowanego przez użytkownika SR Wszystkie zestawy parametrów PRAWDA -2 Int32
+0-32 Maksymalna wartość odczyt definiowanego przez użytkownika 100,00 JednOdczytuNiestand Wszystkie zestawy parametrów PRAWDA -2 Int32
+0-37 Tekst na wyświetlaczu 1 0 b.d. 1 zestaw parametrów PRAWDA 0 VisStr[25]
+0-38 Tekst na wyświetlaczu 2 0 b.d. 1 zestaw parametrów PRAWDA 0 VisStr[25]
+0-39 Tekst na wyświetlaczu 3 0 b.d. 1 zestaw parametrów PRAWDA 0 VisStr[25]
+0-4* Klawiatura LCP
+0-40 Przycisk [Hand on] na LCP [1] Aktywne Wszystkie zestawy parametrów PRAWDA - Uint8
+0-41 Przycisk [Off] na LCP [1] Aktywne Wszystkie zestawy parametrów PRAWDA - Uint8
+0-42 Przycisk [Auto on] na LCP [1] Aktywne Wszystkie zestawy parametrów PRAWDA - Uint8
+0-43 Przycisk [Reset] na LCP [1] Aktywne Wszystkie zestawy parametrów PRAWDA - Uint8
+0-44 Przycisk [Off/Reset] na LCP [1] Aktywne Wszystkie zestawy parametrów PRAWDA - Uint8
+0-45 Przycisk [Drive Bypass]na LCP [1] Aktywne Wszystkie zestawy parametrów PRAWDA - Uint8
+0-5* Kopiuj/Zapisz
+0-50 Kopiowanie LCP [0] Kopiowanie nieaktywne Wszystkie zestawy parametrów FAŁSZ - Uint8
+0-51 Kopiowanie zestawów parametrów [0] Kopiowanie nieaktywne Wszystkie zestawy parametrów FAŁSZ - Uint8
+0-6* Hasło
+0-60 Hasło głównego menu 100 b.d. 1 zestaw parametrów PRAWDA 0 Uint16
+0-61 Dostęp do menu głównego bez hasła [0] Pełny dostęp 1 zestaw parametrów PRAWDA - Uint8
+0-65 Hasło menu osobistego 200 b.d. 1 zestaw parametrów PRAWDA 0 Uint16
+0-66 Dostęp do menu osobistego bez hasła [0] Pełny dostęp 1 zestaw parametrów PRAWDA - Uint8
+0-7* Ustawienia zegara
+0-70 Ustaw datę i czas SR 1 zestaw parametrów PRAWDA 0 TimeOfDay
+0-71 Format daty [0] RRRR-MM-DD 1 zestaw parametrów PRAWDA - Uint8
+0-72 Format czasu [0] 24 godz. 1 zestaw parametrów PRAWDA - Uint8
+0-74 DST/czas letni [0] Wyłączone 1 zestaw parametrów PRAWDA - Uint8
+0-76 Początek DST/czasu letniego SR 1 zestaw parametrów PRAWDA 0 TimeOfDay
+0-77 Koniec DST/czasu letniego SR 1 zestaw parametrów PRAWDA 0 TimeOfDay
+0-79 Błąd zegara brak 1 zestaw parametrów PRAWDA - Uint8
+0-81 Dni robocze brak 1 zestaw parametrów PRAWDA - Uint8
+0-82 Dodatkowe dni robocze SR 1 zestaw parametrów PRAWDA 0 TimeOfDay
+0-83 Dodatkowe dni wolne od pracy SR 1 zestaw parametrów PRAWDA 0 TimeOfDay
+0-89 Odczyt daty i czasu 0 N/A Wszystkie zestawy parametrów PRAWDA 0 VisStr[25]
+1-0* Ustawienia ogólne
+1-00 Tryb konfiguracji brak Wszystkie zestawy parametrów PRAWDA - Uint8
+1-03 Charakterystyka momentu obrotowego [3] Autooptymal.energ VT Wszystkie zestawy parametrów PRAWDA - Uint8
+1-2* Dane silnika
+1-20 Moc silnika [kW] SR Wszystkie zestawy parametrów FAŁSZ 1 Uint32
+1-21 Moc silnika [KM] SR Wszystkie zestawy parametrów FAŁSZ -2 Uint32
+1-22 Napięcie silnika SR Wszystkie zestawy parametrów FAŁSZ 0 Uint16
+1-23 Częstotliwość silnika SR Wszystkie zestawy parametrów FAŁSZ 0 Uint16
+1-24 Prąd silnika SR Wszystkie zestawy parametrów FAŁSZ -2 Uint32
+1-25 Znamionowa prędkość silnika SR Wszystkie zestawy parametrów FAŁSZ 67 Uint16
+1-28 Kontrola obrotów silnika [0] Wyłączone Wszystkie zestawy parametrów FAŁSZ - Uint8
+1-29 Automatyczne dopasowanie silnika (AMA) [0] Wyłączone Wszystkie zestawy parametrów FAŁSZ - Uint8
+1-3* Zaawan. dane silnika
+1-30 Rezystancja stojana (Rs) SR Wszystkie zestawy parametrów FAŁSZ -4 Uint32
+1-31 Rezystancja wirnika (Rr) SR Wszystkie zestawy parametrów FAŁSZ -4 Uint32
+1-35 Reaktancja główna (Xh) SR Wszystkie zestawy parametrów FAŁSZ -4 Uint32
+1-36 Rezystancja strat w żelazie (Rfe) SR Wszystkie zestawy parametrów FAŁSZ -3 Uint32
+1-39 Bieguny silnika SR Wszystkie zestawy parametrów FAŁSZ 0 Uint8
+1-5* Ustawienie niezależne od obciążenia
+1-50 Magnetyzacja silnika przy zerowej prędkości 100 % Wszystkie zestawy parametrów PRAWDA 0 Uint16
+1-51 Min. prędkość przy standardowym magnesowaniu [obr./min] SR Wszystkie zestawy parametrów PRAWDA 67 Uint16
+1-52 Min. prędkość przy normalnym magnesowaniu [Hz] SR Wszystkie zestawy parametrów PRAWDA -1 Uint16
+1-6* Ustawienie zależne od obciążenia
+1-60 Kompensacja obciążenia przy niskiej prędkości 100 % Wszystkie zestawy parametrów PRAWDA 0 Int16
+1-61 Kompensacja obciążenia przy wysokiej prędkości 100 % Wszystkie zestawy parametrów PRAWDA 0 Int16
+1-62 Kompensacja poślizgu 0 % Wszystkie zestawy parametrów PRAWDA 0 Int16
+1-63 Stała czasowa kompensacji poślizgu 0,10 sek. Wszystkie zestawy parametrów PRAWDA -2 Uint16
+1-64 Tłumienie rezonansu 100 % Wszystkie zestawy parametrów PRAWDA 0 Uint16
+1-65 Stała czasowa tłumienia rezonansu 5 ms Wszystkie zestawy parametrów PRAWDA -3 Uint8
+1-7* Regulacja startu
+1-71 Opóźnienie startu 0,0 sek. Wszystkie zestawy parametrów PRAWDA -1 Uint16
+1-73 Start w locie [0] Wyłączone Wszystkie zestawy parametrów FAŁSZ - Uint8
+1-8* Regulacja stopu
+1-80 Funkcja przy stopie [0] Wybieg silnika Wszystkie zestawy parametrów PRAWDA - Uint8
+1-81 Min. prędkość dla funkcji przy stopie [obr./min] SR Wszystkie zestawy parametrów PRAWDA 67 Uint16
+1-82 Min. prędkość dla funkcji przy stopie [Hz] SR Wszystkie zestawy parametrów PRAWDA -1 Uint16
+1-9* Temperatura silnika
+1-90 Zabezpieczenie termiczne silnika [4] ETR 1 wył. samocz. Wszystkie zestawy parametrów PRAWDA - Uint8
+1-91 Wentylator zewnętrzny silnika [0] Nie Wszystkie zestawy parametrów PRAWDA - Uint16
+1-93 Źródło - termistor [0] Brak Wszystkie zestawy parametrów PRAWDA - Uint8
+2-0* Hamulec DC
+2-00 Prąd trzymania/podgrzania DC 50 % Wszystkie zestawy parametrów PRAWDA 0 Uint8
+2-01 Prąd hamulca DC 50 % Wszystkie zestawy parametrów PRAWDA 0 Uint16
+2-02 Czas hamowania DC 10,0 sek. Wszystkie zestawy parametrów PRAWDA -1 Uint16
+2-03 Prędkość załączania hamowania DC [obr./min] SR Wszystkie zestawy parametrów PRAWDA 67 Uint16
+2-04 Prędkość załączania hamowania DC [Hz] SR Wszystkie zestawy parametrów PRAWDA -1 Uint16
+2-1* Funkcja energii hamowania
+2-10 Funkcja hamowania [0] Wyłączone Wszystkie zestawy parametrów PRAWDA - Uint8
+2-11 Rezystor hamulca (om) SR Wszystkie zestawy parametrów PRAWDA 0 Uint16
+2-12 Limit mocy hamowania (kW) SR Wszystkie zestawy parametrów PRAWDA 0 Uint32
+2-13 Monitorowanie mocy hamowania [0] Wyłączone Wszystkie zestawy parametrów PRAWDA - Uint8
+2-15 Kontrola hamulca [0] Wyłączone Wszystkie zestawy parametrów PRAWDA - Uint8
+2-16 Maks. prąd hamulca AC 100.0 % Wszystkie zestawy parametrów PRAWDA -1 Uint32
+2-17 Kontrola przepięcia [2] Aktywne Wszystkie zestawy parametrów PRAWDA - Uint8
+3-0* Ograniczenia wartości zadanej
+3-02 Minimalna wartość zadana SR Wszystkie zestawy parametrów PRAWDA -3 Int32
+3-03 Maksymalna wartość zadana SR Wszystkie zestawy parametrów PRAWDA -3 Int32
+3-04 Funkcja wartości zadanej [0] Suma Wszystkie zestawy parametrów PRAWDA - Uint8
+3-1* Wartości zadane
+3-10 Programowana wartość zadana 0.00 % Wszystkie zestawy parametrów PRAWDA -2 Int16
+3-11 Prędkość przy pracy manewrowej - Jog [Hz] SR Wszystkie zestawy parametrów PRAWDA -1 Uint16
+3-13 Pochodzenie wartości zadanej [0] Podłączone do Hand / Auto Wszystkie zestawy parametrów PRAWDA - Uint8
+3-14 Programowana względna wartość zadana 0.00 % Wszystkie zestawy parametrów PRAWDA -2 Int32
+3-15 Źródło wartości zadanej 1 [1] Wejście analogowe 53 Wszystkie zestawy parametrów PRAWDA - Uint8
+3-16 Źródło wartości zadanej 2 [0] Brak funkcji Wszystkie zestawy parametrów PRAWDA - Uint8
+3-17 Źródło wartości zadanej 3 [0] Brak funkcji Wszystkie zestawy parametrów PRAWDA - Uint8
+3-19 Jog – prędkość pracy manewrowej [obr./min] SR Wszystkie zestawy parametrów PRAWDA 67 Uint16
+3-4* Rozpędzanie/zatrzymanie 1
+3-41 Czas rozpędzania 1 SR Wszystkie zestawy parametrów PRAWDA -2 Uint32
+3-42 Czas zatrzymania 1 SR Wszystkie zestawy parametrów PRAWDA -2 Uint32
+3-5* Rozpędzanie/zatrzymanie 2
+3-51 Czas rozpędzania 2 SR Wszystkie zestawy parametrów PRAWDA -2 Uint32
+3-52 Czas zatrzymania 2 SR Wszystkie zestawy parametrów PRAWDA -2 Uint32
+3-8* Inne czasy rozpędzenia/zatrzymania
+3-80 Czas rozpędzania/zatrzymania dla pracy manewrowej - Jog SR Wszystkie zestawy parametrów PRAWDA -2 Uint32
+3-81 Czas rozpędzenia/zatrzymania – szybki stop SR 2 zestawy parametrów PRAWDA -2 Uint32
+3-84 Czas początkowego rozpędzenia/zatrzymania 0 (wył.) Wszystkie zestawy parametrów PRAWDA - -
+3-85 Czas rozpędzenia/zatrzymania zaworu zwrotnego 0 (wył.) Wszystkie zestawy parametrów PRAWDA - -
+3-86 Prędkość końcowa rozpędzenia/zatrzymania zaworu zwrotnego[obr./min] Dolna granica prędkości silnika Wszystkie zestawy parametrów PRAWDA - -
+3-87 Prędkość końcowa rozpędzenia/zatrzymania zaworu zwrotnego[Hz] Dolna granica prędkości silnika Wszystkie zestawy parametrów PRAWDA - -
+3-88 Czas końcowego rozpędzenia/zatrzymania 0 (wył.) Wszystkie zestawy parametrów PRAWDA - -
+3-9* Potencjometr cyfr.
+3-90 Wielkość kroku 0.10 % Wszystkie zestawy parametrów PRAWDA -2 Uint16
+3-91 Czas rozpędz./zatrzym. 1,00 sek. Wszystkie zestawy parametrów PRAWDA -2 Uint32
+3-92 Przywrócenie zasilania [0] Wyłączone Wszystkie zestawy parametrów PRAWDA - Uint8
+3-93 Ograniczenie maksymalne 100 % Wszystkie zestawy parametrów PRAWDA 0 Int16
+3-94 Ograniczenie minimalne 0 % Wszystkie zestawy parametrów PRAWDA 0 Int16
+3-95 Opóźnienie rozpędzania/zatrzymania 1 000 b.d. Wszystkie zestawy parametrów PRAWDA -3 TimD
+4-1* Ograniczenia silnika
+4-10 Kierunek obrotów silnika [0] Zgodny z ruchem zegara Wszystkie zestawy parametrów FAŁSZ - Uint8
+4-11 Dolna granica prędkości silnika [obr./min] SR Wszystkie zestawy parametrów PRAWDA 67 Uint16
+4-12 Dolna granica prędkości silnika [Hz] SR Wszystkie zestawy parametrów PRAWDA -1 Uint16
+4-13 Górna granica prędkości silnika [obr./min] SR Wszystkie zestawy parametrów PRAWDA 67 Uint16
+4-14 Górna granica prędkości silnika [Hz] SR Wszystkie zestawy parametrów PRAWDA -1 Uint16
+4-16 Ograniczenie momentu w trybie silnika 110.0 % Wszystkie zestawy parametrów PRAWDA -1 Uint16
+4-17 Ograniczenie momentu w trybie generatora 100.0 % Wszystkie zestawy parametrów PRAWDA -1 Uint16
+4-18 Ograniczenie prądu SR Wszystkie zestawy parametrów PRAWDA -1 Uint32
+4-19 Maks. częstotliwość wyjściowa 120 Hz Wszystkie zestawy parametrów FAŁSZ -1 Uint16
+4-5* Ostrzeżenia dotyczące regulacji
+4-50 Ostrzeżenie o małym prądzie 0,00 A Wszystkie zestawy parametrów PRAWDA -2 Uint32
+4-51 Ostrzeżenie o dużym prądzie ImaxVLT (P1637) Wszystkie zestawy parametrów PRAWDA -2 Uint32
+4-52 Ostrzeżenie o niskiej prędkości 0 obr./min Wszystkie zestawy parametrów PRAWDA 67 Uint16
+4-53 Ostrzeżenie o dużej prędkości OgraniczenieWysokiejPrędkościWyjściowej (P413) Wszystkie zestawy parametrów PRAWDA 67 Uint16
+4-54 Ostrzeżenie o niskiej wartości zadanej -999999,999 b.d. Wszystkie zestawy parametrów PRAWDA -3 Int32
+4-55 Ostrzeżenie o wysokiej wartości zadanej 999999,999 b.d. Wszystkie zestawy parametrów PRAWDA -3 Int32
+4-56 Ostrzeżenie o niskim sprzężeniu zwrotnym -999999,999 JednWartZadSprz Wszystkie zestawy parametrów PRAWDA -3 Int32
+4-57 Ostrzeżenie o wysokim sprzężeniu zwrotnym 999999,999 JednWartZadSprz Wszystkie zestawy parametrów PRAWDA -3 Int32
+4-58 Funkcja braku fazy silnika [1] Załączone Wszystkie zestawy parametrów PRAWDA - Uint8
+4-6* Prędkość zabroniona
+4-60 Prędkości zabronione od: [obr./min] SR Wszystkie zestawy parametrów PRAWDA 67 Uint16
+4-61 Prędkości zabronione od: [Hz] SR Wszystkie zestawy parametrów PRAWDA -1 Uint16
+4-62 Prędkości zabronione do: [obr/min] SR Wszystkie zestawy parametrów PRAWDA 67 Uint16
+4-63 Prędkości zabronione do: [Hz] SR Wszystkie zestawy parametrów PRAWDA -1 Uint16
+4-64 Półautomatyczne ustawienie obejścia [0] Wyłączone Wszystkie zestawy parametrów FAŁSZ - Uint8
+5-0* Tryb we/wy cyfr
+5-00 Tryb wejścia/wyjścia cyfrowego [0] PNP – Aktywny przy 24V Wszystkie zestawy parametrów FAŁSZ - Uint8
+5-01 Tryb zacisku 27 [0] Wejście Wszystkie zestawy parametrów PRAWDA - Uint8
+5-02 Tryb zacisku 29 [0] Wejście Wszystkie zestawy parametrów PRAWDA - Uint8
+5-1* Wejścia cyfrowe
+5-10 Zacisk 18. Wejście cyfrowe [8] Start Wszystkie zestawy parametrów PRAWDA - Uint8
+5-11 Zacisk 19. Wejście cyfrowe [0] Brak działania Wszystkie zestawy parametrów PRAWDA - Uint8
+5-12 Zacisk 27. Wejście cyfrowe [0] Brak działania Wszystkie zestawy parametrów PRAWDA - Uint8
+5-13 Zacisk 29. Wejście cyfrowe [0] Brak działania Wszystkie zestawy parametrów PRAWDA - Uint8
+5-14 Zacisk 32. Wejście cyfrowe [0] Brak działania Wszystkie zestawy parametrów PRAWDA - Uint8
+5-15 Zacisk 33. Wejście cyfrowe [0] Brak działania Wszystkie zestawy parametrów PRAWDA - Uint8
+5-16 Wejście cyfrowe zacisku X30/2 [0] Brak działania Wszystkie zestawy parametrów PRAWDA - Uint8
+5-17 Wejście cyfrowe zacisku X30/3 [0] Brak działania Wszystkie zestawy parametrów PRAWDA - Uint8
+5-18 Wejście cyfrowe zacisku X30/4 [0] Brak działania Wszystkie zestawy parametrów PRAWDA - Uint8
+5-3* Wyjścia cyfrowe
+5-30 Wyjście cyfrowe zacisku 27 [0] Brak działania Wszystkie zestawy parametrów PRAWDA - Uint8
+5-31 Wyjście cyfrowe zacisku 29 [0] Brak działania Wszystkie zestawy parametrów PRAWDA - Uint8
+5-32 Wyjście cyfrowe zacisku X30/6 (MCB 101) [0] Brak działania Wszystkie zestawy parametrów PRAWDA - Uint8
+5-33 Wyjście cyfrowe zacisku X30/7 (MCB 101) [0] Brak działania Wszystkie zestawy parametrów PRAWDA - Uint8
+5-4* Przekaźniki
+5-40 Funkcja przekaźnika [0] Brak działania Wszystkie zestawy parametrów PRAWDA - Uint8
+5-41 Opóźnienie załączenia, przekaźnik 0,01 sek. Wszystkie zestawy parametrów PRAWDA -2 Uint16
+5-42 Opóźnienie wyłączenia, przekaźnik 0,01 sek. Wszystkie zestawy parametrów PRAWDA -2 Uint16
+5-5* Wejście impulsowe
+5-50 Zacisk 29. Niska częstotliwość 100 Hz Wszystkie zestawy parametrów PRAWDA 0 Uint32
+5-51 Zacisk 29. Wysoka częstotliwość 100 Hz Wszystkie zestawy parametrów PRAWDA 0 Uint32
+5-52 Zacisk 29. Niska.wart.zad./ sprz.zwr. 0 b.d. Wszystkie zestawy parametrów PRAWDA -3 Int32
+5-53 Zacisk 29. wys.wart.zad./ sprz.zwr. 100 000 b.d. Wszystkie zestawy parametrów PRAWDA -3 Int32
+5-54 Stała czasowa filtra impulsowego nr 29 100 ms Wszystkie zestawy parametrów FAŁSZ -3 Uint16
+5-55 Zacisk 33. Niska częstotliwość 100 Hz Wszystkie zestawy parametrów PRAWDA 0 Uint32
+5-56 Zacisk 33. Wysoka częstotliwość 100 Hz Wszystkie zestawy parametrów PRAWDA 0 Uint32
+5-57 Zacisk 33. Niska.wart.zad./ sprz.zwr. 0 b.d. Wszystkie zestawy parametrów PRAWDA -3 Int32
+5-58 Zacisk 33. wys.wart.zad./ sprz.zwr. 100 000 b.d. Wszystkie zestawy parametrów PRAWDA -3 Int32
+5-59 Stała czasowa filtra impulsowego nr 33 100 ms Wszystkie zestawy parametrów FAŁSZ -3 Uint16
+5-6* Wyjście impulsowe
+5-60 Zacisk 27. Zmienna wyjścia impulsowego [0] Brak działania Wszystkie zestawy parametrów PRAWDA - Uint8
+5-62 Maks. częst. wyj. imp. #27 5000 Hz Wszystkie zestawy parametrów PRAWDA 0 Uint32
+5-63 Zacisk 29. Zmienna wyjścia impulsowego [0] Brak działania Wszystkie zestawy parametrów PRAWDA - Uint8
+5-65 Maks. częst. wyj. imp. #29 5000 Hz Wszystkie zestawy parametrów PRAWDA 0 Uint32
+5-66 Zmienna wyjścia impulsowego zacisku X30/6 [0] Brak działania Wszystkie zestawy parametrów PRAWDA - Uint8
+5-68 Maks. częst. wyj. imp. #x30/6 5000 Hz Wszystkie zestawy parametrów PRAWDA 0 Uint32
+5-9* Sterowane przez magistrala
+5-90 Cyfrowe i przekaźnikowe sterowanie magistralą 0 b.d. Wszystkie zestawy parametrów PRAWDA 0 Uint32
+5-93 Wyjście impulsowe #27, sterowanie magistrali 0.00 % Wszystkie zestawy parametrów PRAWDA -2 N2
+5-94 Wyjście impulsowe #27, zaprogramowany time-out 0.00 % 1 zestaw parametrów PRAWDA -2 Uint16
+5-95 Wyjście impulsowe #29, sterowanie magistrali 0.00 % Wszystkie zestawy parametrów PRAWDA -2 N2
+5-96 Wyjście impulsowe #29, zaprogramowany time-out 0.00 % 1 zestaw parametrów PRAWDA -2 Uint16
+5-97 Wyjście impulsowe #X30/6, sterowanie magistrali 0.00 % Wszystkie zestawy parametrów PRAWDA -2 N2
+5-98 Wyjście impulsowe #X30/6, zaprogramowany time-out 0.00 % 1 zestaw parametrów PRAWDA -2 Uint16
+6-0* Tryb we/wy analogowego
+6-00 Czas time-out funkcji live zero 10 sek. Wszystkie zestawy parametrów PRAWDA 0 Uint8
+6-01 Funkcja time-outu Live zero [0] Wyłączone Wszystkie zestawy parametrów PRAWDA - Uint8
+6-02 Funkcja time-out Live zero trybu pożarowego brak Wszystkie zestawy parametrów PRAWDA - Uint8
+6-1* Wejście analogowe 53
+6-10 Zacisk 53. Dolna skala napięcia 0,07 V Wszystkie zestawy parametrów PRAWDA -2 Int16
+6-11 Zacisk 53. Górna skala napięcia 10,00 V Wszystkie zestawy parametrów PRAWDA -2 Int16
+6-12 Zacisk 53. Dolna skala prądu 4,00 mA Wszystkie zestawy parametrów PRAWDA -5 Int16
+6-13 Zacisk 53. Górna skala prądu 20,00 mA Wszystkie zestawy parametrów PRAWDA -5 Int16
+6-14 Zacisk 53. Niska wartość wart.zad./ sprz.zwr. 0 b.d. Wszystkie zestawy parametrów PRAWDA -3 Int32
+6-15 Zacisk 53. Górna skala wart.zad./ sprz.zwr. SR Wszystkie zestawy parametrów PRAWDA -3 Int32
+6-16 Zacisk 53. Stała czasowa filtra 0,001 sek. Wszystkie zestawy parametrów PRAWDA -3 Uint16
+6-17 Zacisk 53. Live Zero [1] Aktywne Wszystkie zestawy parametrów PRAWDA - Uint8
+6-2* Wejście analogowe 54
+6-20 Zacisk 54. Dolna skala napięcia 0,07 V Wszystkie zestawy parametrów PRAWDA -2 Int16
+6-21 Zacisk 54. Górna skala napięcia 10,00 V Wszystkie zestawy parametrów PRAWDA -2 Int16
+6-22 Zacisk 54. Dolna skala prądu 4,00 mA Wszystkie zestawy parametrów PRAWDA -5 Int16
+6-23 Zacisk 54. Górna skala prądu 20,00 mA Wszystkie zestawy parametrów PRAWDA -5 Int16
+6-24 Zacisk 54. Niska wartość wart.zad./ sprz.zwr. 0 b.d. Wszystkie zestawy parametrów PRAWDA -3 Int32
+6-25 Zacisk 54. Górna skala wart.zad./ sprz.zwr. 100 000 b.d. Wszystkie zestawy parametrów PRAWDA -3 Int32
+6-26 Zacisk 54. Stała czasowa filtra 0,001 sek. Wszystkie zestawy parametrów PRAWDA -3 Uint16
+6-27 Zacisk 54. Live Zero [1] Aktywne Wszystkie zestawy parametrów PRAWDA - Uint8
+6-3* Wejście analogowe X30/11
+6-30 Zacisk X30/11. Dolna skala napięcia 0,07 V Wszystkie zestawy parametrów PRAWDA -2 Int16
+6-31 Zacisk X30/11. Górna skala napięcia 10,00 V Wszystkie zestawy parametrów PRAWDA -2 Int16
+6-34 Zacisk X30/11. Dolna skala wart.zad./ sprz.zwr. 0 b.d. Wszystkie zestawy parametrów PRAWDA -3 Int32
+6-35 Zacisk X30/11. Górna skala wart.zad./ sprz.zwr. 100 000 b.d. Wszystkie zestawy parametrów PRAWDA -3 Int32
+6-36 Zacisk X30/11. Stała czasowa filtra 0,001 sek. Wszystkie zestawy parametrów PRAWDA -3 Uint16
+6-37 Zacisk X30/11 - funkcja Live Zero [1] Aktywne Wszystkie zestawy parametrów PRAWDA - Uint8
+6-4* Wejście analogowe X30/12
+6-40 Zacisk X30/12. Dolna skala napięcia 0,07 V Wszystkie zestawy parametrów PRAWDA -2 Int16
+6-41 Zacisk X30/12. Górna skala napięcia 10,00 V Wszystkie zestawy parametrów PRAWDA -2 Int16
+6-44 Zacisk X30/12. Dolna skala wart.zad./ sprz.zwr. 0 b.d. Wszystkie zestawy parametrów PRAWDA -3 Int32
+6-45 Zacisk X30/12. Górna skala wart.zad./ sprz.zwr. 100 000 b.d. Wszystkie zestawy parametrów PRAWDA -3 Int32
+6-46 Zacisk X30/12. Stała czasowa filtra 0,001 sek. Wszystkie zestawy parametrów PRAWDA -3 Uint16
+6-47 Zacisk X30/12 - funkcja Live Zero [1] Aktywne Wszystkie zestawy parametrów PRAWDA - Uint8
+6-5* Wyjście analogowe 42
+6-50 Wyjście zacisku 42 [100] Częstotliwość wyjściowa Wszystkie zestawy parametrów PRAWDA - Uint8
+6-51 Minimalna skala wyjścia zacisku 42 0.00 % Wszystkie zestawy parametrów PRAWDA -2 Int16
+6-52 Maksymalna skala wyjścia zacisku 42 100.00 % Wszystkie zestawy parametrów PRAWDA -2 Int16
+6-53 Sterowanie magistralą wyjściem zacisku 42 0.00 % Wszystkie zestawy parametrów PRAWDA -2 N2
+6-54 Zaprogramowany time-out wyjścia zacisku 42 0.00 % 1 zestaw parametrów PRAWDA -2 Uint16
+6-6* Wyjście analogowe X30/8
+6-60 Wyjście zacisku X30/8 [0] Brak działania Wszystkie zestawy parametrów PRAWDA - Uint8
+6-61 Zacisk X30/8. Min. skalowanie 0.00 % Wszystkie zestawy parametrów PRAWDA -2 Int16
+6-62 Zacisk X30/8. Maks. skalowanie 100.00 % Wszystkie zestawy parametrów PRAWDA -2 Int16
+6-63 Zacisk X30/8. Wyjście sterowania magistralą 0.00 % Wszystkie zestawy parametrów PRAWDA -2 N2
+6-64 Zacisk X30/8. Zaprogramowany time-out wyjścia 0.00 % 1 zestaw parametrów PRAWDA -2 Uint16
+8-0* Ustawienia ogólne
+8-01 Miejsce sterowania [0] Słowo sterujące i cyfrowe Wszystkie zestawy parametrów PRAWDA - Uint8
+8-02 Źródło sterowania [0] Brak Wszystkie zestawy parametrów PRAWDA - Uint8
+8-03 Czas time-outu sterowania SR 1 zestaw parametrów PRAWDA -1 Uint32
+8-04 Funkcja time-outu sterowania [0] Wyłączone 1 zestaw parametrów PRAWDA - Uint8
+8-05 Funkcja koniec time-outu [1] Setup powrotu 1 zestaw parametrów PRAWDA - Uint8
+8-06 Kasowanie time-outu sterowania [0] Nie kasować Wszystkie zestawy parametrów PRAWDA - Uint8
+8-07 Włączenie diagnostyki [0] Wyłączony 2 zestawy parametrów PRAWDA - Uint8
+8-1* Ustawienia sterowania
+8-10 Profil sterowania [0] Profil FC Wszystkie zestawy parametrów PRAWDA - Uint8
+8-13 Konfigurowane słowo statusowe STW [1] Profil domyślny Wszystkie zestawy parametrów PRAWDA - Uint8
+8-14 Konfigurowane słowo kontrolne CTW [1] Profil domyślny Wszystkie zestawy parametrów PRAWDA - Uint8
+8-3* Ustawienia portu FC
+8-30 Protokół [0] FC 1 zestaw parametrów PRAWDA - Uint8
+8-31 Adres 1 b.d. 1 zestaw parametrów PRAWDA 0 Uint8
+8-32 Szybkość transmisji brak 1 zestaw parametrów PRAWDA - Uint8
+8-33 Parzystość / Bity stopu brak 1 zestaw parametrów PRAWDA - Uint8
+8-35 Min. opóźnienie odpowiedzi 10 ms 1 zestaw parametrów PRAWDA -3 Uint16
+8-36 Maks. opóźnienie odpowiedzi SR 1 zestaw parametrów PRAWDA -3 Uint16
+8-37 Maks. opóźnienie między znakami SR 1 zestaw parametrów PRAWDA -5 Uint16
+8-4* Nastawa protokołu MC
+8-40 Wybór komunikatu [1] Telegram standardowy 1 2 zestawy parametrów PRAWDA - Uint8
+8-5* Cyfrowe/Magistrala
+8-50 Wybór wybiegu silnika [3] Logiczne LUB(OR) Wszystkie zestawy parametrów PRAWDA - Uint8
+8-52 Wybór hamulca DC [3] Logiczne LUB(OR) Wszystkie zestawy parametrów PRAWDA - Uint8
+8-53 Wybór startu [3] Logiczne LUB(OR) Wszystkie zestawy parametrów PRAWDA - Uint8
+8-54 Wybór zmiany kierunku obrotów [0] Wejście cyfrowe Wszystkie zestawy parametrów PRAWDA - Uint8
+8-55 Wybór zestawu parametrów [3] Logiczne LUB(OR) Wszystkie zestawy parametrów PRAWDA - Uint8
+8-56 Wybór programowanej wartości zadanej [3] Logiczne LUB(OR) Wszystkie zestawy parametrów PRAWDA - Uint8
+8-7* BACnet
+8-70 Przykład urządz. BACnet 1 b.d. 1 zestaw parametrów PRAWDA 0 Uint32
+8-72 Maks. master MS/TP 127 b.d. 1 zestaw parametrów PRAWDA 0 Uint8
+8-73 Maks. ramki info MS/TP 1 b.d. 1 zestaw parametrów PRAWDA 0 Uint16
+8-74 Usługa "I-Am" [0] Wysyłanie przy włączeniu 1 zestaw parametrów PRAWDA - Uint8
+8-75 Hasło inicjalizacji 0 b.d. 1 zestaw parametrów PRAWDA 0 VisStr[20]
+8-8* Diagnostyka portu FC
+8-80 Liczba komunikatów magistrali 0 b.d. Wszystkie zestawy parametrów PRAWDA 0 Uint32
+8-81 Liczba błądów magistrali 0 b.d. Wszystkie zestawy parametrów PRAWDA 0 Uint32
+8-82 Liczba komunikatów slave 0 b.d. Wszystkie zestawy parametrów PRAWDA 0 Uint32
+8-83 Liczba błądów slave 0 b.d. Wszystkie zestawy parametrów PRAWDA 0 Uint32
+8-9* Praca manewrowa – Jog magistrali/Sprzężenie zwrotne
+8-90 Prędkość 1 pracy manewrowej - Jog magistrali 100 obr./min Wszystkie zestawy parametrów PRAWDA 67 Uint16
+8-91 Prędkość 2 pracy manewrowej - Jog magistrali 200 obr./min Wszystkie zestawy parametrów PRAWDA 67 Uint16
+8-94 Sprzężenie zwrotne magistrali 1 0 b.d. 1 zestaw parametrów PRAWDA 0 N2
+8-95 Sprzężenie zwrotne magistrali 2 0 b.d. 1 zestaw parametrów PRAWDA 0 N2
+8-96 Sprzężenie zwrotne magistrali 3 0 b.d. 1 zestaw parametrów PRAWDA 0 N2
+9-00 Wartość zadana
+9-00 Wartość zadana 0 b.d. Wszystkie zestawy parametrów PRAWDA 0 Uint16
+9-07 Wartość rzeczywista 0 b.d. Wszystkie zestawy parametrów FAŁSZ 0 Uint16
+9-15 Konfiguracja zapisu PCD SR 2 zestawy parametrów PRAWDA - Uint16
+9-16 Konfiguracja odczytu PCD SR 2 zestawy parametrów PRAWDA - Uint16
+9-18 Adres węzła 126 b.d. 1 zestaw parametrów PRAWDA 0 Uint8
+9-22 Wybór komunikatu [108] PPO 8 1 zestaw parametrów PRAWDA - Uint8
+9-23 Parametry dla sygnałów 0 Wszystkie zestawy parametrów PRAWDA - Uint16
+9-27 Edycja parametru [1] Aktywne 2 zestawy parametrów FAŁSZ - Uint16
+9-28 Sterowanie procesem [1] Aktywacja cyklu mastera 2 zestawy parametrów FAŁSZ - Uint8
+9-44 Licznik komunikatów o błądach 0 b.d. Wszystkie zestawy parametrów PRAWDA 0 Uint16
+9-45 Kod błądu 0 b.d. Wszystkie zestawy parametrów PRAWDA 0 Uint16
+9-47 Nr błądu 0 b.d. Wszystkie zestawy parametrów PRAWDA 0 Uint16
+9-52 Licznik sytuacji awaryjnych 0 b.d. Wszystkie zestawy parametrów PRAWDA 0 Uint16
+9-53 Słowo ostrzeżenia Profibus 0 b.d. Wszystkie zestawy parametrów PRAWDA 0 V2
+9-63 Rzeczywista prędkość transmisji [255] Nie znaleziono prędkości transmisji Wszystkie zestawy parametrów PRAWDA - Uint8
+9-64 Identyfikacja urządzenia 0 b.d. Wszystkie zestawy parametrów PRAWDA 0 Uint16
+9-65 Numer profilu 0 b.d. Wszystkie zestawy parametrów PRAWDA 0 OctStr[2]
+9-67 Słowo sterujące 1 0 b.d. Wszystkie zestawy parametrów PRAWDA 0 V2
+9-68 Słowo statusowe 1 0 b.d. Wszystkie zestawy parametrów PRAWDA 0 V2
+9-71 Zapis wartości danych Profibus [0] Wyłączone Wszystkie zestawy parametrów PRAWDA - Uint8
+9-72 ProfibusResetPrzetwornicyCzęstotliwości [0] Brak działania 1 zestaw parametrów FAŁSZ - Uint8
+9-80 Zdefiniowane parametry (1) 0 b.d. Wszystkie zestawy parametrów FAŁSZ 0 Uint16
+9-81 Zdefiniowane parametry (2) 0 b.d. Wszystkie zestawy parametrów FAŁSZ 0 Uint16
+9-82 Zdefiniowane parametry (3) 0 b.d. Wszystkie zestawy parametrów FAŁSZ 0 Uint16
+9-83 Zdefiniowane parametry (4) 0 b.d. Wszystkie zestawy parametrów FAŁSZ 0 Uint16
+9-84 Zdefiniowane parametry (5) 0 b.d. Wszystkie zestawy parametrów FAŁSZ 0 Uint16
+9-90 Zmienione parametry (1) 0 b.d. Wszystkie zestawy parametrów FAŁSZ 0 Uint16
+9-91 Zmienione parametry (2) 0 b.d. Wszystkie zestawy parametrów FAŁSZ 0 Uint16
+9-92 Zmienione parametry (3) 0 b.d. Wszystkie zestawy parametrów FAŁSZ 0 Uint16
+9-93 Zmienione parametry (4) 0 b.d. Wszystkie zestawy parametrów FAŁSZ 0 Uint16
+9-94 Zmienione parametry (5) 0 b.d. Wszystkie zestawy parametrów FAŁSZ 0 Uint16
+10-0* Ustawienia wspólne
+10-00 Protokół CAN brak 2 zestawy parametrów FAŁSZ - Uint8
+10-01 Wybór szybkości transmisji brak 2 zestawy parametrów PRAWDA - Uint8
+10-02 Identyfikacja MAC SR 2 zestawy parametrów PRAWDA 0 Uint8
+10-05 Odczyt licznika błądów nadawania 0 b.d. Wszystkie zestawy parametrów PRAWDA 0 Uint8
+10-06 Odczyt licznika błądów odbiorów 0 b.d. Wszystkie zestawy parametrów PRAWDA 0 Uint8
+10-07 Odczyt licznika wyłączeń magistrali 0 b.d. Wszystkie zestawy parametrów PRAWDA 0 Uint8
+10-1* DeviceNet
+10-10 Wybór typu danych procesu brak Wszystkie zestawy parametrów PRAWDA - Uint8
+10-11 Zapis konfiguracji danych procesu SR 2 zestawy parametrów PRAWDA - Uint16
+10-12 Odczyt konfiguracji danych procesu SR 2 zestawy parametrów PRAWDA - Uint16
+10-13 Parametr ostrzeżenia 0 b.d. Wszystkie zestawy parametrów PRAWDA 0 Uint16
+10-14 Wartość zadana sieci [0] Wyłączone 2 zestawy parametrów PRAWDA - Uint8
+10-15 Sterowanie siecią [0] Wyłączone 2 zestawy parametrów PRAWDA - Uint8
+10-2* Filtry COS
+10-20 Filtr COS 1 0 b.d. Wszystkie zestawy parametrów FAŁSZ 0 Uint16
+10-21 Filtr COS 2 0 b.d. Wszystkie zestawy parametrów FAŁSZ 0 Uint16
+10-22 Filtr COS 3 0 b.d. Wszystkie zestawy parametrów FAŁSZ 0 Uint16
+10-23 Filtr COS 4 0 b.d. Wszystkie zestawy parametrów FAŁSZ 0 Uint16
+10-3* Dostęp do parametrów
+10-30 Indeks tablicy 0 b.d. 2 zestawy parametrów PRAWDA 0 Uint8
+10-31 Zapis wartości danych [0] Wyłączone Wszystkie zestawy parametrów PRAWDA - Uint8
+10-32 Aktualizacja Devicenet SR Wszystkie zestawy parametrów PRAWDA 0 Uint16
+10-33 Zawsze zapis [0] Wyłączone 1 zestaw parametrów PRAWDA - Uint8
+10-34 Kod produktu DeviceNet 120 b.d. 1 zestaw parametrów PRAWDA 0 Uint16
+10-39 Parametry F DeviceNet 0 b.d. Wszystkie zestawy parametrów PRAWDA 0 Uint32
+13-0* Nastawy SLC
+13-00 Tryb sterownika SL brak 2 zestawy parametrów PRAWDA - Uint8
+13-01 Początek zdarzenia brak 2 zestawy parametrów PRAWDA - Uint8
+13-02 Koniec zdarzenia brak 2 zestawy parametrów PRAWDA - Uint8
+13-03 Kasuj SLC [0] Nie kasować SLC Wszystkie zestawy parametrów PRAWDA - Uint8
+13-1* Komparatory
+13-10 Argument komparatora brak 2 zestawy parametrów PRAWDA - Uint8
+13-11 Operator komparatora brak 2 zestawy parametrów PRAWDA - Uint8
+13-12 Wartość komparatora SR 2 zestawy parametrów PRAWDA -3 Int32
+13-2* Zegary
+13-20 Zegar sterownika SL SR 1 zestaw parametrów PRAWDA -3 TimD
+13-4* Reguły logiczne
+13-40 Reguła logiczna Boole’a 1 brak 2 zestawy parametrów PRAWDA - Uint8
+13-41 Operator reguły logicznej 1 brak 2 zestawy parametrów PRAWDA - Uint8
+13-42 Reguła logiczna Boole’a 2 brak 2 zestawy parametrów PRAWDA - Uint8
+13-43 Operator reguły logicznej 2 brak 2 zestawy parametrów PRAWDA - Uint8
+13-44 Reguła logiczna Boole’a 3 brak 2 zestawy parametrów PRAWDA - Uint8
+13-5* Stany
+13-51 Zdarzenie sterownika SL brak 2 zestawy parametrów PRAWDA - Uint8
+13-52 Działanie sterownika SL brak 2 zestawy parametrów PRAWDA - Uint8
+14-00 Schemat kluczowania [0] 60 AVM Wszystkie zestawy parametrów PRAWDA - Uint8
+14-01 Częstotliwość kluczowania brak Wszystkie zestawy parametrów PRAWDA - Uint8
+14-03 Przemodulowanie [1] Załączone Wszystkie zestawy parametrów FAŁSZ - Uint8
+14-04 Losowe PWM [0] Wyłączone Wszystkie zestawy parametrów PRAWDA - Uint8
+14-1* Zasilanie wł./wył.
+14-12 Funkcja przy niezrówn. zasilania [3] Obniżenie wartości znamionowych Wszystkie zestawy parametrów PRAWDA - Uint8
+14-2* Funkcje resetowania
+14-20 Tryb resetowania [10] Automatyczny reset x 10 Wszystkie zestawy parametrów PRAWDA - Uint8
+14-21 Czas odstępu prób automatycznego ponownego rozruchu 10 sek. Wszystkie zestawy parametrów PRAWDA 0 Uint16
+14-22 Tryb pracy [0] Praca normalna Wszystkie zestawy parametrów PRAWDA - Uint8
+14-23 Ustawienie kodu typu brak 2 zestawy parametrów FAŁSZ - Uint16
+14-25 Opóźnienie wyłączenia awaryjnego przy ograniczeniu momentu 60 sek. Wszystkie zestawy parametrów PRAWDA 0 Uint8
+14-26 Opóźnienie wyłączenia przy błądzie inwertora SR Wszystkie zestawy parametrów PRAWDA 0 Uint8
+14-28 Ustawienia fabryczne [0] Brak działania Wszystkie zestawy parametrów PRAWDA - Uint8
+14-29 Kod serwisowy 0 b.d. Wszystkie zestawy parametrów PRAWDA 0 Int32
+14-3* Sterowanie ograniczeniem prądu
+14-30 Sterowanie ograniczeniem prądu, wzmocnienie proporcjonalne 100 % Wszystkie zestawy parametrów FAŁSZ 0 Uint16
+14-31 Sterowanie ograniczeniem prądu, czas integracji 0,020 sek. Wszystkie zestawy parametrów FAŁSZ -3 Uint16
+14-4* Optymalizacja energii
+14-40 Poziom VT 66 % Wszystkie zestawy parametrów FAŁSZ 0 Uint8
+14-41 Minimalne magnesowanie AEO 40 % Wszystkie zestawy parametrów PRAWDA 0 Uint8
+14-42 Minimalna częstotliwość AEO 10 Hz Wszystkie zestawy parametrów PRAWDA 0 Uint8
+14-43 Cosfi silnika SR Wszystkie zestawy parametrów PRAWDA -2 Uint16
+14-5* środowisko
+14-50 Filtr RFI [1] Załączone 1 zestaw parametrów FAŁSZ - Uint8
+14-52 Sterowanie wentylatorem [0] Auto Wszystkie zestawy parametrów PRAWDA - Uint8
+14-53 Monitorowanie wentylatora Ostrzeżenie [1] Wszystkie zestawy parametrów PRAWDA - Uint8
+14-6* Automatyczne obniżenie wartości znamionowych
+14-60 Funkcja przy nadmiernej temperaturze [1] Obniżenie wartości znamionowych Wszystkie zestawy parametrów PRAWDA - Uint8
+14-61 Funkcja przy przeciążeniu inwertera [1] Obniżenie wartości znamionowych Wszystkie zestawy parametrów PRAWDA - Uint8
+14-62 Obniżenie prądu przy przeciążeniu inwertera 95 % Wszystkie zestawy parametrów PRAWDA 0 Uint16
+15-00 Godziny eksploatacji 0 godz. Wszystkie zestawy parametrów FAŁSZ 74 Uint32
+15-01 Godziny pracy 0 godz. Wszystkie zestawy parametrów FAŁSZ 74 Uint32
+15-02 Licznik kWh 0 kWh Wszystkie zestawy parametrów FAŁSZ 75 Uint32
+15-03 Załączenia zasilania 0 b.d. Wszystkie zestawy parametrów FAŁSZ 0 Uint32
+15-04 Nadmierne temp. 0 b.d. Wszystkie zestawy parametrów FAŁSZ 0 Uint16
+15-05 Przepięcia 0 b.d. Wszystkie zestawy parametrów FAŁSZ 0 Uint16
+15-06 Zerowanie licznika kWh [0] Nie kasować Wszystkie zestawy parametrów PRAWDA - Uint8
+15-07 Zerowanie licznika godzin pracy [0] Nie kasować Wszystkie zestawy parametrów PRAWDA - Uint8
+15-08 Liczba startów 0 b.d. Wszystkie zestawy parametrów FAŁSZ 0 Uint32
+15-1* Ustawienia rejestru danych
+15-10 Źródło rejestrowania 0 2 zestawy parametrów PRAWDA - Uint16
+15-11 Częstotliwość rejestrowania SR 2 zestawy parametrów PRAWDA -3 TimD
+15-12 Zdarzenie wyzwalające [0] Fałsz 1 zestaw parametrów PRAWDA - Uint8
+15-13 Tryb rejestrowania [0] Zawsze rejestruj 2 zestawy parametrów PRAWDA - Uint8
+15-14 Próbki przed wyzwoleniem 50 b.d. 2 zestawy parametrów PRAWDA 0 Uint8
+15-2* Rejestr pracy
+15-20 Rejestr pracy: zdarzenie 0 b.d. Wszystkie zestawy parametrów FAŁSZ 0 Uint8
+15-21 Rejestr pracy: wartość 0 b.d. Wszystkie zestawy parametrów FAŁSZ 0 Uint32
+15-22 Rejestr pracy: czas 0 ms Wszystkie zestawy parametrów FAŁSZ -3 Uint32
+15-23 Rejestr pracy: data i czas SR Wszystkie zestawy parametrów FAŁSZ 0 TimeOfDay
+15-3* Rejestr alarmów
+15-30 Rejestr alarmów: kod błądu 0 b.d. Wszystkie zestawy parametrów FAŁSZ 0 Uint8
+15-31 Rejestr alarmów: wartość 0 b.d. Wszystkie zestawy parametrów FAŁSZ 0 Int16
+15-32 Rejestr alarmów: czas 0 sek. Wszystkie zestawy parametrów FAŁSZ 0 Uint32
+15-33 Rejestr alarmów: data i czas SR Wszystkie zestawy parametrów FAŁSZ 0 TimeOfDay
+15-4* Identyfikacja przetwornicy częstotliwości
+15-40 Typ FC 0 b.d. Wszystkie zestawy parametrów FAŁSZ 0 VisStr[6]
+15-41 Sekcja mocy 0 b.d. Wszystkie zestawy parametrów FAŁSZ 0 VisStr[20]
+15-42 Napięcie 0 b.d. Wszystkie zestawy parametrów FAŁSZ 0 VisStr[20]
+15-43 Wersja oprogramowania 0 b.d. Wszystkie zestawy parametrów FAŁSZ 0 VisStr[5]
+15-44 Łańcuch znaków kodu zamówionego typu 0 b.d. Wszystkie zestawy parametrów FAŁSZ 0 VisStr[40]
+15-45 Aktualny Łańcuch znaków kodu 0 b.d. Wszystkie zestawy parametrów FAŁSZ 0 VisStr[40]
+15-46 Nr zamówieniowy przetwornicy częstotliwości 0 b.d. Wszystkie zestawy parametrów FAŁSZ 0 VisStr[8]
+15-47 Numer zamówieniowy karty mocy 0 b.d. Wszystkie zestawy parametrów FAŁSZ 0 VisStr[8]
+15-48 Nr ID LCP 0 b.d. Wszystkie zestawy parametrów FAŁSZ 0 VisStr[20]
+15-49 Karta sterująca ID SW 0 b.d. Wszystkie zestawy parametrów FAŁSZ 0 VisStr[20]
+15-50 Karta mocy ID SW 0 b.d. Wszystkie zestawy parametrów FAŁSZ 0 VisStr[20]
+15-51 Nr seryjny przetwornicy częstotliwości 0 b.d. Wszystkie zestawy parametrów FAŁSZ 0 VisStr[10]
+15-53 Nr seryjny karty mocy 0 b.d. Wszystkie zestawy parametrów FAŁSZ 0 VisStr[19]
+15-6* Identyfikacja opcji                             15-6* Identyfikacja opcji
+15-60 Opcja zamontowana 0 b.d. Wszystkie zestawy parametrów FAŁSZ 0 VisStr[30]
+15-61 Wersja oprogramowania opcji 0 b.d. Wszystkie zestawy parametrów FAŁSZ 0 VisStr[20]
+15-62 Numer zamówieniowy opcji 0 b.d. Wszystkie zestawy parametrów FAŁSZ 0 VisStr[8]
+15-63 Numer seryjny opcji 0 b.d. Wszystkie zestawy parametrów FAŁSZ 0 VisStr[18]
+15-70 Opcja w gnieździe A 0 b.d. Wszystkie zestawy parametrów FAŁSZ 0 VisStr[30]
+15-71 Wersja oprogramowania opcji gniazda A 0 b.d. Wszystkie zestawy parametrów FAŁSZ 0 VisStr[20]
+15-72 Opcja w gnieździe B 0 b.d. Wszystkie zestawy parametrów FAŁSZ 0 VisStr[30]
+15-73 Wersja oprogramowania opcji gniazda B 0 b.d. Wszystkie zestawy parametrów FAŁSZ 0 VisStr[20]
+15-74 Opcja w gnieździe C0 0 b.d. Wszystkie zestawy parametrów FAŁSZ 0 VisStr[30]
+15-75 Wersja oprogramowania opcji gniazda C0 0 b.d. Wszystkie zestawy parametrów FAŁSZ 0 VisStr[20]
+15-76 Opcja w gnieździe C1 0 b.d. Wszystkie zestawy parametrów FAŁSZ 0 VisStr[30]
+15-77 Wersja oprogramowania opcji gniazda C1 0 b.d. Wszystkie zestawy parametrów FAŁSZ 0 VisStr[20]
+15-9* Inf. o parametrach
+15-92 Parametry zdefiniowane 0 b.d. Wszystkie zestawy parametrów FAŁSZ 0 Uint16
+15-93 Parametry zmienione 0 b.d. Wszystkie zestawy parametrów FAŁSZ 0 Uint16
+15-99 Metadane parametrów 0 b.d. Wszystkie zestawy parametrów FAŁSZ 0 Uint16
+16-0* Status ogólny
+16-00 Słowo sterujące 0 b.d. Wszystkie zestawy parametrów FAŁSZ 0 V2
+16-01 Wartość zadana [jednostka] 0,000 JednWartZadSprz Wszystkie zestawy parametrów FAŁSZ -3 Int32
+16-02 Wartość zadana [%] 0.0 % Wszystkie zestawy parametrów FAŁSZ -1 Int16
+16-03 Słowo statusowe 0 b.d. Wszystkie zestawy parametrów FAŁSZ 0 V2
+16-05 Rzeczywista wartość główna [%] 0.00 % Wszystkie zestawy parametrów FAŁSZ -2 N2
+16-09 Odczyt niestandardowy 0.00 JednOdczytuNiestand Wszystkie zestawy parametrów FAŁSZ -2 Int32
+16-1* Status silnika
+16-10 Moc [kW] 0,00 kW Wszystkie zestawy parametrów FAŁSZ 1 Int32
+16-11 Moc [KM] 0,00 KM Wszystkie zestawy parametrów FAŁSZ -2 Int32
+16-12 Napięcie silnika 0,0 V Wszystkie zestawy parametrów FAŁSZ -1 Uint16
+16-13 Częstotliwość 0,0 Hz Wszystkie zestawy parametrów FAŁSZ -1 Uint16
+16-14 Prąd silnika 0,00 A Wszystkie zestawy parametrów FAŁSZ -2 Int32
+16-15 Częstotliwość [%] 0.00 % Wszystkie zestawy parametrów FAŁSZ -2 N2
+16-16 Moment obrotowy [Nm] 0,0 Nm Wszystkie zestawy parametrów FAŁSZ -1 Int16
+16-17 Prędkość [obr./min] 0 obr./min Wszystkie zestawy parametrów FAŁSZ 67 Int32
+16-18 Stan termiczny silnika 0 % Wszystkie zestawy parametrów FAŁSZ 0 Uint8
+16-22 Moment obrotowy [%] 0 % Wszystkie zestawy parametrów FAŁSZ 0 Int16
+16-3* Status napędu
+16-30 Napięcie w obwodzie pośrednim DC 0 V Wszystkie zestawy parametrów FAŁSZ 0 Uint16
+16-32 Energia hamowania/s 0,000 kW Wszystkie zestawy parametrów FAŁSZ 0 Uint32
+16-33 Energia hamow./2 min. 0,000 kW Wszystkie zestawy parametrów FAŁSZ 0 Uint32
+16-34 Temp. radiatora 0 °C Wszystkie zestawy parametrów FAŁSZ 100 Uint8
+16-35 Stan termiczny inwertera 0 % Wszystkie zestawy parametrów FAŁSZ 0 Uint8
+16-36 Znamionowy prąd inwertera SR Wszystkie zestawy parametrów FAŁSZ -2 Uint32
+16-37 Maks. prąd inwertera SR Wszystkie zestawy parametrów FAŁSZ -2 Uint32
+16-38 Stan sterownika SL 0 b.d. Wszystkie zestawy parametrów FAŁSZ 0 Uint8
+16-39 Temp. karty sterującej 0 °C Wszystkie zestawy parametrów FAŁSZ 100 Uint8
+16-40 Zapełniony bufor rejestracji [0] Nie Wszystkie zestawy parametrów PRAWDA - Uint8
+16-5* Wart.zad. i sprz.zwr.
+16-50 Zewnętrzna wartość zadana 0,0 b.d. Wszystkie zestawy parametrów FAŁSZ -1 Int16
+16-52 Sprzężenie zwrotne [jednostka] 0,000 JednRegulProcesu Wszystkie zestawy parametrów FAŁSZ -3 Int32
+16-53 Wartość zadana potencjometru cyfr. 0,00 b.d. Wszystkie zestawy parametrów FAŁSZ -2 Int16
+16-54 Sprzężenie zwrotne 1 [jednostka] 0,000 JednRegulProcesu Wszystkie zestawy parametrów FAŁSZ -3 Int32
+16-55 Sprzężenie zwrotne 2 [jednostka] 0,000 JednRegulProcesu Wszystkie zestawy parametrów FAŁSZ -3 Int32
+16-56 Sprzężenie zwrotne 3 [jednostka] 0,000 JednRegulProcesu Wszystkie zestawy parametrów FAŁSZ -3 Int32
+16-6* Wejścia i wyjścia
+16-60 Wejście cyfrowe 0 b.d. Wszystkie zestawy parametrów FAŁSZ 0 Uint16
+16-61 Ustawianie przełączania zacisku 53 [0] Prąd Wszystkie zestawy parametrów FAŁSZ - Uint8
+16-62 Wejście analogowe 53 0 b.d. Wszystkie zestawy parametrów FAŁSZ -3 Int32
+16-63 Ustawianie przełączania zacisku 54 [0] Prąd Wszystkie zestawy parametrów FAŁSZ - Uint8
+16-64 Wejście analogowe 54 0 b.d. Wszystkie zestawy parametrów FAŁSZ -3 Int32
+16-65 Wyjście analogowe 42 [mA] 0 b.d. Wszystkie zestawy parametrów FAŁSZ -3 Int16
+16-66 Wyjście cyfrowe [bin] 0 b.d. Wszystkie zestawy parametrów FAŁSZ 0 Int16
+16-67 Wej.impuls.nr29 [Hz] 0 b.d. Wszystkie zestawy parametrów FAŁSZ 0 Int32
+16-68 Wejście impulsowe 33 [Hz] 0 b.d. Wszystkie zestawy parametrów FAŁSZ 0 Int32
+16-69 Wyjście impulsowe 27 [Hz] 0 b.d. Wszystkie zestawy parametrów FAŁSZ 0 Int32
+16-70 Wyjście impulsowe 29 [Hz] 0 b.d. Wszystkie zestawy parametrów FAŁSZ 0 Int32
+16-71 Wyjście przekaźnikowe [bin] 0 b.d. Wszystkie zestawy parametrów FAŁSZ 0 Int16
+16-72 Licznik A 0 b.d. Wszystkie zestawy parametrów PRAWDA 0 Int32
+16-73 Licznik B 0 b.d. Wszystkie zestawy parametrów PRAWDA 0 Int32
+16-75 Wejście analogowe X30/ X30/11 0 b.d. Wszystkie zestawy parametrów FAŁSZ -3 Int32
+16-76 Wejście analogowe X30/ X30/12 0 b.d. Wszystkie zestawy parametrów FAŁSZ -3 Int32
+16-77 Wyjście analogowe X30/8 [mA] 0 b.d. Wszystkie zestawy parametrów FAŁSZ -3 Int16
+16-8* Magistrala komunikacyjna i port FC
+16-80 CTW 1 magistrali komunikacyjnej 0 b.d. Wszystkie zestawy parametrów FAŁSZ 0 V2
+16-82 REF 1 magistrali komunikacyjnej 0 b.d. Wszystkie zestawy parametrów FAŁSZ 0 N2
+16-84 STW opcji komunikacji 0 b.d. Wszystkie zestawy parametrów FAŁSZ 0 V2
+16-85 CTW 1 portu FC 0 b.d. Wszystkie zestawy parametrów FAŁSZ 0 V2
+16-86 REF 1 portu FC 0 b.d. Wszystkie zestawy parametrów FAŁSZ 0 N2
+16-9* Odczyty diagnostyki
+16-90 Słowo alarmowe 0 b.d. Wszystkie zestawy parametrów FAŁSZ 0 Uint32
+16-91 Słowo alarmowe 2 0 b.d. Wszystkie zestawy parametrów FAŁSZ 0 Uint32
+16-92 Słowo ostrzeżenia 0 b.d. Wszystkie zestawy parametrów FAŁSZ 0 Uint32
+16-93 Słowo ostrzeżenia 2 0 b.d. Wszystkie zestawy parametrów FAŁSZ 0 Uint32
+16-94 Zew. Słowo statusowe 0 b.d. Wszystkie zestawy parametrów FAŁSZ 0 Uint32
+16-95 Zew. Słowo statusowe 2 0 b.d. Wszystkie zestawy parametrów FAŁSZ 0 Uint32
+16-96 konserwacji zapobiegawczej 0 b.d. Wszystkie zestawy parametrów FAŁSZ 0 Uint32
+18-0* Dziennik konserwacji
+18-00 Dziennik konserwacji: pozycja 0 b.d. Wszystkie zestawy parametrów FAŁSZ 0 Uint8
+18-01 Dziennik konserwacji: działanie 0 b.d. Wszystkie zestawy parametrów FAŁSZ 0 Uint8
+18-02 Dziennik konserwacji: czas 0 sek. Wszystkie zestawy parametrów FAŁSZ 0 Uint32
+18-03 Dziennik konserwacji: data i czas SR Wszystkie zestawy parametrów FAŁSZ 0 TimeOfDay
+18-3* Wejścia i wyjścia
+18-30 Wejście analogowe X42/1 0 b.d. Wszystkie zestawy parametrów FAŁSZ -3 Int32
+18-31 Wejście analogowe X42/3 0 b.d. Wszystkie zestawy parametrów FAŁSZ -3 Int32
+18-32 Wejście analogowe X42/5 0 b.d. Wszystkie zestawy parametrów FAŁSZ -3 Int32
+18-33 Wyjście analogowe X42/7 [V] 0 b.d. Wszystkie zestawy parametrów FAŁSZ -3 Int16
+18-34 Wyjście analogowe X42/9 [V] 0 b.d. Wszystkie zestawy parametrów FAŁSZ -3 Int16
+18-35 Wyjście analogowe X42/11 [V] 0 b.d. Wszystkie zestawy parametrów FAŁSZ -3 Int16
+20-0* Sprzężenie zwrotne
+20-00 Źródło sprzężenia zwrotnego 1 [2] Wejście analogowe 54 Wszystkie zestawy parametrów PRAWDA - Uint8
+20-03 Źródło sprzężenia zwrotnego 2 [0] Brak funkcji Wszystkie zestawy parametrów PRAWDA - Uint8
+20-06 Źródło sprzężenia zwrotnego 3 [0] Brak funkcji Wszystkie zestawy parametrów PRAWDA - Uint8
+20-07 Sprzężenie zwrotne 3 konwersja [0] Liniowy Wszystkie zestawy parametrów PRAWDA - -
+20-09 Źródło sprzężenia zwrotnego 4 [0] Brak funkcji Wszystkie zestawy parametrów PRAWDA - Uint8
+20-11 Źródło sprzężenia zwrotnego 4 - jednostka brak Wszystkie zestawy parametrów PRAWDA - Uint8
+20-12 Jednostka wartości zadanej/sprzężenia zwrotnego brak Wszystkie zestawy parametrów PRAWDA - Uint8
+20-2* Sprzężenie zwrotne i wartość zadana
+20-20 Funkcja sprzężenia zwrotnego [4] Maksimum Wszystkie zestawy parametrów PRAWDA - Uint8
+20-21 Wartość zadana 1 0,000 JednRegulProcesu Wszystkie zestawy parametrów PRAWDA -3 Int32
+20-22 Wartość zadana 2 0,000 JednRegulProcesu Wszystkie zestawy parametrów PRAWDA -3 Int32
+20-23 Wartość zadana 3 0,000 JednRegulProcesu Wszystkie zestawy parametrów PRAWDA -3 Int32
+20-37* Autostrojenie PID
+20-70 Typ pętli zamkniętej Auto Wszystkie zestawy parametrów PRAWDA - Uint8
+20-71 Zmiana wyjścia PID 0.10 Wszystkie zestawy parametrów PRAWDA - Uint8
+20-72 Minimalny poziom sprzężenia zwrotnego 0,000 jednostek użytkownika Wszystkie zestawy parametrów PRAWDA - Uint16
+20-73 Maksymalny poziom sprzężenia zwrotnego 0,000 jednostek użytkownika Wszystkie zestawy parametrów PRAWDA - Int32
+20-74 Tryb strojenia Standardowy Wszystkie zestawy parametrów PRAWDA - Int32
+20-75 Autostrojenie PID Wyłączone Wszystkie zestawy parametrów PRAWDA - UInt8
+20-79 Autostrojenie PID Wyłączone Wszystkie zestawy parametrów PRAWDA - UInt8
+20-8* Ustawienia podstawowe PID
+20-81 Regulacja PID standardowa/odwrócona [0] Normalny Wszystkie zestawy parametrów PRAWDA - Uint8
+20-82 Prędkość rozruchu PID [obr./min] SR Wszystkie zestawy parametrów PRAWDA 67 Uint16
+20-83 Prędkość startowa PID [Hz] SR Wszystkie zestawy parametrów PRAWDA -1 Uint16
+20-84 Na zadanej szerokości pasma 5 % Wszystkie zestawy parametrów PRAWDA 0 Uint8
+20-9* Regulator typu PID
+20-91 PID Anti Windup [1] Załączone Wszystkie zestawy parametrów PRAWDA - Uint8
+20-93 Wzmocnienie proporcjonalne PID 0,50 b.d. Wszystkie zestawy parametrów PRAWDA -2 Uint16
+20-94 Stała czasowa całkowania PID 20,00 sek. Wszystkie zestawy parametrów PRAWDA -2 Uint32
+20-95 Stała czasowa różniczkowania PID 0,00 sek. Wszystkie zestawy parametrów PRAWDA -2 Uint16
+20-96 Ograniczenie wzmocnienia układu różniczk. PID 5,0 b.d. Wszystkie zestawy parametrów PRAWDA -1 Uint16
+21-1* Zew. wart. zad./sprz. zwr. CL 1
+21-10 Zew. jednostka wart. zad./sprz. zwr. 1 [0] Wszystkie zestawy parametrów PRAWDA - Uint8
+21-11 Zew. minimalna wartość zadana 1 0 Jedn.zewnętrz.PID1 Wszystkie zestawy parametrów PRAWDA -3 Int32
+21-12 Zew. maksymalna wartość zadana 1 100 000 Jedn.zewnętrz.PID1 Wszystkie zestawy parametrów PRAWDA -3 Int32
+21-13 Źródło zewnętrznej wartości zadanej 1 [0] Brak funkcji Wszystkie zestawy parametrów PRAWDA - Uint8
+21-14 Źródło zewnętrznego sprzężenia zwrotnego 1 [0] Brak funkcji Wszystkie zestawy parametrów PRAWDA - Uint8
+21-15 Zew. wartość zadana 1 0 Jedn.zewnętrz.PID1 Wszystkie zestawy parametrów PRAWDA -3 Int32
+21-17 Zew. wartość zadana 1 [jednostka] 0 Jedn.zewnętrz.PID1 Wszystkie zestawy parametrów PRAWDA -3 Int32
+21-18 Zew. sprzężenie zwrotne 1 [jednostka] 0 Jedn.zewnętrz.PID1 Wszystkie zestawy parametrów PRAWDA -3 Int32
+21-19 Zew. wyjście 1 [%] 0 % Wszystkie zestawy parametrów PRAWDA 0 Int32
+21-2* Zew. CL 1 PID
+21-20 Zew. sterowanie standardowe/odwrócone 1 [0] Normalny Wszystkie zestawy parametrów PRAWDA - Uint8
+21-21 Zew. wzmocnienie proporcjonalne 1 0.5 Wszystkie zestawy parametrów PRAWDA -2 Uint16
+21-22 Zew. czas całkowania 1 20,0 sek. Wszystkie zestawy parametrów PRAWDA -2 Uint32
+21-23 Zew. czas różniczkowania 1 0,00 sek. Wszystkie zestawy parametrów PRAWDA -2 Uint16
+21-24 Zew. ogranicz. wzmocn. układu różniczk. 2 5,0 b.d. Wszystkie zestawy parametrów PRAWDA -1 Uint16
+21-3* Zew. wart. zad./sprz. zwr. CL 2
+21-30 Zew. jednostka wart. zad./sprz. zwr. 2 [0] Wszystkie zestawy parametrów PRAWDA - Uint8
+21-31 Zew. minimalna wartość zadana 2 0 Jedn.zewnętrz.PID2 Wszystkie zestawy parametrów PRAWDA -3 Int32
+21-32 Zew. maksymalna wartość zadana 2 100 000 Jedn.zewnętrz.PID2 Wszystkie zestawy parametrów PRAWDA -3 Int32
+21-33 Źródło zewnętrznej wartości zadanej 2 [0] Brak funkcji Wszystkie zestawy parametrów PRAWDA - Uint8
+21-34 Źródło zewnętrznego sprzężenia zwrotnego 2 [0] Brak funkcji Wszystkie zestawy parametrów PRAWDA - Uint8
+21-35 Zew. wartość zadana 2 0 Jedn.zewnętrz.PID2 Wszystkie zestawy parametrów PRAWDA -3 Int32
+21-37 Zew. wartość zadana 2 [jednostka] 0 Jedn.zewnętrz.PID2 Wszystkie zestawy parametrów PRAWDA -3 Int32
+21-38 Zew. sprzężenie zwrotne 2 [jednostka] 0 Jedn.zewnętrz.PID2 Wszystkie zestawy parametrów PRAWDA -3 Int32
+21-39 Zew. wyjście 2 [%] 0 % Wszystkie zestawy parametrów PRAWDA 0 Int32
+21-4* Zew. CL 2 PID
+21-40 Zew. sterowanie standardowe/odwrócone 2 [0] Normalny Wszystkie zestawy parametrów PRAWDA - Uint8
+21-41 Zew. wzmocnienie proporcjonalne 2 0.5 Wszystkie zestawy parametrów PRAWDA -2 Uint16
+21-42 Zew. czas całkowania 2 20,0 sek. Wszystkie zestawy parametrów PRAWDA -2 Uint32
+21-43 Zew. czas różniczkowania 2 0,00 sek. Wszystkie zestawy parametrów PRAWDA -2 Uint16
+21-44 Zew. ogranicz. wzmocn. układu różniczk. 2 5,0 b.d. Wszystkie zestawy parametrów PRAWDA -1 Uint16
+21-5* Zew. wart. zad./sprz. zwr. CL 3
+21-50 Zew. jednostka wart. zad./sprz. zwr. 3 [0] Wszystkie zestawy parametrów PRAWDA - Uint8
+21-51 Zew. minimalna wartość zadana 3 0 Jedn.zewnętrz.PID3 Wszystkie zestawy parametrów PRAWDA -3 Int32
+21-52 Zew. maksymalna wartość zadana 3 100 000 Jedn.zewnętrz.PID3 Wszystkie zestawy parametrów PRAWDA -3 Int32
+21-53 Wartość zewnętrznej wartości zadanej 3 [0] Brak funkcji Wszystkie zestawy parametrów PRAWDA - Uint8
+21-54 Wartość zewnętrznego sprzężenia zwrotnego 3 [0] Brak funkcji Wszystkie zestawy parametrów PRAWDA - Uint8
+21-55 Zew. wartość zadana 3 0 Jedn.zewnętrz.PID3 Wszystkie zestawy parametrów PRAWDA -3 Int32
+21-57 Zew. wartość zadana 3 [jednostka] 0 Jedn.zewnętrz.PID3 Wszystkie zestawy parametrów PRAWDA -3 Int32
+21-58 Zew. sprzężenie zwrotne 3 [jednostka] 0 Jedn.zewnętrz.PID3 Wszystkie zestawy parametrów PRAWDA -3 Int32
+21-59 Zew. wyjście 3 [%] 0 % Wszystkie zestawy parametrów PRAWDA 0 Int32
+21-6* Zew. CL 3 PID
+21-60 Zew. sterowanie standardowe/odwrócone 3 [0] Normalny Wszystkie zestawy parametrów PRAWDA - Uint8
+21-61 Zew. wzmocnienie proporcjonalne 3 0.5 Wszystkie zestawy parametrów PRAWDA -2 Uint16
+21-62 Zew. czas całkowania 3 20,0 sek. Wszystkie zestawy parametrów PRAWDA -2 Uint32
+21-63 Zew. czas różniczkowania 3 0,00 sek. Wszystkie zestawy parametrów PRAWDA -2 Uint16
+21-64 Zew. ogranicz. wzmocn. układu różniczk. 2 5,0 b.d. Wszystkie zestawy parametrów PRAWDA -1 Uint16
+22-0* Inne
+22-00 Opóźnienie blokady zewnętrznej 0 sek. Wszystkie zestawy parametrów PRAWDA 0 Uint16
+22-2* Wykrywanie braku przepływu
+22-20 Automatyczny zestaw parametrów przy niskiej mocy [0] Wyłączone Wszystkie zestawy parametrów FAŁSZ - Uint8
+22-21 Wykrywanie niskiej mocy [0] Wyłączone Wszystkie zestawy parametrów PRAWDA - Uint8
+22-22 Wykrywanie niskiej prędkości [0] Wyłączone Wszystkie zestawy parametrów PRAWDA - Uint8
+22-23 Funkcja braku przepływu [0] Wyłączone Wszystkie zestawy parametrów PRAWDA - Uint8
+22-24 Opóźnienie braku przepływu 10 sek. Wszystkie zestawy parametrów PRAWDA 0 Uint16
+22-26 Funkcja „suchobiegu” pompy [0] Wyłączone Wszystkie zestawy parametrów PRAWDA - Uint8
+22-27 Opóźnienie „suchobiegu” pompy 10 sek. Wszystkie zestawy parametrów PRAWDA 0 Uint16
+22-3* Dostrajanie mocy przy braku przepływu
+22-30 Moc przy braku przepływu 0,00 kW Wszystkie zestawy parametrów PRAWDA 1 Uint32
+22-31 Współczynnik korekcji mocy 100 % Wszystkie zestawy parametrów PRAWDA 0 Uint16
+22-32 Niska prędkość [obr./min] SR Wszystkie zestawy parametrów PRAWDA 67 Uint16
+22-33 Niska prędkość [Hz] SR Wszystkie zestawy parametrów PRAWDA -1 Uint16
+22-34 Moc przy niskiej prędkości [kW] SR Wszystkie zestawy parametrów PRAWDA 1 Uint32
+22-35 Moc przy niskiej prędkości [KM] SR Wszystkie zestawy parametrów PRAWDA -2 Uint32
+22-36 Wysoka prędkość [obr./min] SR Wszystkie zestawy parametrów PRAWDA 67 Uint16
+22-37 Wysoka prędkość [Hz] SR Wszystkie zestawy parametrów PRAWDA -1 Uint16
+22-38 Moc przy wysokiej prędkości [kW] SR Wszystkie zestawy parametrów PRAWDA 1 Uint32
+22-39 Moc przy wysokiej prędkości [KM] SR Wszystkie zestawy parametrów PRAWDA -2 Uint32
+22-4* Tryb uśpienia
+22-40 Minimalny czas pracy 60 sek. Wszystkie zestawy parametrów PRAWDA 0 Uint16
+22-41 Minimalny czas uśpienia 30 sek. Wszystkie zestawy parametrów PRAWDA 0 Uint16
+22-42 Prędkość obudzenia [obr/min] SR Wszystkie zestawy parametrów PRAWDA 67 Uint16
+22-43 Prędkość obudzenia [Hz] SR Wszystkie zestawy parametrów PRAWDA -1 Uint16
+22-44 Różnica wart.zad./sprz.zwr. prędkości obudzenia 10 % Wszystkie zestawy parametrów PRAWDA 0 Int8
+22-45 Wartość zadana doładowania 0 % Wszystkie zestawy parametrów PRAWDA 0 Int8
+22-46 Maksymalny czas doładowania 60 sek. Wszystkie zestawy parametrów PRAWDA 0 Uint16
+22-5* „End of curve”
+22-50 Funkcja „end of curve” [0] Wyłączone Wszystkie zestawy parametrów PRAWDA - Uint8
+22-51 Opóźnienie „end of curve” 10 sek. Wszystkie zestawy parametrów PRAWDA 0 Uint16
+22-6* Wykrywanie zerwanego pasa
+22-60 Funkcja dla zerwanego pasa [0] Wyłączone Wszystkie zestawy parametrów PRAWDA - Uint8
+22-61 Moment zerwanego pasa 10 % Wszystkie zestawy parametrów PRAWDA 0 Uint8
+22-62 Opóźnienie zerwanego pasa 10 sek. Wszystkie zestawy parametrów PRAWDA 0 Uint16
+22-7* Zabezpieczenie krótkiego cyklu
+22-75 Zabezpieczenie krótkiego cyklu [0] Wyłączone Wszystkie zestawy parametrów PRAWDA - Uint8
+22-76 Odstęp między rozruchami start_to_start_min_on_time (P2277) Wszystkie zestawy parametrów PRAWDA 0 Uint16
+22-77 Minimalny czas pracy 0 sek. Wszystkie zestawy parametrów PRAWDA 0 Uint16
+22-8* Kompensacja przepływu
+22-80 Kompensacja przepływu [0] Wyłączone Wszystkie zestawy parametrów PRAWDA - Uint8
+22-81 Kwadratowo-liniowe przybliżenie krzywej 100 % Wszystkie zestawy parametrów PRAWDA 0 Uint8
+22-82 Obliczenie punktu pracy [0] Wyłączone Wszystkie zestawy parametrów PRAWDA - Uint8
+22-83 Prędkość przy braku przepływu [obr./min] SR Wszystkie zestawy parametrów PRAWDA 67 Uint16
+22-84 Prędkość przy braku przepływu [Hz] SR Wszystkie zestawy parametrów PRAWDA -1 Uint16
+22-85 Prędkość przy wyznaczonym punkcie [obr./min] SR Wszystkie zestawy parametrów PRAWDA 67 Uint16
+22-86 Prędkość przy wyznaczonym punkcie[Hz] SR Wszystkie zestawy parametrów PRAWDA -1 Uint16
+22-87 Ciśnienie przy prędkości braku przepływu 0,000 JednWartZadSprz Wszystkie zestawy parametrów PRAWDA -3 Int32
+22-88 Ciśnienie przy prędkości znamionowej 999999,999 JednWartZadSprz Wszystkie zestawy parametrów PRAWDA -3 Int32
+22-89 Przepływ przy wyznaczonym punkcie 0 b.d. Wszystkie zestawy parametrów PRAWDA -3 Int32
+22-90 Przepływ przy prędkości znamionowej 0 b.d. Wszystkie zestawy parametrów PRAWDA -3 Int32
+23-0* Działania zsynchronizowane
+23-00 Czas WŁĄCZENIA SR 2 zestawy parametrów PRAWDA 0 TimeOfDayWoDate
+23-01 Działanie przy WŁĄCZENIU [0] Wyłączone 2 zestawy parametrów PRAWDA - Uint8
+23-02 Czas WYŁĄCZENIA SR 2 zestawy parametrów PRAWDA 0 TimeOfDayWoDate
+23-03 Działanie WYŁĄCZENIA [0] Wyłączone 2 zestawy parametrów PRAWDA - Uint8
+23-04 Występowanie [0] Wszystkie dni 2 zestawy parametrów PRAWDA - Uint8
+23-1* Konserwacja
+23-10 Pozycja konserwacji [1] łożyska silnika 1 zestaw parametrów PRAWDA - Uint8
+23-11 Działanie konserwacyjne [1] Smarowanie 1 zestaw parametrów PRAWDA - Uint8
+23-12 Podstawa czasowa konserwacji [0] Wyłączone 1 zestaw parametrów PRAWDA - Uint8
+23-13 Częstotliwość konserwacji 1 godz. 1 zestaw parametrów PRAWDA 74 Uint32
+23-14 Data i czas konserwacji SR 1 zestaw parametrów PRAWDA 0 TimeOfDay
+23-1* Kasowanie przy konserwacji
+23-15 Resetowanie słowa konserwacji [0] Nie kasować Wszystkie zestawy parametrów PRAWDA - Uint8
+23-5* Dziennik energii
+23-50 Rozdzielczość dziennika energii [5] Ostatnie 24 godziny 2 zestawy parametrów PRAWDA - Uint8
+23-51 Początek okresu SR 2 zestawy parametrów PRAWDA 0 TimeOfDay
+23-53 Dziennik energii 0 b.d. Wszystkie zestawy parametrów PRAWDA 0 Uint32
+23-54 Resetowanie dziennika energii [0] Nie kasować Wszystkie zestawy parametrów PRAWDA - Uint8
+23-6* Trendy
+23-60 Zmienna trendu [0] Moc [kW] 2 zestawy parametrów PRAWDA - Uint8
+23-61 Dane binarne ciągłe 0 b.d. Wszystkie zestawy parametrów PRAWDA 0 Uint32
+23-62 Dane binarne zsynchronizowane 0 b.d. Wszystkie zestawy parametrów PRAWDA 0 Uint32
+23-63 Zsynchronizowany początek okresu SR 2 zestawy parametrów PRAWDA 0 TimeOfDay
+23-64 Zsynchronizowany koniec okresu SR 2 zestawy parametrów PRAWDA 0 TimeOfDay
+23-65 Minimalna wartość binarna SR 2 zestawy parametrów PRAWDA 0 Uint8
+23-66 Kasowanie danych binarnych ciągłych [0] Nie kasować Wszystkie zestawy parametrów PRAWDA - Uint8
+23-67 Kasowanie danych binarnych zsynchronizowanych [0] Nie kasować Wszystkie zestawy parametrów PRAWDA - Uint8
+23-8* Licznik okresu spłaty
+23-80 Współczynnik wartości zadanej mocy 100 % 2 zestawy parametrów PRAWDA 0 Uint8
+23-81 Koszt energii 1,00 b.d. 2 zestawy parametrów PRAWDA -2 Uint32
+23-82 Inwestycja 0 b.d. 2 zestawy parametrów PRAWDA 0 Uint32
+23-83 Oszczędność energii 0 kWh Wszystkie zestawy parametrów PRAWDA 75 Int32
+23-84 Oszczędność kosztów 0 b.d. Wszystkie zestawy parametrów PRAWDA 0 Int32
+25-0* Ustawienia systemowe
+25-00 Sterownik kaskadowy [0] Wyłączone 2 zestawy parametrów FAŁSZ - Uint8
+25-02 Start silnika [0] Direct on Line 2 zestawy parametrów FAŁSZ - Uint8
+25-04 Przełączanie pompy [0] Wyłączone Wszystkie zestawy parametrów PRAWDA - Uint8
+25-05 Stała pompa główna [1] Tak 2 zestawy parametrów FAŁSZ - Uint8
+25-06 Liczba pomp 2 b.d. 2 zestawy parametrów FAŁSZ 0 Uint8
+25-2* Ustawienia szerokości pasma
+25-20 Szerokość pasma dostawienia 10 % Wszystkie zestawy parametrów PRAWDA 0 Uint8
+25-21 Szerokość pasma sterowania ręcznego 100 % Wszystkie zestawy parametrów PRAWDA 0 Uint8
+25-22 Stała szerokość pasma prędkości casco_staging_bandwidth (P2520) Wszystkie zestawy parametrów PRAWDA 0 Uint8
+25-23 Opóźnienie dostawienia SBW 15 sek. Wszystkie zestawy parametrów PRAWDA 0 Uint16
+25-24 Opóźnienie odstawienia SBW 15 sek. Wszystkie zestawy parametrów PRAWDA 0 Uint16
+25-25 Czas OBW 10 sek. Wszystkie zestawy parametrów PRAWDA 0 Uint16
+25-26 Odstawienie przy braku przepływu [0] Wyłączone Wszystkie zestawy parametrów PRAWDA - Uint8
+25-27 Funkcja dostawiania [1] Aktywne Wszystkie zestawy parametrów PRAWDA - Uint8
+25-28 Czas funkcji dostawiania 15 sek. Wszystkie zestawy parametrów PRAWDA 0 Uint16
+25-29 Funkcja odstawienia [1] Aktywne Wszystkie zestawy parametrów PRAWDA - Uint8
+25-30 Czas funkcji odstawienia 15 sek. Wszystkie zestawy parametrów PRAWDA 0 Uint16
+25-4* Ustawienia dostawienia
+25-40 Opóźnienie zatrzymania 10,0 sek. Wszystkie zestawy parametrów PRAWDA -1 Uint16
+25-41 Opóźnienie rozpędzania 2,0 sek. Wszystkie zestawy parametrów PRAWDA -1 Uint16
+25-42 Próg dostawienia SR Wszystkie zestawy parametrów PRAWDA 0 Uint8
+25-43 Próg odstawienia SR Wszystkie zestawy parametrów PRAWDA 0 Uint8
+25-44 Prędkość dostawienia [obr/min] 0 obr./min Wszystkie zestawy parametrów PRAWDA 67 Uint16
+25-45 Prędkość dostawienia [Hz] 0,0 Hz Wszystkie zestawy parametrów PRAWDA -1 Uint16
+25-46 Prędkość odstawienia [obr./min] 0 obr./min Wszystkie zestawy parametrów PRAWDA 67 Uint16
+25-47 Prędkość odstawienia [Hz] 0,0 Hz Wszystkie zestawy parametrów PRAWDA -1 Uint16
+25-5* Ustawienia rotacji
+25-50 Rotacja pomp głównych [0] Wyłączone Wszystkie zestawy parametrów PRAWDA - Uint8
+25-51 Zdarzenie rotacji [0] Zewnętrzne Wszystkie zestawy parametrów PRAWDA - Uint8
+25-52 Odstęp czasu rotacji 24 godz. Wszystkie zestawy parametrów PRAWDA 74 Uint16
+25-53 Wartość timera rotacji 0 b.d. Wszystkie zestawy parametrów PRAWDA 0 VisStr[7]
+25-54 Zdefiniowany czas rotacji SR Wszystkie zestawy parametrów PRAWDA 0 TimeOfDayWoDate
+25-55 Rotacja, jeśli obciążenie < 50% [1] Aktywne Wszystkie zestawy parametrów PRAWDA - Uint8
+25-56 Tryb dostawiania przy rotacji [0] Wolny Wszystkie zestawy parametrów PRAWDA - Uint8
+25-58 Praca z opóźnieniem następnej pompy 0,1 sek. Wszystkie zestawy parametrów PRAWDA -1 Uint16
+25-59 Praca z opóźnieniem zasilania 0,5 sek. Wszystkie zestawy parametrów PRAWDA -1 Uint16
+25-8* Status
+25-80 Status kaskady 0 b.d. Wszystkie zestawy parametrów PRAWDA 0 VisStr[25]
+25-81 Status pompy 0 b.d. Wszystkie zestawy parametrów PRAWDA 0 VisStr[25]
+25-82 Pompa główna 0 b.d. Wszystkie zestawy parametrów PRAWDA 0 Uint8
+25-83 Status przekaźnika 0 b.d. Wszystkie zestawy parametrów PRAWDA 0 VisStr[4]
+25-84 Czas załączenia pompy 0 godz. Wszystkie zestawy parametrów PRAWDA 74 Uint32
+25-85 Czas załączenia przekaźnika 0 godz. Wszystkie zestawy parametrów PRAWDA 74 Uint32
+25-86 Reset liczników przekaźnika [0] Nie kasować Wszystkie zestawy parametrów PRAWDA - Uint8
+25-9* Obsługa
+25-90 Blokada pompy [0] Wyłączone Wszystkie zestawy parametrów PRAWDA - Uint8
+25-91 Rotacja ręczna 0 b.d. Wszystkie zestawy parametrów PRAWDA 0 Uint8
+26-0* Tryb we/wy analog
+26-00 Zacisk X42/1 Tryb [1] Napięcie Wszystkie zestawy parametrów PRAWDA - Uint8
+26-01 Zacisk X42/3 Tryb [1] Napięcie Wszystkie zestawy parametrów PRAWDA - Uint8
+26-02 Zacisk X42/5 Tryb [1] Napięcie Wszystkie zestawy parametrów PRAWDA - Uint8
+26-1* Wejście analogowe X42/1
+26-10 Zacisk X42/1 Dolna skala napięcia 0,07 V Wszystkie zestawy parametrów PRAWDA -2 Int16
+26-11 Zacisk X42/1 Górna skala napięcia 10,00 V Wszystkie zestawy parametrów PRAWDA -2 Int16
+26-14 Zacisk X42/1 Dolna skala wart. zad./ wartość 0 b.d. Wszystkie zestawy parametrów PRAWDA -3 Int32
+26-15 Zacisk X42/1 Górna skala wart. zad./ sprz.zwr. 100,000 b.d. Wszystkie zestawy parametrów PRAWDA -3 Int32
+26-16 Zacisk X42/1 Stała czasowa filtra 0,001 sek. Wszystkie zestawy parametrów PRAWDA -3 Uint16
+26-17 Zacisk X42/1 Live Zero [1] Aktywne Wszystkie zestawy parametrów PRAWDA - Uint8
+26-2* Wejście analogowe X42/3
+26-20 Zacisk X42/3 Dolna skala napięcia 0,07 V Wszystkie zestawy parametrów PRAWDA -2 Int16
+26-21 Zacisk X42/3 Górna skala napięcia 10,00 V Wszystkie zestawy parametrów PRAWDA -2 Int16
+26-24 Zacisk X42/3 Dolna skala wart. zad./ sprz.zwr. 0 b.d. Wszystkie zestawy parametrów PRAWDA -3 Int32
+26-25 Zacisk X42/3 Górna skala wart. zad./ sprz.zwr. 100,000 b.d. Wszystkie zestawy parametrów PRAWDA -3 Int32
+26-26 Zacisk X42/3 Stała czasowa filtra 0,001 sek. Wszystkie zestawy parametrów PRAWDA -3 Uint16
+26-27 Zacisk X42/3 Live Zero [1] Aktywne Wszystkie zestawy parametrów PRAWDA - Uint8
+26-3* Wejście analogowe X42/5
+26-30 Zacisk X42/5 Dolna skala napięcia 0,07 V Wszystkie zestawy parametrów PRAWDA -2 Int16
+26-31 Zacisk X42/5 Górna skala napięcia 10,00 V Wszystkie zestawy parametrów PRAWDA -2 Int16
+26-34 Zacisk X42/5 Dolna skala wart. zad./ sprz.zwr. 0 b.d. Wszystkie zestawy parametrów PRAWDA -3 Int32
+26-35 Zacisk X42/5 Górna skala wart. zad./ sprz.zwr. 100,000 b.d. Wszystkie zestawy parametrów PRAWDA -3 Int32
+26-36 Zacisk X42/5 Stała czasowa filtra 0,001 sek. Wszystkie zestawy parametrów PRAWDA -3 Uint16
+26-37 Zacisk X42/5 Live Zero [1] Aktywne Wszystkie zestawy parametrów PRAWDA - Uint8
+26-4* Wyjście analogowe X42/7
+26-40 Zacisk X42/7, wyjście [0] Brak działania Wszystkie zestawy parametrów PRAWDA - Uint8
+26-41 Zacisk X42/7 Min. skalowanie 0.00 % Wszystkie zestawy parametrów PRAWDA -2 Int16
+26-42 Zacisk X42/7 Maks. skalowanie 100.00 % Wszystkie zestawy parametrów PRAWDA -2 Int16
+26-43 Zacisk X42/7 Wyj. sterowania magistralą 0.00 % Wszystkie zestawy parametrów PRAWDA -2 N2
+26-44 Zacisk X42/7 Wyj. nastawy timeout 0.00 % 1 zestaw parametrów PRAWDA -2 Uint16
+26-5* Wyjście analogowe X42/9
+26-50 Zacisk X42/9, wyjście [0] Brak działania Wszystkie zestawy parametrów PRAWDA - Uint8
+26-51 Zacisk X42/9 Min. skalowanie 0.00 % Wszystkie zestawy parametrów PRAWDA -2 Int16
+26-52 Zacisk X42/9 Maks. skalowanie 100.00 % Wszystkie zestawy parametrów PRAWDA -2 Int16
+26-53 Zacisk X42/9 Wyj. sterowania magistralą 0.00 % Wszystkie zestawy parametrów PRAWDA -2 N2
+26-54 Zacisk X42/9 Wyj. nastawy timeout 0.00 % 1 zestaw parametrów PRAWDA -2 Uint16
+26-6* Wyjście analogowe X42/11
+26-60 Zacisk X42/11, wyjście [0] Brak działania Wszystkie zestawy parametrów PRAWDA - Uint8
+26-61 Zacisk X42/11 Min. skalowanie 0.00 % Wszystkie zestawy parametrów PRAWDA -2 Int16
+26-62 Zacisk X42/11 Maks. skalowanie 100.00 % Wszystkie zestawy parametrów PRAWDA -2 Int16
+26-63 Zacisk X42/11 Wyj. sterowania magistralą 0.00 % Wszystkie zestawy parametrów PRAWDA -2 N2
+26-64 Zacisk X42/11 Wyj. nastawy timeout 0.00 % 1 zestaw parametrów PRAWDA -2 Uint16
+29-0* Napełnianie rur
+29-00 Włączenie napełniania rur Wyłączone Wszystkie zestawy parametrów PRAWDA - -
+29-01 Prędkość napełniania rur [obr./min] Dolna granica prędkości silnika Wszystkie zestawy parametrów PRAWDA - -
+29-02 Prędkość napełniania rur [Hz] Dolna granica prędkości silnika Wszystkie zestawy parametrów PRAWDA - -
+29-03 Czas napełniania rur 0 Wszystkie zestawy parametrów PRAWDA - -
+29-04 Prędkość napełniania rur - Wszystkie zestawy parametrów PRAWDA - -
+29-05 Wartość zadana napełnienia 0 Wszystkie zestawy parametrów PRAWDA - -
+31-00 Tryb obejścia [0] Napęd Wszystkie zestawy parametrów PRAWDA - Uint8
+31-01 Opóźnienie czasu uruchomienia obejścia 30 sek. Wszystkie zestawy parametrów PRAWDA 0 Uint16
+31-02 Opóźnienie czasu wyłączenia obejścia 0 sek. Wszystkie zestawy parametrów PRAWDA 0 Uint16
+31-03 Aktywacja trybu testowego [0] Wyłączone Wszystkie zestawy parametrów PRAWDA - Uint8
+31-10 Słowo statusowe obejścia 0 b.d. Wszystkie zestawy parametrów FAŁSZ 0 V2
+31-11 Godziny pracy obejścia 0 godz. Wszystkie zestawy parametrów FAŁSZ 74 Uint32
+31-19 Aktywacja zdalnego obejścia [0] Wyłączone 2 zestawy parametrów PRAWDA - Uint8

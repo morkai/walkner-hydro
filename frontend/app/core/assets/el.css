@@ -1,0 +1,371 @@
+.el-clickable {
+  cursor: pointer;
+}
+.el-disabled {
+  opacity: .5;
+}
+
+.el-direction {
+  stroke-width: 2;
+  stroke: #000;
+  fill: none;
+}
+
+.el-group {
+  stroke-width: 2px;
+  stroke: #000;
+  fill: none;
+  stroke-dasharray: 5, 7;
+}
+
+.el-label {
+  font-size: 12px;
+  stroke: none;
+  fill: #000;
+}
+
+.el-path {
+  pointer-events: stroke;
+  stroke-width: 4px;
+  stroke: #000;
+  fill: none;
+}
+.el-path-air {
+  stroke: #0cf;
+}
+.el-path-rawWater {
+  stroke: #060;
+}
+.el-path-dirtyWater {
+  stroke: #950;
+}
+.el-path-cleanWater {
+  stroke: #06f;
+}
+.el-path-chlor {
+  stroke: #fa0;
+}
+.el-path-ending stop {
+  stop-color: #000;
+}
+.el-path-ending stop:first-child {
+  stop-opacity: 0;
+}
+.el-path-ending-air stop {
+  stop-color: #0cf;
+}
+.el-path-ending-rawWater stop {
+  stop-color: #060;
+}
+.el-path-ending-dirtyWater stop {
+  stop-color: #950;
+}
+.el-path-ending-cleanWater stop {
+  stop-color: #06f;
+}
+.el-path-ending-chlor stop {
+  stop-color: #fa0;
+}
+
+.el-valve {
+  stroke-width: 2;
+  stroke: #000;
+}
+.el-valve path {
+  fill: #fff;
+}
+.el-valve-left path:first-child {
+  fill: #000;
+}
+.el-valve-right path:nth-child(2) {
+  fill: #000;
+}
+.el-valve text {
+  stroke: none;
+}
+.el-valve.el-active {
+  stroke: #00af00;
+}
+.el-valve-left.el-active path:first-child {
+  fill: #00af00;
+}
+.el-valve-right.el-active path:nth-child(2) {
+  fill: #00af00;
+}
+
+.el-pump {
+  stroke-width: 2;
+  stroke: #000;
+  fill: #fff;
+}
+.el-pump path {
+  fill: #000;
+  stroke-linejoin: bevel;
+}
+.el-pump.el-active {
+  stroke: #00af00;
+}
+.el-pump.el-active path {
+  fill: #00af00;
+}
+.el-pump[data-mode="hand"] {
+  stroke: #08c;
+}
+.el-pump[data-mode="hand"] path {
+  fill: #08c;
+}
+.el-pump.el-active[data-mode="hand"] {
+  stroke: #04c;
+}
+.el-pump.el-active[data-mode="hand"] path {
+  fill: #04c;
+}
+.el-pump[data-mode="manual"] {
+  stroke: #FBB450;
+}
+.el-pump[data-mode="manual"] path {
+  fill: #FBB450;
+}
+.el-pump.el-active[data-mode="manual"] {
+  stroke: #F89406;
+}
+.el-pump.el-active[data-mode="manual"] path {
+  fill: #F89406;
+}
+.el-pump[data-mode="auto"] {
+  stroke: #62C462;
+}
+.el-pump[data-mode="auto"] path {
+  fill: #62C462;
+}
+.el-pump.el-active[data-mode="auto"] {
+  stroke: #51A351;
+}
+.el-pump.el-active[data-mode="auto"] path {
+  fill: #51A351;
+}
+
+.el-inputPump-waterLevel {
+  stroke-width: 2;
+  stroke: #000;
+}
+.el-inputPump-waterLevel rect {
+  stroke-width: 0;
+}
+.el-inputPump-well {
+  stroke-width: 2;
+  stroke: #000;
+  fill: none;
+}
+.el-inputPump-well-fill {
+  stroke: none;
+}
+.el-inputPump-well-waterLevel {
+  stroke: none;
+  fill: #fff;
+}
+.el-inputPump-sensor {
+  stroke-width: 2;
+  stroke: #000;
+  fill: #000;
+}
+
+.el-guide path {
+  stroke-width: .5;
+  stroke: #000;
+  fill: none;
+}
+.el-guide  text {
+  stroke: none;
+  fill: #000;
+  font-size: 10px;
+}
+
+.el-aerationSet {
+  stroke-width: 2;
+  stroke: #000;
+  fill: #fff;
+}
+.el-aerationSet-fill {
+  stroke: none;
+}
+.el-aerationSet-separator {
+  fill: none;
+  stroke-dasharray: 10;
+}
+
+.el-compressor {
+  stroke-width: 2;
+  stroke: #000;
+  fill: #fff;
+}
+.el-compressor path {
+  fill: none;
+}
+.el-compressor-top {
+  stroke-width: 5;
+}
+
+.el-pneumaticDistributor {
+  stroke-width: 2;
+  stroke: #000;
+  fill: #fff;
+}
+.el-pneumaticDistributor.el-active {
+  stroke: #00af00;
+}
+
+.el-safetyValve {
+  stroke-width: 2;
+  stroke: #000;
+  fill: none;
+}
+.el-safetyValve-valve {
+  fill: #fff;
+}
+
+.el-filterSet {
+  stroke-width: 2;
+  stroke: #000;
+  fill: #fff;
+}
+.el-filterSet-fill {
+  stroke: none;
+}
+.el-filterSet-separator {
+  stroke-dasharray: 10;
+}
+.el-filterSet-bot circle {
+  fill: none;
+}
+
+.el-settler {
+  stroke-width: 2;
+  stroke: #000;
+  fill: none;
+}
+.el-settler-outerContainer {
+  fill: #fff;
+}
+
+.el-controlMeasureBox {
+  stroke-width: 2;
+  stroke: #000;
+  fill: #fff;
+}
+
+.el-reservoir {
+  stroke-width: 2;
+  stroke: #000;
+  fill: #fff;
+}
+.el-reservoir-outerContainer {
+  fill: none;
+}
+.el-reservoir-innerContainer {
+  stroke-width: 0;
+}
+.el-reservoir-triangle {
+  stroke-width: 2;
+  stroke: #000;
+  fill: #fff;
+}
+
+.el-flowMeter {
+  stroke-width: 2;
+  stroke: #000;
+  fill: #fff;
+}
+.el-flowMeter path {
+  stroke-linejoin: round;
+  fill: none;
+}
+
+.el-blower {
+  stroke-width: 2;
+  stroke: #000;
+  fill: #fff;
+}
+.el-blower.el-active {
+  stroke: #00af00;
+}
+
+.el-uvLamp {
+  stroke-width: 2;
+  stroke: #000;
+  fill: none;
+}
+.el-uvLamp-valve {
+  fill: #fff;
+  stroke-width: 4;
+}
+.el-uvLamp rect {
+  fill: #fff;
+}
+.el-uvLamp.el-active {
+  stroke: #00af00;
+}
+
+.el-antiBlowTank {
+  stroke-width: 2;
+  stroke: #000;
+  fill: #fff;
+}
+
+.el-chlorSet {
+  stroke-width: 2;
+  stroke: #000;
+  fill: #fff;
+}
+.el-chlorSet-top {
+  stroke-width: 4;
+}
+.el-chlorSet-top path {
+  fill: #000;
+  stroke-linejoin: bevel;
+}
+
+.el-sensor {
+  stroke-width: 2;
+  stroke: #000;
+  fill: #fff;
+}
+.el-sensor text {
+  font-size: 18px;
+  stroke: none;
+  fill: #000;
+}
+
+.el-extreme {
+  stroke-width: 2;
+  stroke: #00af00;
+  fill: #00af00;
+}
+.el-extreme.el-active {
+  stroke: #e00;
+  fill: #e00;
+}
+
+.el-tag {
+  stroke: 0;
+}
+.el-tag path {
+  stroke: #000;
+  stroke-width: 2px;
+}
+.el-tag rect {
+  fill: #333;
+  cursor: pointer;
+  stroke-width: 0;
+}
+.el-tag text {
+  font-family: monospace;
+}
+.el-tag text {
+  font-size: 14px;
+  stroke: none;
+  stroke-width: 0;
+  fill: #fff;
+  cursor: pointer;
+  text-shadow: 1px 1px 3px #000;
+}

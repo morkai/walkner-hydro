@@ -1,0 +1,60 @@
+<div class="well">
+  <form id="<%- idPrefix %>-form" class="events-filter-form">
+    <div class="control-group">
+      <label class="control-label" for="<%- idPrefix %>-from"><%- t('events', 'FILTER_FROM') %></label>
+      <div class="controls">
+        <input id="<%- idPrefix %>-from" name="from" type="text" placeholder="YYYY-MM-DD hh:mm:ss">
+      </div>
+    </div>
+    <div class="control-group">
+      <label class="control-label" for="<%- idPrefix %>-to"><%- t('events', 'FILTER_TO') %></label>
+      <div class="controls">
+        <input id="<%- idPrefix %>-to" name="to" type="text" placeholder="YYYY-MM-DD hh:mm:ss">
+      </div>
+    </div>
+    <div class="control-group">
+      <label class="control-label" for="<%- idPrefix %>-type"><%- t('events', 'FILTER_TYPE') %></label>
+      <div class="controls">
+        <select id="<%- idPrefix %>-type" name="type">
+          <option value="$ANY"><%= t('events', 'FILTER_TYPE_ANY') %>
+            <% types.forEach(function(type) { %>
+          <option value="<%- type.value %>"><%= type.label %>
+            <% }) %>
+        </select>
+      </div>
+    </div>
+    <div class="control-group">
+      <label class="control-label" for="<%- idPrefix %>-user"><%- t('events', 'FILTER_USER') %></label>
+      <div class="controls">
+        <select id="<%- idPrefix %>-user" name="user">
+          <option value="$ANY"><%= t('events', 'FILTER_USER_ANY') %>
+          <option value="$SYSTEM"><%= t('events', 'FILTER_USER_SYSTEM') %>
+          <option>root
+          <% users.forEach(function(user) { %>
+          <option><%= user.login %>
+          <% }) %>
+        </select>
+      </div>
+    </div>
+    <div class="control-group">
+      <label class="control-label" for="<%- idPrefix %>-limit"><%- t('events', 'FILTER_LIMIT') %></label>
+      <div class="controls">
+        <input id="<%- idPrefix %>-limit" name="limit" type="number" value="25" min="5" max="100" step="1">
+      </div>
+    </div>
+    <div class="control-group">
+      <label class="control-label"><%- t('events', 'FILTER_SEVERITY') %></label>
+      <div class="btn-group" data-toggle="buttons-checkbox">
+        <button class="btn btn events-form-severity" type="button" title="DEBUG">&nbsp;</button>
+        <button class="btn btn-info events-form-severity" type="button" title="INFO">&nbsp;</button>
+        <button class="btn btn-success events-form-severity" type="button" title="SUCCESS">&nbsp;</button>
+        <button class="btn btn-warning events-form-severity" type="button" title="WARNING">&nbsp;</button>
+        <button class="btn btn-danger events-form-severity" type="button" title="ERROR">&nbsp;</button>
+      </div>
+    </div><div class="control-group events-filter-actions">
+      <div class="controls">
+        <input type="submit" class="btn btn-primary" value="<%= t('events', 'FILTER_BUTTON') %>">
+      </div>
+    </div>
+  </form>
+</div>

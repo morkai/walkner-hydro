@@ -1,0 +1,10 @@
+<div class="grid">
+  <% rows.forEach(function(row) { %>
+  <div class="<%- rowClassName %> <%- row.className %>">
+    <% row.columns.forEach(function(column) { %>
+    <div id="<%- column.id %>" class="span<%- column.span %> <%- column.className %>"></div>
+    <% }) %>
+  </div>
+  <% }) %>
+</div>
+

@@ -1,0 +1,92 @@
+<div class="well diag-cabinet">
+  <div class="diag-cabinet-row">
+    <div class="well diag-cabinet-column">
+      <p class="diag-cabinet-control">
+        <img class="diag-cabinet-control-image" src="/assets/img/led.svg" data-tag="tech.failure" data-type="led" data-on-color="red" width=95 height=95>
+        <span class="diag-cabinet-control-label"><%- t('diagnostics', 'CABINET_LED_FAILURE') %></span>
+      </p>
+    </div>
+    <div class="well diag-cabinet-column">
+      <p class="diag-cabinet-control">
+        <img class="diag-cabinet-control-image" src="/assets/img/led.svg" data-tag="masters.techPlc" data-type="led" data-on-color="green">
+        <span class="diag-cabinet-control-label"><%- t('diagnostics', 'CABINET_LED_POWER') %></span>
+      </p>
+    </div>
+  </div>
+  <div class="diag-cabinet-row">
+    <a class="well diag-cabinet-column" href="#diagnostics/input-pumps/1">
+      <p class="diag-cabinet-control">
+        <img class="diag-cabinet-control-image" src="/assets/img/switch.svg" data-tag="inputPumps.1.switch" data-type="switch">
+        <span class="diag-cabinet-control-label"><%- t('diagnostics', 'CABINET_SWITCH_INPUT_PUMP', {id: 1}) %></span>
+      </p>
+      <p class="diag-cabinet-control">
+        <img class="diag-cabinet-control-image" src="/assets/img/led.svg" data-tag="inputPumps.1.status" data-type="led" data-on-color="green">
+        <span class="diag-cabinet-control-label"><%- t('diagnostics', 'CABINET_LED_INPUT_PUMP_STATUS') %></span>
+      </p>
+      <p class="diag-cabinet-control">
+        <img class="diag-cabinet-control-image" src="/assets/img/led.svg" data-tag="inputPumps.1.failure" data-type="led" data-on-color="red">
+        <span class="diag-cabinet-control-label"><%- t('diagnostics', 'CABINET_LED_INPUT_PUMP_FAILURE') %></span>
+      </p>
+      <p class="diag-cabinet-control">
+        <img class="diag-cabinet-control-image" src="/assets/img/led.svg" data-tag="inputPumps.1.dryRunLed" data-type="led" data-on-color="yellow">
+        <span class="diag-cabinet-control-label"><%- t('diagnostics', 'CABINET_LED_INPUT_PUMP_DRYRUN') %></span>
+      </p>
+    </a>
+    <a class="well diag-cabinet-column" href="#diagnostics/input-pumps/2">
+      <p class="diag-cabinet-control">
+        <img class="diag-cabinet-control-image" src="/assets/img/switch.svg" data-tag="inputPumps.2.switch" data-type="switch">
+        <span class="diag-cabinet-control-label"><%- t('diagnostics', 'CABINET_SWITCH_INPUT_PUMP', {id: 2}) %></span>
+      </p>
+      <p class="diag-cabinet-control">
+        <img class="diag-cabinet-control-image" src="/assets/img/led.svg" data-tag="inputPumps.2.status" data-type="led" data-on-color="green">
+        <span class="diag-cabinet-control-label"><%- t('diagnostics', 'CABINET_LED_INPUT_PUMP_STATUS') %></span>
+      </p>
+      <p class="diag-cabinet-control">
+        <img class="diag-cabinet-control-image" src="/assets/img/led.svg" data-tag="inputPumps.2.failure" data-type="led" data-on-color="red">
+        <span class="diag-cabinet-control-label"><%- t('diagnostics', 'CABINET_LED_INPUT_PUMP_FAILURE') %></span>
+      </p>
+      <p class="diag-cabinet-control">
+        <img class="diag-cabinet-control-image" src="/assets/img/led.svg" data-tag="inputPumps.2.dryRunLed" data-type="led" data-on-color="yellow">
+        <span class="diag-cabinet-control-label"><%- t('diagnostics', 'CABINET_LED_INPUT_PUMP_DRYRUN') %></span>
+      </p>
+    </a>
+    <a class="well diag-cabinet-column" href="#diagnostics/blower">
+      <p class="diag-cabinet-control">
+        <img class="diag-cabinet-control-image" src="/assets/img/switch.svg" data-tag="blower.switch" data-type="switch">
+        <span class="diag-cabinet-control-label"><%- t('diagnostics', 'CABINET_SWITCH_BLOWER') %></span>
+      </p>
+      <p class="diag-cabinet-control">
+        <img class="diag-cabinet-control-image" src="/assets/img/led.svg" data-tag="blower.status" data-type="led" data-on-color="green">
+        <span class="diag-cabinet-control-label"><%- t('diagnostics', 'CABINET_LED_BLOWER_STATUS') %></span>
+      </p>
+      <p class="diag-cabinet-control">
+        <img class="diag-cabinet-control-image" src="/assets/img/led.svg" data-tag="blower.failure" data-type="led" data-on-color="red">
+        <span class="diag-cabinet-control-label"><%- t('diagnostics', 'CABINET_LED_BLOWER_FAILURE') %></span>
+      </p>
+    </a>
+    <a class="well diag-cabinet-column" href="#diagnostics/washing-pump">
+      <p class="diag-cabinet-control">
+        <img class="diag-cabinet-control-image" src="/assets/img/switch.svg" data-tag="washingPump.switch" data-type="switch">
+        <span class="diag-cabinet-control-label"><%- t('diagnostics', 'CABINET_SWITCH_WASHING_PUMP') %></span>
+      </p>
+      <p class="diag-cabinet-control">
+        <img class="diag-cabinet-control-image" src="/assets/img/led.svg" data-tag="washingPump.status" data-type="led" data-on-color="green">
+        <span class="diag-cabinet-control-label"><%- t('diagnostics', 'CABINET_LED_WASHING_PUMP_STATUS') %></span>
+      </p>
+      <p class="diag-cabinet-control">
+        <img class="diag-cabinet-control-image" src="/assets/img/led.svg" data-tag="washingPump.failure" data-type="led" data-on-color="red">
+        <span class="diag-cabinet-control-label"><%- t('diagnostics', 'CABINET_LED_WASHING_PUMP_FAILURE') %></span>
+      </p>
+    </a>
+    <a class="well diag-cabinet-column" href="#diagnostics/air-valve">
+      <p class="diag-cabinet-control">
+        <img class="diag-cabinet-control-image" src="/assets/img/switch.svg" data-tag="airValve.switch" data-type="switch">
+        <span class="diag-cabinet-control-label"><%- t('diagnostics', 'CABINET_SWITCH_AIR_VALVE') %></span>
+      </p>
+      <p class="diag-cabinet-control">
+        <img class="diag-cabinet-control-image" src="/assets/img/led.svg" data-tag="airValve.status" data-type="led" data-on-color="green">
+        <span class="diag-cabinet-control-label"><%- t('diagnostics', 'CABINET_LED_AIR_VALVE_STATUS') %></span>
+      </p>
+    </a>
+  </div>
+</div>

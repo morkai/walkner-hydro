@@ -1,0 +1,22 @@
+.events-filter-container {
+  margin-bottom: 1em;
+}
+.events-filter-container .well {
+  padding: 1em 1em 0 1em;
+}
+.events-filter-form .control-group {
+  display: inline-block;
+  margin-bottom: 1em;
+}
+.events-filter-form input {
+  margin-bottom: 0;
+}
+.events-filter-form input[name="limit"] {
+  width: 3em;
+  text-align: right;
+}
+.events-filter-actions {
+  padding-left: 1em;
+  margin-left: 1em;
+  border-left: 1px solid #e3e3e3;
+}

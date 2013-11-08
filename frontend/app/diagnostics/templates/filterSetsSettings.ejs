@@ -1,0 +1,86 @@
+<div class="form-horizontal diag-settings">
+  <hr>
+  <div class="control-group">
+    <label class="control-label" for="settings-filterSets-valveOpenDelay"><%- t('diagnostics', 'SETTINGS:filterSets.valveOpenDelay') %></label>
+    <div class="controls">
+      <div class="input-append">
+        <input id="settings-filterSets-valveOpenDelay" class="span2" type="number" name="filterSets.valveOpenDelay" required min="0" max="10000" autofocus>
+        <span class="add-on">ms</span>
+      </div>
+    </div>
+  </div>
+  <div class="control-group">
+    <label class="control-label" for="settings-filterSets-washFromHour"><%- t('diagnostics', 'SETTINGS:filterSets.washFromHour') %></label>
+    <div class="controls">
+      <div class="input-append">
+        <input id="settings-filterSets-washFromHour" class="span2" type="number" name="filterSets.washFromHour" required min="0" max="23">
+        <span class="add-on">h</span>
+      </div>
+    </div>
+  </div>
+  <div class="control-group">
+    <label class="control-label" for="settings-filterSets-washToHour"><%- t('diagnostics', 'SETTINGS:filterSets.washToHour') %></label>
+    <div class="controls">
+      <div class="input-append">
+        <input id="settings-filterSets-washToHour" class="span2" type="number" name="filterSets.washToHour" required min="0" max="23">
+        <span class="add-on">h</span>
+      </div>
+    </div>
+  </div>
+  <div class="control-group">
+    <label class="control-label" for="settings-filterSets-washAfterHours"><%- t('diagnostics', 'SETTINGS:filterSets.washAfterHours') %></label>
+    <div class="controls">
+      <div class="input-append">
+        <input id="settings-filterSets-washAfterHours" class="span2" type="number" name="filterSets.washAfterHours" required min="1" max="999">
+        <span class="add-on">h</span>
+      </div>
+    </div>
+  </div>
+  <div class="control-group">
+    <label class="control-label" for="settings-filterSets-washAfterFlow"><%- t('diagnostics', 'SETTINGS:filterSets.washAfterFlow') %></label>
+    <div class="controls">
+      <div class="input-append">
+        <input id="settings-filterSets-washAfterFlow" class="span2" type="number" name="filterSets.washAfterFlow" required min="10" max="99999">
+        <span class="add-on">m<sup>3</sup></span>
+      </div>
+    </div>
+  </div>
+  <hr>
+  <div class="control-group">
+    <label class="control-label" for="settings-filterSets-drainingTime"><%- t('diagnostics', 'SETTINGS:filterSets.drainingTime') %></label>
+    <div class="controls">
+      <div class="input-append">
+        <input id="settings-filterSets-drainingTime" class="span2" type="number" name="filterSets.drainingTime" required min="1" max="86400">
+        <span class="add-on">s</span>
+      </div>
+    </div>
+  </div>
+  <div class="control-group">
+    <label class="control-label" for="settings-filterSets-blowingTime"><%- t('diagnostics', 'SETTINGS:filterSets.blowingTime') %></label>
+    <div class="controls">
+      <div class="input-append">
+        <input id="settings-filterSets-blowingTime" class="span2" type="number" name="filterSets.blowingTime" required min="1" max="86400">
+        <span class="add-on">s</span>
+      </div>
+    </div>
+  </div>
+  <div class="control-group">
+    <label class="control-label" for="settings-filterSets-stabilizationTime"><%- t('diagnostics', 'SETTINGS:filterSets.stabilizationTime') %></label>
+    <div class="controls">
+      <div class="input-append">
+        <input id="settings-filterSets-stabilizationTime" class="span2" type="number" name="filterSets.stabilizationTime" required min="1" max="86400">
+        <span class="add-on">s</span>
+      </div>
+    </div>
+  </div>
+  <div class="control-group">
+    <label class="control-label" for="settings-filterSets-rinsingTime"><%- t('diagnostics', 'SETTINGS:filterSets.rinsingTime') %></label>
+    <div class="controls">
+      <div class="input-append">
+        <input id="settings-filterSets-rinsingTime" class="span2" type="number" name="filterSets.rinsingTime" required min="1" max="86400">
+        <span class="add-on">s</span>
+      </div>
+    </div>
+  </div>
+  <hr>
+</div>

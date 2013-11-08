@@ -1,0 +1,627 @@
+<div class="monitoring">
+
+<div class="monitoring-charts-container">
+  <div class="monitoring-charts"></div>
+</div>
+
+<svg class="monitoring-svg" width="1765" height="955" viewBox="19 50 1765 955" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+
+<defs>
+  <linearGradient id="<%- idPrefix %>-reservoirs-1-waterLevel-fill" x1="0" x2="0" y1="0" y2="1">
+    <stop offset="1" stop-color="#fff" />
+    <stop offset="1" stop-color="#aef" />
+    <stop offset="1" stop-color="#acf" />
+  </linearGradient>
+  <linearGradient id="<%- idPrefix %>-reservoirs-2-waterLevel-fill" x1="0" x2="0" y1="0" y2="1">
+    <stop offset="1" stop-color="#fff" />
+    <stop offset="1" stop-color="#aef" />
+    <stop offset="1" stop-color="#acf" />
+  </linearGradient>
+  <linearGradient id="<%- idPrefix %>-inputPumps-1-waterLevel-fill" x1="0" x2="0" y1="0" y2="1">
+    <stop offset="1" stop-color="#f5f5f5" />
+    <stop offset="1" stop-color="#aef" />
+    <stop offset="1" stop-color="#acf" />
+  </linearGradient>
+  <linearGradient id="<%- idPrefix %>-inputPumps-2-waterLevel-fill" x1="0" x2="0" y1="0" y2="1">
+    <stop offset="1" stop-color="#f5f5f5" />
+    <stop offset="1" stop-color="#aef" />
+    <stop offset="1" stop-color="#acf" />
+  </linearGradient>
+  <pattern id="<%- idPrefix %>-aerationSet-fill" x="0" y="0" width="15" height="15" patternUnits="userSpaceOnUse" patternTransform="rotate(45)">
+    <path d="M 0 0 v 15 h 15" stroke-width="2" stroke="#000" fill="none" />
+  </pattern>
+  <pattern id="<%- idPrefix %>-filterSets-1-fill" x="0" y="0" width="15" height="15" patternUnits="userSpaceOnUse" patternTransform="rotate(45)">
+    <path d="M 0 0 v 15 h 15" stroke-width="2" stroke="#000" fill="none" />
+  </pattern>
+  <pattern id="<%- idPrefix %>-filterSets-2-fill" x="0" y="0" width="15" height="15" patternUnits="userSpaceOnUse" patternTransform="rotate(45)">
+    <path d="M 0 0 v 15 h 15" stroke-width="2" stroke="#000" fill="none" />
+  </pattern>
+  <pattern id="<%- idPrefix %>-settler-fill" x="0" y="0" width="10" height="10" patternUnits="userSpaceOnUse" patternTransform="rotate(45)">
+    <path d="M 0 0 v 10" stroke-width="2" stroke="#000" fill="none" />
+  </pattern>
+</defs>
+
+<g id="<%- idPrefix %>-inputPumps-1-waterLevel" class="el-inputPump-waterLevel el-clickable" transform="translate(75, 934)" data-href="#diagnostics/input-pumps/1">
+  <path d="M 0 0 h -25 v -195 m 25 195 h 25 v -195" />
+  <rect class="fill" x="-24" y="-195" width="48" height="194" fill="url(#<%- idPrefix %>-inputPumps-1-waterLevel-fill)" />
+</g>
+
+<g id="<%- idPrefix %>-inputPumps-2-waterLevel" class="el-inputPump-waterLevel el-clickable" transform="translate(175, 934)" data-href="#diagnostics/input-pumps/2">
+  <path d="M 0 0 h -25 v -195 m 25 195 h 25 v -195" />
+  <rect class="fill" x="-24" y="-195" width="48" height="194" fill="url(#<%- idPrefix %>-inputPumps-2-waterLevel-fill)" />
+</g>
+
+<g id="<%- idPrefix %>-inputPumps-1" class="el-pump el-inputPump el-clickable" transform="translate(75, 854)" title="<%- t('monitoring', 'INPUT_PUMP', {id: 1}) %>" data-href="#diagnostics/input-pumps/1">
+  <circle r="16" cx="0" cy="0" />
+  <path d="M 0 -16 l 14 24 h -28 z" />
+</g>
+
+<g id="<%- idPrefix %>-inputPumps-2" class="el-pump el-inputPump el-clickable" transform="translate(175, 854)" title="<%- t('monitoring', 'INPUT_PUMP', {id: 2}) %>" data-href="#diagnostics/input-pumps/2">
+  <circle r="16" cx="0" cy="0" />
+  <path d="M 0 -16 l 14 24 h -28 z" />
+</g>
+
+<path id="<%- idPrefix %>-path-inputPump1" class="el-path el-path-rawWater" d="M 75 837 v -137" />
+<path id="<%- idPrefix %>-path-inputPump2" class="el-path el-path-rawWater" d="M 175 837 v -137 h -101" />
+
+<g id="<%- idPrefix %>-inputPumps-1-valves" transform="translate(83, 650)">
+  <g class="el-valve el-valve-left" transform="translate(0, 90) rotate(90)">
+    <path d="M 0 0 L 0 16 L 16 8 Z" />
+    <path d="M 32 0 L 32 16 L 16 8 Z" />
+  </g>
+  <g class="el-valve" transform="translate(0, 122) rotate(90)">
+    <path d="M 0 0 L 0 16 L 16 8 Z" />
+    <path d="M 32 0 L 32 16 L 16 8 Z" />
+  </g>
+</g>
+
+<g id="monitoring-inputPumps-2-valves" transform="translate(183, 650)">
+  <g class="el-valve el-valve-left" transform="translate(0, 90) rotate(90)">
+    <path d="M 0 0 L 0 16 L 16 8 Z" />
+    <path d="M 32 0 L 32 16 L 16 8 Z" />
+  </g>
+  <g class="el-valve" transform="translate(0, 122) rotate(90)">
+    <path d="M 0 0 L 0 16 L 16 8 Z" />
+    <path d="M 32 0 L 32 16 L 16 8 Z" />
+  </g>
+</g>
+
+<path id="<%- idPrefix %>-path-pneumaticDistributor-aerationSet" class="el-path el-path-air" d="M 210 418 h -135" />
+
+<path id="<%- idPrefix %>-path-aerationSet-in" class="el-path el-path-rawWater" d="M 75 700 v -301" />
+
+<path id="<%- idPrefix %>-path-aerationSet-out" class="el-path el-path-rawWater" d="M 75 200 V 151 h 475" />
+
+<g class="el-aerationSet" transform="translate(20, 200)" title="<%- t('monitoring', 'AERATION_SET') %>" data-placement="bottom">
+  <rect x="0" y="0" width="110" height="198" rx="10" ry="10" />
+  <rect class="el-aerationSet-fill" x="0" y="25" width="110" height="148" fill="url(#<%- idPrefix %>-aerationSet-fill)" />
+  <path class="el-aerationSet-separator" d="M 0 26 h 110 M 0 172 h 110" />
+  <g transform="translate(90, 0)">
+    <path d="M 5 0 v -10" />
+    <rect x="-1" y="-29" width="12" height="18" />
+  </g>
+</g>
+
+<path id="<%- idPrefix %>-path-aerationSet-v11" class="el-path el-path-rawWater" d="M 550 151 v 55 h -19" />
+<path id="<%- idPrefix %>-path-aerationSet-v21" class="el-path el-path-rawWater" d="M 550 151 h 395 v 55 h -19" />
+
+<g class="el-compressor" transform="translate(100, 61)" title="<%- t('monitoring', 'COMPRESSOR') %>" data-placement="bottom">
+  <path d="M 9.8 0 H 19.8 V 20" />
+  <rect x="-11.8" y="20" width="64" height="50" rx="10" ry="10" />
+  <g class="el-compressor-top" transform="rotate(180) scale(.35)">
+    <circle r="28" cx="0" cy="0" />
+    <path d="M -27 -7 L 23 -17 M -27 7 L 23 17" />
+  </g>
+</g>
+
+<g class="el-pneumaticDistributor" transform="translate(180, 226)" title="<%- t('monitoring', 'PNEUMATIC_DISTRIBUTOR') %>">
+  <rect x="0" y="0" width="60" height="60" />
+</g>
+
+<path id="<%- idPrefix %>-path-compressor-pneumaticDistributor" class="el-path el-path-air" d="M 153 106 h 39 v 119" />
+
+<path id="<%- idPrefix %>-path-pneumaticDistributor-out-bottom" class="el-path el-path-air" d="M 210 287 v 131" />
+
+<path id="<%- idPrefix %>-path-pneumaticDistributor-safetyValve" class="el-path el-path-air" d="M 210 418 v 53 h 50 v -20" />
+
+<g class="el-safetyValve" transform="translate(260, 435)" title="<%- t('monitoring', 'SAFETY_VALVE') %>">
+  <path class="el-safetyValve-valve" d="M 0 0 l 10 15 h -20 l 10 -15 l -15 -10 v 20 z" />
+  <path class="el-safetyValve-zigzag" d="M 0 0 l 15 -11 l -25 -11 l 20 -10 l -20 -10 l 10 -5 v -10" />
+  <circle class="el-safetyValve-top" cx="0" cy="-62" r="5" />
+</g>
+
+<path id="<%- idPrefix %>-pneumaticDistributor-filterSet" class="el-path el-path-air" d="
+    M 228 226 v -120 h 342
+    v 350 h -50 m 0 -53 h 50 m 0 -53 h -50 m 0 -53 h 50 m 0 -53 h -50 m 0 -53 h 50
+    m 0 -85 h 395
+    v 350 h -50 m 0 -53 h 50 m 0 -53 h -50 m 0 -53 h 50 m 0 -53 h -50 m 0 -53 h 50" />
+
+<path id="<%- idPrefix %>-controlMeasureBox-aerationSet-filterSet" class="el-path" d="M 120 180 h 35 v 391 h 145 v -363 h 38 m -38 320 v 40 m 0 -17 h 390 v -343 h 43 m -433 363 v 20" />
+
+<path id="<%- idPrefix %>-controlMeasureBox-v12-v13-v22-v23" class="el-path el-path-dirtyWater" d="M 320 590 v -20 h 310 v -258 h -99 m 99 0 v -53 h -99 m 99 311 h 395 v -258 h -99 m 99 0 v -53 h -99 " />
+
+<path id="<%- idPrefix %>-filterSet1-v11-v12" class="el-path el-path-rawWater" d="M 388 226 v -20 h 109 m -20 0 v 53 h 20" />
+
+<path id="<%- idPrefix %>-filterSet1-v13-v14-v15-v16" class="el-path el-path-cleanWater" d="M 388 398 v 20 h 89 v -106 h 20 m -20 53 h 20 m -20 53 h 20 m -109 0 h -41 m 41 0 v 53 h 109" />
+
+<path id="<%- idPrefix %>-filterSet2-v11-v12" class="el-path el-path-rawWater" d="M 783 226 v -20 h 109 m -20 0 v 53 h 20" />
+
+<path id="<%- idPrefix %>-filterSet2-v13-v14-v15-v16" class="el-path el-path-cleanWater" d="M 783 398 v 20 h 89 v -106 h 20 m -20 53 h 20 m -20 53 h 20 m -109 0 h -41 m 41 0 v 53 h 109" />
+
+<path id="<%- idPrefix %>-washingFlowMeter-v26-v16" class="el-path el-path-cleanWater" d="M 530 471 h 40 v 60 h 395 v -60 h -40 m 40 60 h 140 v 84" />
+
+<path id="<%- idPrefix %>-blower-v24-v14" class="el-path el-path-air" d="M 530 365 h 80 v 126 h 395 v -126 h -80 m 80 126 h 200" />
+
+<g id="<%- idPrefix %>-filterSets-1" class="el-clickable el-filterSet" transform="translate(320, 226)" title="<%- t('monitoring', 'FILTER_SET', {id: 1}) %>" data-placement="left" data-href="#diagnostics/filter-sets/1">
+  <rect class="el-filterSet-container" x="0" y="0" width="137" height="172" rx="10" ry="10" />
+  <rect class="el-filterSet-fill" x="0" y="25" width="137" height="148" rx="10" ry="10" fill="url(#<%- idPrefix %>-filterSets-1-fill)" />
+  <path class="el-filterSet-separator" d="M 0 26 h 137" />
+  <g transform="translate(20, 0)">
+    <path d="M 5 0 v -10" />
+    <rect x="-1" y="-29" width="12" height="18" />
+  </g>
+  <g class="el-filterSet-bot" transform="translate(47, 192)">
+    <circle r="5" cx="0" ry="0" />
+    <path d="M 0 -5 v -5 m -7 0 h 14" />
+  </g>
+</g>
+
+<g id="<%- idPrefix %>-filterSets-2" class="el-clickable el-filterSet" transform="translate(715, 226)" title="<%- t('monitoring', 'FILTER_SET', {id: 2}) %>" data-placement="left" data-href="#diagnostics/filter-sets/2">
+  <rect class="el-filterSet-container" x="0" y="0" width="137" height="172" rx="10" ry="10" />
+  <rect class="el-filterSet-fill" x="0" y="25" width="137" height="148" rx="10" ry="10" fill="url(#<%- idPrefix %>-filterSets-2-fill)" />
+  <path class="el-filterSet-separator" d="M 0 26 h 137" />
+  <g transform="translate(20, 0)">
+    <path d="M 5 0 v -10" />
+    <rect x="-1" y="-29" width="12" height="18" />
+  </g>
+  <g class="el-filterSet-bot" transform="translate(47, 192)">
+    <circle r="5" cx="0" ry="0" />
+    <path d="M 0 -5 v -5 m -7 0 h 14" />
+  </g>
+</g>
+
+<g transform="translate(498, 198)">
+  <g id="<%- idPrefix %>-filterSets-1-valves-1" class="el-valve" transform="translate(0, 0)" title="<%- t('monitoring', 'V1', {id: 1}) %>" data-placement="right">
+    <path d="M 0 0 L 0 16 L 16 8 Z" />
+    <path d="M 32 0 L 32 16 L 16 8 Z" />
+    <path d="M 16 8 v -10 a 5 -5 0 0 0 0 -10 a 5 5 0 0 0 0 10" />
+  </g>
+  <g id="<%- idPrefix %>-filterSets-1-valves-2" class="el-valve" transform="translate(0, 53)" title="<%- t('monitoring', 'V2', {id: 1}) %>" data-placement="right">
+    <path d="M 0 0 L 0 16 L 16 8 Z" />
+    <path d="M 32 0 L 32 16 L 16 8 Z" />
+    <path d="M 16 8 v -10 a 5 -5 0 0 0 0 -10 a 5 5 0 0 0 0 10" />
+  </g>
+  <g id="<%- idPrefix %>-filterSets-1-valves-3" class="el-valve" transform="translate(0, 106)" title="<%- t('monitoring', 'V3', {id: 1}) %>" data-placement="right">
+    <path d="M 0 0 L 0 16 L 16 8 Z" />
+    <path d="M 32 0 L 32 16 L 16 8 Z" />
+    <path d="M 16 8 v -10 a 5 -5 0 0 0 0 -10 a 5 5 0 0 0 0 10" />
+  </g>
+  <g id="<%- idPrefix %>-filterSets-1-valves-4" class="el-valve" transform="translate(0, 159)" title="<%- t('monitoring', 'V4', {id: 1}) %>" data-placement="right">
+    <path d="M 0 0 L 0 16 L 16 8 Z" />
+    <path d="M 32 0 L 32 16 L 16 8 Z" />
+    <path d="M 16 8 v -10 a 5 -5 0 0 0 0 -10 a 5 5 0 0 0 0 10" />
+  </g>
+  <g id="<%- idPrefix %>-filterSets-1-valves-5" class="el-valve" transform="translate(0, 212)" title="<%- t('monitoring', 'V5', {id: 1}) %>" data-placement="right">
+    <path d="M 0 0 L 0 16 L 16 8 Z" />
+    <path d="M 32 0 L 32 16 L 16 8 Z" />
+    <path d="M 16 8 v -10 a 5 -5 0 0 0 0 -10 a 5 5 0 0 0 0 10" />
+  </g>
+  <g id="<%- idPrefix %>-filterSets-1-valves-6" class="el-valve" transform="translate(0, 265)" title="<%- t('monitoring', 'V6', {id: 1}) %>" data-placement="right">
+    <path d="M 0 0 L 0 16 L 16 8 Z" />
+    <path d="M 32 0 L 32 16 L 16 8 Z" />
+    <path d="M 16 8 v -10 a 5 -5 0 0 0 0 -10 a 5 5 0 0 0 0 10" />
+  </g>
+</g>
+
+<g transform="translate(893, 198)">
+  <g id="<%- idPrefix %>-filterSets-2-valves-1" class="el-valve" transform="translate(0, 0)" title="<%- t('monitoring', 'V1', {id: 2}) %>" data-placement="right">
+    <path d="M 0 0 L 0 16 L 16 8 Z" />
+    <path d="M 32 0 L 32 16 L 16 8 Z" />
+    <path d="M 16 8 v -10 a 5 -5 0 0 0 0 -10 a 5 5 0 0 0 0 10" />
+  </g>
+  <g id="<%- idPrefix %>-filterSets-2-valves-2" class="el-valve" transform="translate(0, 53)" title="<%- t('monitoring', 'V2', {id: 2}) %>" data-placement="right">
+    <path d="M 0 0 L 0 16 L 16 8 Z" />
+    <path d="M 32 0 L 32 16 L 16 8 Z" />
+    <path d="M 16 8 v -10 a 5 -5 0 0 0 0 -10 a 5 5 0 0 0 0 10" />
+  </g>
+  <g id="<%- idPrefix %>-filterSets-2-valves-3" class="el-valve" transform="translate(0, 106)" title="<%- t('monitoring', 'V3', {id: 2}) %>" data-placement="right">
+    <path d="M 0 0 L 0 16 L 16 8 Z" />
+    <path d="M 32 0 L 32 16 L 16 8 Z" />
+    <path d="M 16 8 v -10 a 5 -5 0 0 0 0 -10 a 5 5 0 0 0 0 10" />
+  </g>
+  <g id="<%- idPrefix %>-filterSets-2-valves-4" class="el-valve" transform="translate(0, 159)" title="<%- t('monitoring', 'V4', {id: 2}) %>" data-placement="right">
+    <path d="M 0 0 L 0 16 L 16 8 Z" />
+    <path d="M 32 0 L 32 16 L 16 8 Z" />
+    <path d="M 16 8 v -10 a 5 -5 0 0 0 0 -10 a 5 5 0 0 0 0 10" />
+  </g>
+  <g id="<%- idPrefix %>-filterSets-2-valves-5" class="el-valve" transform="translate(0, 212)" title="<%- t('monitoring', 'V5', {id: 2}) %>" data-placement="right">
+    <path d="M 0 0 L 0 16 L 16 8 Z" />
+    <path d="M 32 0 L 32 16 L 16 8 Z" />
+    <path d="M 16 8 v -10 a 5 -5 0 0 0 0 -10 a 5 5 0 0 0 0 10" />
+  </g>
+  <g id="<%- idPrefix %>-filterSets-2-valves-6" class="el-valve" transform="translate(0, 265)" title="<%- t('monitoring', 'V6', {id: 2}) %>" data-placement="right">
+    <path d="M 0 0 L 0 16 L 16 8 Z" />
+    <path d="M 32 0 L 32 16 L 16 8 Z" />
+    <path d="M 16 8 v -10 a 5 -5 0 0 0 0 -10 a 5 5 0 0 0 0 10" />
+  </g>
+</g>
+
+<g id="<%- idPrefix %>-settler" class="el-settler" transform="translate(265, 740)" title="<%- t('monitoring', 'SETTLER') %>" data-placement="bottom">
+  <rect class="el-settler-outerContainer" x="0" y="0" width="170" height="130" />
+  <rect class="el-settler-fill" x="0" y="0" width="170" height="130" fill="url(#<%- idPrefix %>-settler-fill)" />
+  <rect class="el-settler-innerContainer" x="10" y="0" width="150" height="120" />
+  <g id="<%- idPrefix %>-settler-min" class="el-extreme" transform="translate(0, 120)" title="<%- t('monitoring', 'SETTLER_MIN') %>" data-placement="right" data-animation="false">
+    <path d="M -1 0 h -10 h -20 l 10 10 l 10 -10 m 22 0 h 10 m 5 0 h 10 m 5 0 h 10 m 5 0 h 10 m 5 0 h 10 m 5 0 h 10 m 5 0 h 10 m 5 0 h 10 m 5 0 h 10 m 5 0 h 10" />
+  </g>
+  <g id="<%- idPrefix %>-settler-max" class="el-extreme" transform="translate(0, 0)" title="<%- t('monitoring', 'SETTLER_MAX') %>" data-placement="right" data-animation="false">
+    <path d="M -1 0 h -10 h -20 l 10 -10 l 10 10 m 22 0 h 10 m 5 0 h 10 m 5 0 h 10 m 5 0 h 10 m 5 0 h 10 m 5 0 h 10 m 5 0 h 10 m 5 0 h 10 m 5 0 h 10 m 5 0 h 10" />
+  </g>
+</g>
+
+<path id="<%- idPrefix %>-controlMeasureBox-settler" class="el-path el-path-dirtyWater" d="M 310 660 v 95" />
+
+<g class="el-controlMeasureBox" transform="translate(290, 590)" title="<%- t('monitoring', 'CONTROL_MEASURE_BOX') %>" data-placement="right">
+  <rect x="0" y="0" width="40" height="60" />
+  <path d="M 0 10 l 20 25 L 40 10" />
+  <path d="M 12 61 v 10 h 16 v -10" style="fill: #fff" />
+</g>
+
+<path id="<%- idPrefix %>-reservoir1-valve-reservoir2-path" class="el-path" d="M 646 804 h 114" />
+
+<path id="<%- idPrefix %>-reservoir2-valve-reservoir1-path" class="el-path" d="M 760 804 h -114" />
+
+<g id="<%- idPrefix %>-reservoir1-valve-reservoir2" class="el-valve" transform="translate(687, 796)">
+  <path d="M 0 0 L 0 16 L 16 8 Z" />
+  <path d="M 32 0 L 32 16 L 16 8 Z" />
+</g>
+
+<g id="<%- idPrefix %>-reservoirs-1" class="el-clickable el-reservoir" transform="translate(510, 670)" title="<%- t('monitoring', 'RESERVOIR', {id: 1}) %>" data-href="#diagnostics/reservoirs">
+  <rect x="57.5" y="-20" width="20" height="10" />
+  <path d="M 51.5 -20 h 32 l -16 -10 z" />
+  <path d="M 0 0 Q 67.5 -20, 135 0" />
+  <rect class="el-reservoir-outerContainer" x="0" y="0" width="135" height="200" />
+  <rect class="el-reservoir-innerContainer" x="1" y="1" width="133" height="198" fill="url(#<%- idPrefix %>-reservoirs-1-waterLevel-fill)" />
+  <g id="<%- idPrefix %>-reservoirs-1-min" class="el-extreme" transform="translate(0, 198)" title="<%- t('monitoring', 'RESERVOIR_MIN', {id: 1}) %>" data-placement="left" data-animation="false">
+    <path d="M 0 0 h -10 h -20 l 10 10 l 10 -10 m 10 0 h 10 m 5 0 h 10 m 5 0 h 10 m 5 0 h 10 m 5 0 h 10 m 5 0 h 10 m 5 0 h 10 m 5 0 h 10 m 5 0 h 10" />
+  </g>
+  <g id="<%- idPrefix %>-reservoirs-1-max" class="el-extreme" transform="translate(0, 0)" title="<%- t('monitoring', 'RESERVOIR_MAX', {id: 1}) %>" data-placement="left" data-animation="false">
+    <path d="M 0 0 h -10 h -20 l 10 -10 l 10 10 m 10 0 h 10 m 5 0 h 10 m 5 0 h 10 m 5 0 h 10 m 5 0 h 10 m 5 0 h 10 m 5 0 h 10 m 5 0 h 10 m 5 0 h 10" />
+  </g>
+</g>
+
+<path id="<%- idPrefix %>-reservoirs-1-hydroSet" class="el-path el-path-cleanWater" d="M 626 844 v -20 h 39 v 45" />
+
+<g id="<%- idPrefix %>-reservoirs-1-triangle" class="el-reservoir-triangle" transform="translate(618, 844)">
+  <path d="M 8 0 L 16 16 L 0 16 Z" />
+</g>
+
+<g id="<%- idPrefix %>-reservoirs-1-triangle-valve" class="el-valve" transform="translate(673, 870) rotate(90)">
+  <path d="M 0 0 L 0 16 L 16 8 Z" />
+  <path d="M 32 0 L 32 16 L 16 8 Z" />
+</g>
+
+<g id="<%- idPrefix %>-reservoirs-2" class="el-clickable el-reservoir" transform="translate(761, 670)" title="<%- t('monitoring', 'RESERVOIR', {id: 2}) %>" data-href="#diagnostics/reservoirs">
+  <rect x="57.5" y="-20" width="20" height="10" />
+  <path d="M 51.5 -20 h 32 l -16 -10 z" />
+  <path d="M 0 0 Q 67.5 -20, 135 0" />
+  <rect class="el-reservoir-outerContainer" x="0" y="0" width="135" height="200" />
+  <rect class="el-reservoir-innerContainer" x="1" y="1" width="133" height="198" fill="url(#<%- idPrefix %>-reservoirs-2-waterLevel-fill)" />
+  <g id="<%- idPrefix %>-reservoirs-2-min" class="el-extreme" transform="translate(0, 198)" title="<%- t('monitoring', 'RESERVOIR_MIN', {id: 2}) %>" data-placement="left" data-animation="false">
+    <path d="M 0 0 h -10 h -20 l 10 10 l 10 -10 m 10 0 h 10 m 5 0 h 10 m 5 0 h 10 m 5 0 h 10 m 5 0 h 10 m 5 0 h 10 m 5 0 h 10 m 5 0 h 10 m 5 0 h 10" />
+  </g>
+  <g id="<%- idPrefix %>-reservoirs-2-max" class="el-extreme" transform="translate(0, 0)" title="<%- t('monitoring', 'RESERVOIR_MAX', {id: 2}) %>" data-placement="left" data-animation="false">
+    <path d="M 0 0 h -10 h -20 l 10 -10 l 10 10 m 10 0 h 10 m 5 0 h 10 m 5 0 h 10 m 5 0 h 10 m 5 0 h 10 m 5 0 h 10 m 5 0 h 10 m 5 0 h 10 m 5 0 h 10" />
+  </g>
+</g>
+
+<path id="<%- idPrefix %>-reservoirs-2-hydroSet" class="el-path el-path-cleanWater" d="M 877 844 v -20 h 39 v 45" />
+
+<g id="<%- idPrefix %>-reservoirs-2-triangle" class="el-reservoir-triangle" transform="translate(869, 844)">
+  <path d="M 8 0 L 16 16 L 0 16 Z" />
+</g>
+
+<g id="<%- idPrefix %>-reservoirs-2-triangle-valve" class="el-valve" transform="translate(924, 870) rotate(90)">
+  <path d="M 0 0 L 0 16 L 16 8 Z" />
+  <path d="M 32 0 L 32 16 L 16 8 Z" />
+</g>
+
+<path id="<%- idPrefix %>-reservoirs-v25-v15" class="el-path el-path-cleanWater" d="M 530 418 h 60 v 93 h 395 v -93 h -60 m 60 93 h 80 v 99 h -400 v 70 h -41 m 292 -70 v 70 h -41" />
+
+<g id="<%- idPrefix %>-reservoir1-left-valve" class="el-valve" transform="translate(488, 870) rotate(90)">
+  <path d="M 0 0 L 0 16 L 16 8 Z" />
+  <path d="M 32 0 L 32 16 L 16 8 Z" />
+</g>
+
+<path id="<%- idPrefix %>-reservoir1-to-left-valve" class="el-path" d="M 480 869 v -26 h 59" />
+
+<path id="<%- idPrefix %>-path-to-left-reservoir1-valve" class="el-path" d="M 480 903 v 20" />
+
+<g id="<%- idPrefix %>-reservoir2-left-valve" class="el-valve" transform="translate(739, 870) rotate(90)">
+  <path d="M 0 0 L 0 16 L 16 8 Z" />
+  <path d="M 32 0 L 32 16 L 16 8 Z" />
+</g>
+
+<path id="<%- idPrefix %>-reservoir2-to-left-valve" class="el-path" d="M 731 869 v -26 h 59" />
+
+<path id="<%- idPrefix %>-path-to-left-reservoir2-valve" class="el-path" d="M 731 903 v 20" />
+
+<g id="<%- idPrefix %>-inputFlowMeter" transform="translate(83, 532)">
+  <g class="el-valve" transform="rotate(90)">
+    <path d="M 0 0 L 0 16 L 16 8 Z" />
+    <path d="M 32 0 L 32 16 L 16 8 Z" />
+  </g>
+  <g class="el-flowMeter" title="<%- t('monitoring', 'INPUT_FLOW_METER') %>">
+    <circle r="12" cx="-8" cy="61" />
+    <path d="M 7 76 L -23 46 h 7 m -7 0 v 7" />
+  </g>
+  <g class="el-valve" transform="translate(0, 90) rotate(90)">
+    <path d="M 0 0 L 0 16 L 16 8 Z" />
+    <path d="M 32 0 L 32 16 L 16 8 Z" />
+  </g>
+</g>
+
+<path id="<%- idPrefix %>-reservoirs-to-hydroSet" class="el-path el-path-cleanWater" d="M 665 903 v 40 h 251 v -40 m 0 40 h 40" />
+
+<g id="<%- idPrefix %>-reservoirs-to-hydroSet-valve" class="el-valve el-valve-right" transform="translate(956, 935)">
+  <path d="M 0 0 L 0 16 L 16 8 Z" />
+  <path d="M 32 0 L 32 16 L 16 8 Z" />
+</g>
+
+<g id="<%- idPrefix %>-blower-valves" transform="translate(1206, 483)">
+  <g class="el-valve el-valve-left">
+    <path d="M 0 0 L 0 16 L 16 8 Z" />
+    <path d="M 32 0 L 32 16 L 16 8 Z" />
+  </g>
+  <g class="el-valve" transform="translate(32, 0)">
+    <path d="M 0 0 L 0 16 L 16 8 Z" />
+    <path d="M 32 0 L 32 16 L 16 8 Z" />
+  </g>
+</g>
+
+<path id="<%- idPrefix %>-blower-to-valves" class="el-path el-path-air" d="M 1271 491 h 40" />
+
+<g id="<%- idPrefix %>-blower" class="el-clickable el-blower" transform="translate(1340, 491)" title="<%- t('monitoring', 'BLOWER') %>" data-href="#diagnostics/blower">
+  <circle r="28" cx="0" cy="0" />
+  <path d="M -27 -7 L 23 -17 M -27 7 L 23 17" />
+</g>
+
+<path id="<%- idPrefix %>-reservoirs-hydroSet" class="el-path el-path-cleanWater" d="M 989 943 h 116 v -40 m 0 40 h 80 v -40 m 0 40 h 80 v -40 m 0 40 h 80 v -40" />
+
+<g id="<%- idPrefix %>-washingPump-valve-bottom" class="el-valve" transform="translate(1113, 870) rotate(90)">
+  <path d="M 0 0 L 0 16 L 16 8 Z" />
+  <path d="M 32 0 L 32 16 L 16 8 Z" />
+</g>
+<g id="<%- idPrefix %>-outputPump1-valve-bottom" class="el-valve" transform="translate(1193, 870) rotate(90)">
+  <path d="M 0 0 L 0 16 L 16 8 Z" />
+  <path d="M 32 0 L 32 16 L 16 8 Z" />
+</g>
+<g id="<%- idPrefix %>-outputPump2-valve-bottom" class="el-valve" transform="translate(1273, 870) rotate(90)">
+  <path d="M 0 0 L 0 16 L 16 8 Z" />
+  <path d="M 32 0 L 32 16 L 16 8 Z" />
+</g>
+<g id="<%- idPrefix %>-outputPump3-valve-bottom" class="el-valve" transform="translate(1353, 870) rotate(90)">
+  <path d="M 0 0 L 0 16 L 16 8 Z" />
+  <path d="M 32 0 L 32 16 L 16 8 Z" />
+</g>
+
+<path id="<%- idPrefix %>-washingPump-to-valves" class="el-path el-path-cleanWater" d="M 1105 869 v -74" />
+<path id="<%- idPrefix %>-outputPump1-to-valves" class="el-path el-path-cleanWater" d="M 1185 869 v -74" />
+<path id="<%- idPrefix %>-outputPump2-to-valves" class="el-path el-path-cleanWater" d="M 1265 869 v -74" />
+<path id="<%- idPrefix %>-outputPump3-to-valves" class="el-path el-path-cleanWater" d="M 1345 869 v -74" />
+
+<g id="<%- idPrefix %>-washingPump" class="el-clickable el-pump" transform="translate(1105, 832)" title="<%- t('monitoring', 'WASHING_PUMP') %>" data-href="#diagnostics/washing-pump">
+  <circle r="16" cx="0" cy="0" />
+  <path d="M 0 -16 l 14 24 h -28 z" />
+</g>
+<g id="<%- idPrefix %>-outputPumps-1" class="el-clickable el-pump" transform="translate(1185, 832)" title="<%- t('monitoring', 'OUTPUT_PUMP', {id: 1}) %>" data-href="#diagnostics/output-pumps?id=1">
+  <circle r="16" cx="0" cy="0" />
+  <path d="M 0 -16 l 14 24 h -28 z" />
+</g>
+<g id="<%- idPrefix %>-outputPumps-2" class="el-clickable el-pump" transform="translate(1265, 832)" title="<%- t('monitoring', 'OUTPUT_PUMP', {id: 2}) %>" data-href="#diagnostics/output-pumps?id=2">
+  <circle r="16" cx="0" cy="0" />
+  <path d="M 0 -16 l 14 24 h -28 z" />
+</g>
+<g id="<%- idPrefix %>-outputPumps-3" class="el-clickable el-pump" transform="translate(1345, 832)" title="<%- t('monitoring', 'OUTPUT_PUMP', {id: 3}) %>" data-href="#diagnostics/output-pumps?id=3">
+  <circle r="16" cx="0" cy="0" />
+  <path d="M 0 -16 l 14 24 h -28 z" />
+</g>
+
+<g id="<%- idPrefix %>-outputPumps-vfd" transform="translate(1157, 860)">
+  <text class="el-label" x="0" y="0">VFD</text>
+</g>
+
+<g id="<%- idPrefix %>-washingPump-valve-top" class="el-valve el-valve-left" transform="translate(1113, 762) rotate(90)">
+  <path d="M 0 0 L 0 16 L 16 8 Z" />
+  <path d="M 32 0 L 32 16 L 16 8 Z" />
+</g>
+<g id="<%- idPrefix %>-outputPump1-valve-top" class="el-valve el-valve-left" transform="translate(1193, 762) rotate(90)">
+  <path d="M 0 0 L 0 16 L 16 8 Z" />
+  <path d="M 32 0 L 32 16 L 16 8 Z" />
+</g>
+<g id="<%- idPrefix %>-outputPump2-valve-top" class="el-valve el-valve-left" transform="translate(1273, 762) rotate(90)">
+  <path d="M 0 0 L 0 16 L 16 8 Z" />
+  <path d="M 32 0 L 32 16 L 16 8 Z" />
+</g>
+<g id="<%- idPrefix %>-outputPump3-valve-top" class="el-valve el-valve-left" transform="translate(1353, 762) rotate(90)">
+  <path d="M 0 0 L 0 16 L 16 8 Z" />
+  <path d="M 32 0 L 32 16 L 16 8 Z" />
+</g>
+<g id="<%- idPrefix %>-outputPump1-valve2-top" class="el-valve" transform="translate(1193, 730) rotate(90)">
+  <path d="M 0 0 L 0 16 L 16 8 Z" />
+  <path d="M 32 0 L 32 16 L 16 8 Z" />
+</g>
+<g id="<%- idPrefix %>-outputPump2-valve2-top" class="el-valve" transform="translate(1273, 730) rotate(90)">
+  <path d="M 0 0 L 0 16 L 16 8 Z" />
+  <path d="M 32 0 L 32 16 L 16 8 Z" />
+</g>
+<g id="<%- idPrefix %>-outputPump3-valve2-top" class="el-valve" transform="translate(1353, 730) rotate(90)">
+  <path d="M 0 0 L 0 16 L 16 8 Z" />
+  <path d="M 32 0 L 32 16 L 16 8 Z" />
+</g>
+
+<g id="<%- idPrefix %>-uvLamp" class="el-clickable el-uvLamp" transform="translate(1386, 709)" title="<%- t('monitoring', 'UV_LAMP') %>" data-href="#diagnostics/uv-lamp">
+  <path d="M 0 0 v -50 h 15" />
+  <rect x="15" y="-60" width="42" height="20" />
+  <path d="M 57 -50 h 15 v 50" />
+  <path class="el-uvLamp-valve" d="M 0 0 L 0 16 L 16 8 Z M 32 0 L 32 16 L 16 8 Z" transform="translate(4, -30) scale(.5) rotate(90)" />
+  <path class="el-uvLamp-valve" d="M 0 0 L 0 16 L 16 8 Z M 32 0 L 32 16 L 16 8 Z" transform="translate(76, -30) scale(.5) rotate(90)" />
+</g>
+
+<path id="<%- idPrefix %>-hydroSet-antiBlowSet-outputFlowMeter" class="el-path el-path-cleanWater" d="M 1185 729 v -20 h 40 v -20 m 0 20 h 40 v 20 m 0 -20 h 40 v -20 m 0 20 h 40 v 20 m 0 -20 h 60" />
+
+<g class="el-antiBlowTank" transform="translate(1204, 618)" title="<%- t('monitoring', 'ANTI_BLOW_TANK', {id: 1}) %>">
+  <rect x="0" y="0" width="42" height="70" rx="10" ry="10" />
+  <path d="M 0 35 h 10 a 10 10 0 0 1 22 0 h 10" />
+</g>
+
+<g class="el-antiBlowTank" transform="translate(1284, 618)" title="<%- t('monitoring', 'ANTI_BLOW_TANK', {id: 2}) %>">
+  <rect x="0" y="0" width="42" height="70" rx="10" ry="10" />
+  <path d="M 0 35 h 10 a 10 10 0 0 1 22 0 h 10" />
+</g>
+
+<g id="<%- idPrefix %>-hydroSet-outputFlowMeter-left" class="el-valve" transform="translate(1406, 701)">
+  <path d="M 0 0 L 0 16 L 16 8 Z" />
+  <path d="M 32 0 L 32 16 L 16 8 Z" />
+</g>
+
+<g id="<%- idPrefix %>-hydroSet-outputFlowMeter-right" class="el-valve" transform="translate(1561, 701)">
+  <path d="M 0 0 L 0 16 L 16 8 Z" />
+  <path d="M 32 0 L 32 16 L 16 8 Z" />
+</g>
+
+<path id="<%- idPrefix %>-outputFlowMeter-path" class="el-path el-path-cleanWater" d="M 1439 709 h 121" />
+
+<g id="<%- idPrefix %>-outputFlowMeter" class="el-flowMeter" transform="translate(1573, 717) rotate(90)" title="<%- t('monitoring', 'OUTPUT_FLOW_METER') %>" data-placement="top">
+  <circle r="12" cx="-8" cy="61" />
+  <path d="M 7 76 L -23 46 h 7 m -7 0 v 7" />
+  <path d="M 2 34 h -20 M 2 88 h -20" />
+</g>
+
+<path id="<%- idPrefix %>-chlorSet-path" class="el-path el-path-chlor" d="M 1614 709 v -139 h -547 m 487 0 v -101 h 33" />
+
+<g class="el-chlorSet" transform="translate(1575, 489)" title="<%- t('monitoring', 'CHLOR_SET') %>">
+  <path d="M 20 0 v -20" />
+  <rect x="0" y="0" width="40" height="60" />
+  <g class="el-chlorSet-top" transform="translate(20, -20) rotate(-90) scale(.5)">
+    <circle r="16" cx="0" cy="0" />
+    <path d="M 0 -16 l 14 24 h -28 z" />
+  </g>
+</g>
+
+<path id="<%- idPrefix %>-washingFlowMeter-valves" class="el-path el-path-cleanWater" d="M 1105 649 v 112" />
+
+<g id="<%- idPrefix %>-washingFlowMeter" class="el-flowMeter" transform="translate(1113, 644)" title="<%- t('monitoring', 'WASHING_FLOW_METER') %>" data-placement="top">
+  <circle r="12" cx="-8" cy="61" />
+  <path d="M 7 76 L -23 46 h 7 m -7 0 v 7" />
+  <path d="M 2 34 h -20 M 2 88 h -20" />
+</g>
+
+<g id="<%- idPrefix %>-washingFlowMeter-valve" class="el-valve" transform="translate(1113, 616) rotate(90)">
+  <path d="M 0 0 L 0 16 L 16 8 Z" />
+  <path d="M 32 0 L 32 16 L 16 8 Z" />
+</g>
+
+<path id="<%- idPrefix %>-outputPressureSensor-path" class="el-path el-path-cleanWater" d="M 1634 709 v 60" />
+
+<path id="<%- idPrefix %>-outputFlowMeter-out" class="el-path el-path-cleanWater" d="M 1594 709 h 150 l -15 -15 m 15 15 l -15 15" style="stroke-linejoin: round" />
+
+<g class="el-sensor" transform="translate(1634, 800)">
+  <circle r="30" cx="0" cy="0" />
+  <line x1="-30" y1="0" x2="30" y2="0" />
+  <text x="-11" y="-6">PS</text>
+</g>
+
+<path class="el-direction" d="M 580 95 h 35 l -5 -5 m 5 5 l -5 5" />
+<path class="el-direction" d="M 400 140 h 35 l -5 -5 m 5 5 l -5 5" />
+<g transform="translate(180, 180) rotate(90)">
+  <path class="el-direction" d="M 0 0 h 35 l -5 -5 m 5 5 l -5 5" />
+</g>
+<g transform="translate(240, 216) rotate(-90)">
+  <path class="el-direction" d="M 0 0 h 35 l -5 -5 m 5 5 l -5 5" />
+</g>
+<g transform="translate(198, 296) rotate(90)">
+  <path class="el-direction" d="M 0 0 h 35 l -5 -5 m 5 5 l -5 5" />
+</g>
+<g transform="translate(850, 598) rotate(180)">
+  <path class="el-direction" d="M 0 0 h 35 l -5 -5 m 5 5 l -5 5" />
+</g>
+<g transform="translate(850, 543) rotate(180)">
+  <path class="el-direction" d="M 0 0 h 35 l -5 -5 m 5 5 l -5 5" />
+</g>
+<g transform="translate(1150, 479) rotate(180)">
+  <path class="el-direction" d="M 0 0 h 35 l -5 -5 m 5 5 l -5 5" />
+</g>
+<path class="el-direction" d="M 772 955 h 35 l -5 -5 m 5 5 l -5 5" />
+
+<g class="el-tag" transform="translate(48, 967)" title="<%- t('tags', 'TAG:inputPumps.1.current') %>" data-placement="right" data-tag="inputPumps.1.current" data-color="#fa0">
+  <rect x="0" y="0" width="0" height="0" />
+  <text x="3" y="15">00.0 A</text>
+</g>
+<g class="el-tag" transform="translate(48, 944)" title="<%- t('tags', 'TAG:inputPumps.1.waterLevel') %>" data-placement="right" data-tag="inputPumps.1.waterLevel" data-color="#0af">
+  <rect x="0" y="0" width="0" height="0" />
+  <text x="3" y="15">00.0 m</text>
+</g>
+<g class="el-tag" transform="translate(148, 967)" title="<%- t('tags', 'TAG:inputPumps.2.current') %>" data-placement="right" data-tag="inputPumps.2.current" data-color="#fa0">
+  <rect x="0" y="0" width="0" height="0" />
+  <text x="3" y="15">00.0 A</text>
+</g>
+<g class="el-tag" transform="translate(148, 944)" title="<%- t('tags', 'TAG:inputPumps.2.waterLevel') %>" data-placement="right" data-tag="inputPumps.2.waterLevel" data-color="#0af">
+  <rect x="0" y="0" width="0" height="0" />
+  <text x="3" y="15">00.0 m</text>
+</g>
+<g class="el-tag" transform="translate(97, 583)" title="<%- t('tags', 'TAG:inputFlow') %>" data-placement="top" data-tag="inputFlow" data-color="#0af">
+  <rect x="0" y="0" width="0" height="0" />
+  <text x="3" y="15">00000000 m3/h</text>
+</g>
+<g class="el-tag" transform="translate(97, 606)" title="<%- t('tags', 'TAG:inputFlow.total.forwards') %>" data-placement="bottom" data-tag="inputFlow.total.forwards" data-color="#0af">
+  <rect x="0" y="0" width="0" height="0" />
+  <text x="3" y="15">00000000.0 m3</text>
+</g>
+<g class="el-tag" transform="translate(973, 684)" title="<%- t('tags', 'TAG:washingFlow') %>" data-placement="top" data-tag="washingFlow" data-color="#0af">
+  <rect x="0" y="0" width="0" height="0" />
+  <text x="3" y="15">00000000 m3/h</text>
+</g>
+<g class="el-tag" transform="translate(973, 707)" title="<%- t('tags', 'TAG:washingFlow.total.forwards') %>" data-placement="bottom" data-tag="washingFlow.total.forwards" data-color="#0af">
+  <rect x="0" y="0" width="0" height="0" />
+  <text x="3" y="15">00000000.0 m3</text>
+</g>
+<g class="el-tag" transform="translate(1457, 731)" title="<%- t('tags', 'TAG:outputFlow') %>" data-placement="top" data-tag="outputFlow" data-color="#0af">
+  <rect x="0" y="0" width="0" height="0" />
+  <text x="3" y="15">00000000 m3/h</text>
+</g>
+<g class="el-tag" transform="translate(1457, 754)" title="<%- t('tags', 'TAG:outputFlow.total.forwards') %>" data-placement="bottom" data-tag="outputFlow.total.forwards" data-color="#0af">
+  <rect x="0" y="0" width="0" height="0" />
+  <text x="3" y="15">00000000.0 m3</text>
+</g>
+<g class="el-tag" transform="translate(179, 245)" title="<%- t('tags', 'TAG:compressorPressure') %>" data-placement="right" data-tag="compressorPressure" data-color="#e00">
+  <rect x="0" y="0" width="0" height="0" />
+  <text x="3" y="15">00.00 b</text>
+</g>
+<g class="el-tag" transform="translate(1674, 790)" title="<%- t('tags', 'TAG:outputPressure') %>" data-placement="top" data-tag="outputPressure" data-color="#e00">
+  <rect x="0" y="0" width="0" height="0" />
+  <text x="3" y="15">00.00 b</text>
+</g>
+<g class="el-tag" transform="translate(550, 880)" title="<%- t('tags', 'TAG:reservoirs.1.waterLevel') %>" data-placement="bottom" data-tag="reservoirs.1.waterLevel" data-color="#0af">
+  <rect x="0" y="0" width="0" height="0" />
+  <text x="3" y="15">0.00 m</text>
+</g>
+<g class="el-tag" transform="translate(801, 880)" title="<%- t('tags', 'TAG:reservoirs.2.waterLevel') %>" data-placement="bottom" data-tag="reservoirs.2.waterLevel" data-color="#0af">
+  <rect x="0" y="0" width="0" height="0" />
+  <text x="3" y="15">0.00 m</text>
+</g>
+<g class="el-tag" transform="translate(1371, 820)" title="<%- t('tags', 'TAG:outputPumps.presetRef') %>" data-placement="right" data-tag="outputPumps.presetRef" data-color="purple">
+  <rect x="0" y="0" width="0" height="0" />
+  <text x="3" y="15">000.00 %</text>
+</g>
+<g class="el-tag" transform="translate(1371, 843)" title="<%- t('tags', 'TAG:outputPumps.current') %>" data-placement="right" data-tag="outputPumps.current" data-color="#fa0">
+  <rect x="0" y="0" width="0" height="0" />
+  <text x="3" y="15">000.00 A</text>
+</g>
+<g class="el-tag" transform="translate(1371, 866)" title="<%- t('tags', 'TAG:outputPumps.outputFrequency') %>" data-placement="right" data-tag="outputPumps.outputFrequency" data-color="#00af00">
+  <rect x="0" y="0" width="0" height="0" />
+  <text x="3" y="15">00.00 Hz</text>
+</g>
+
+</svg>
+
+</div>

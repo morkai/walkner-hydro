@@ -1,0 +1,336 @@
+<div>
+  <div class="well fixed-column-right diag-manual-controls">
+    <div class="btn-group diag-outputPumps-picker" data-toggle="buttons-radio">
+      <button type="button" class="btn" value="1"><%- t('diagnostics', 'OUTPUT_PUMP_PICKER', {id: 1}) %></button>
+      <button type="button" class="btn" value="2"><%- t('diagnostics', 'OUTPUT_PUMP_PICKER', {id: 2}) %></button>
+      <button type="button" class="btn" value="3"><%- t('diagnostics', 'OUTPUT_PUMP_PICKER', {id: 3}) %></button>
+    </div>
+    <hr>
+    <div class="diag-manual-asset-group" data-visible-to-pump="1">
+      <div class="diag-manual-asset">
+        <img class="diag-manual-asset-image diag-outputPump-switch-image" src="/assets/img/switch.svg?value=0" data-tag="outputPumps.1.switch">
+        <span class="diag-manual-asset-label"><%- t('diagnostics', 'OUTPUT_PUMP_SWITCH') %></span>
+      </div><div class="diag-manual-asset">
+        <img class="diag-manual-asset-image diag-outputPump-status-image" src="/assets/img/led.svg?color=grey" data-tag="outputPumps.1.status">
+        <span class="diag-manual-asset-label"><%- t('diagnostics', 'OUTPUT_PUMP_STATUS') %></span>
+      </div>
+    </div>
+    <div class="diag-manual-asset-group" data-visible-to-pump="2">
+      <div class="diag-manual-asset">
+        <img class="diag-manual-asset-image diag-outputPump-switch-image" src="/assets/img/switch.svg?value=0" data-tag="outputPumps.2.switch">
+        <span class="diag-manual-asset-label"><%- t('diagnostics', 'OUTPUT_PUMP_SWITCH') %></span>
+      </div><div class="diag-manual-asset">
+        <img class="diag-manual-asset-image diag-outputPump-status-image" src="/assets/img/led.svg?color=grey" data-tag="outputPumps.2.status">
+        <span class="diag-manual-asset-label"><%- t('diagnostics', 'OUTPUT_PUMP_STATUS') %></span>
+      </div>
+    </div>
+    <div class="diag-manual-asset-group" data-visible-to-pump="3">
+      <div class="diag-manual-asset">
+        <img class="diag-manual-asset-image diag-outputPump-switch-image" src="/assets/img/switch.svg?value=0" data-tag="outputPumps.3.switch">
+        <span class="diag-manual-asset-label"><%- t('diagnostics', 'OUTPUT_PUMP_SWITCH') %></span>
+      </div><div class="diag-manual-asset">
+        <img class="diag-manual-asset-image diag-outputPump-status-image" src="/assets/img/led.svg?color=grey" data-tag="outputPumps.3.status">
+        <span class="diag-manual-asset-label"><%- t('diagnostics', 'OUTPUT_PUMP_STATUS') %></span>
+      </div>
+    </div>
+    <div class="diag-manual-asset-group">
+      <div class="diag-manual-asset">
+        <img class="diag-manual-asset-image diag-outputPumps-dryrun-image" src="/assets/img/led.svg?color=grey" data-on-color="yellow" data-tag="outputPumps.dryRun">
+        <span class="diag-manual-asset-label"><%- t('diagnostics', 'OUTPUT_PUMP_DRYRUN') %></span>
+      </div><div class="diag-manual-asset" data-visible-to-pump="1">
+        <img class="diag-manual-asset-image diag-outputPump-failure-image" src="/assets/img/led.svg?color=grey" data-on-color="red" data-tag="outputPumps.1.failure">
+        <span class="diag-manual-asset-label"><%- t('diagnostics', 'OUTPUT_PUMP_FAILURE') %></span>
+      </div><div class="diag-manual-asset" data-visible-to-pump="2">
+        <img class="diag-manual-asset-image diag-outputPump-failure-image" src="/assets/img/led.svg?color=grey" data-on-color="red" data-tag="outputPumps.2.failure">
+        <span class="diag-manual-asset-label"><%- t('diagnostics', 'OUTPUT_PUMP_FAILURE') %></span>
+      </div><div class="diag-manual-asset" data-visible-to-pump="3">
+        <img class="diag-manual-asset-image diag-outputPump-failure-image" src="/assets/img/led.svg?color=grey" data-on-color="red" data-tag="outputPumps.3.failure">
+        <span class="diag-manual-asset-label"><%- t('diagnostics', 'OUTPUT_PUMP_FAILURE') %></span>
+      </div>
+    </div>
+    <hr>
+    <div data-visible-to-pump="1">
+      <div class="diag-state-switch make-switch switch-large btn-block"
+           data-tag="outputPumps.1.state"
+           data-text-label="<%- t('diagnostics', 'STATE_SWITCH_LABEL') %>"
+           data-on-label="<%- t('diagnostics', 'STATE_SWITCH_LABEL_ON') %>"
+           data-off-label="<%- t('diagnostics', 'STATE_SWITCH_LABEL_OFF') %>"
+           data-on="success"
+           data-off="danger">
+        <input type="checkbox">
+      </div>
+      <div class="diag-mode-switch make-switch switch-large btn-block"
+           data-tag="outputPumps.1.mode"
+           data-text-label="<%- t('diagnostics', 'MODE_SWITCH_LABEL') %>"
+           data-on-label="<%- t('diagnostics', 'MODE_SWITCH_LABEL_ON') %>"
+           data-off-label="<%- t('diagnostics', 'MODE_SWITCH_LABEL_OFF') %>"
+           data-on="primary"
+           data-off="warning">
+        <input type="checkbox">
+      </div>
+    </div>
+    <div data-visible-to-pump="2">
+      <div class="diag-state-switch make-switch switch-large btn-block"
+           data-tag="outputPumps.2.state"
+           data-text-label="<%- t('diagnostics', 'STATE_SWITCH_LABEL') %>"
+           data-on-label="<%- t('diagnostics', 'STATE_SWITCH_LABEL_ON') %>"
+           data-off-label="<%- t('diagnostics', 'STATE_SWITCH_LABEL_OFF') %>"
+           data-on="success"
+           data-off="danger">
+        <input type="checkbox">
+      </div>
+      <div class="diag-mode-switch make-switch switch-large btn-block"
+           data-tag="outputPumps.2.mode"
+           data-text-label="<%- t('diagnostics', 'MODE_SWITCH_LABEL') %>"
+           data-on-label="<%- t('diagnostics', 'MODE_SWITCH_LABEL_ON') %>"
+           data-off-label="<%- t('diagnostics', 'MODE_SWITCH_LABEL_OFF') %>"
+           data-on="primary"
+           data-off="warning">
+        <input type="checkbox">
+      </div>
+    </div>
+    <div data-visible-to-pump="3">
+      <div class="diag-state-switch make-switch switch-large btn-block"
+           data-tag="outputPumps.3.state"
+           data-text-label="<%- t('diagnostics', 'STATE_SWITCH_LABEL') %>"
+           data-on-label="<%- t('diagnostics', 'STATE_SWITCH_LABEL_ON') %>"
+           data-off-label="<%- t('diagnostics', 'STATE_SWITCH_LABEL_OFF') %>"
+           data-on="success"
+           data-off="danger">
+        <input type="checkbox">
+      </div>
+      <div class="diag-mode-switch make-switch switch-large btn-block"
+           data-tag="outputPumps.3.mode"
+           data-text-label="<%- t('diagnostics', 'MODE_SWITCH_LABEL') %>"
+           data-on-label="<%- t('diagnostics', 'MODE_SWITCH_LABEL_ON') %>"
+           data-off-label="<%- t('diagnostics', 'MODE_SWITCH_LABEL_OFF') %>"
+           data-on="primary"
+           data-off="warning">
+        <input type="checkbox">
+      </div>
+    </div>
+    <hr>
+    <div data-visible-to-pump="1">
+      <button class="btn btn-large btn-block diag-manual-button diag-control-button" data-pump="1">
+        <img class="diag-manual-button-image diag-outputPump-control-image" src="/assets/img/led.svg?color=grey" data-tag="outputPumps.1.control.grid">
+        <span class="diag-manual-button-label"><%- t('diagnostics', 'OUTPUT_PUMP_CONTROL_BUTTON_GRID') %></span>
+        <i class="icon-spinner icon-spin"></i>
+      </button>
+      <button class="btn btn-large btn-block diag-manual-button diag-control-button" data-pump="1">
+        <img class="diag-manual-button-image diag-outputPump-control-image" src="/assets/img/led.svg?color=grey" data-tag="outputPumps.1.control.vfd">
+        <span class="diag-manual-button-label"><%- t('diagnostics', 'OUTPUT_PUMP_CONTROL_BUTTON_VFD') %></span>
+        <i class="icon-spinner icon-spin"></i>
+      </button>
+    </div>
+    <div data-visible-to-pump="2">
+      <button class="btn btn-large btn-block diag-manual-button diag-control-button" data-pump="2">
+        <img class="diag-manual-button-image diag-outputPump-control-image" src="/assets/img/led.svg?color=grey" data-tag="outputPumps.2.control.grid">
+        <span class="diag-manual-button-label"><%- t('diagnostics', 'OUTPUT_PUMP_CONTROL_BUTTON_GRID') %></span>
+        <i class="icon-spinner icon-spin"></i>
+      </button>
+      <button class="btn btn-large btn-block diag-manual-button diag-control-button" data-pump="2">
+        <img class="diag-manual-button-image diag-outputPump-control-image" src="/assets/img/led.svg?color=grey" data-tag="outputPumps.2.control.vfd">
+        <span class="diag-manual-button-label"><%- t('diagnostics', 'OUTPUT_PUMP_CONTROL_BUTTON_VFD') %></span>
+        <i class="icon-spinner icon-spin"></i>
+      </button>
+    </div>
+    <div data-visible-to-pump="3">
+      <button class="btn btn-large btn-block diag-manual-button diag-control-button" data-pump="3">
+        <img class="diag-manual-button-image diag-outputPump-control-image" src="/assets/img/led.svg?color=grey" data-tag="outputPumps.3.control.grid">
+        <span class="diag-manual-button-label"><%- t('diagnostics', 'OUTPUT_PUMP_CONTROL_BUTTON_GRID') %></span>
+        <i class="icon-spinner icon-spin"></i>
+      </button>
+      <button class="btn btn-large btn-block diag-manual-button diag-control-button" data-pump="3">
+        <img class="diag-manual-button-image diag-outputPump-control-image" src="/assets/img/led.svg?color=grey" data-tag="outputPumps.3.control.vfd">
+        <span class="diag-manual-button-label"><%- t('diagnostics', 'OUTPUT_PUMP_CONTROL_BUTTON_VFD') %></span>
+        <i class="icon-spinner icon-spin"></i>
+      </button>
+    </div>
+    <hr>
+    <button class="btn btn-large btn-block diag-manual-button diag-outputPumps-control">
+      <img class="diag-manual-button-image diag-outputPump-control-image" src="/assets/img/led.svg?color=grey" data-tag="outputPumps.control">
+      <span class="diag-manual-button-label"><%- t('diagnostics', 'OUTPUT_PUMP_CONTROL_BUTTON') %></span>
+      <i class="icon-spinner icon-spin"></i>
+    </button>
+    <input class="diag-outputPumps-presetRef-slider" type="range" min="0" max="100" value="0" title="<%- t('diagnostics', 'OUTPUT_PUMP_PRESET_REF') %>">
+    <div class="input-append diag-outputPumps-presetRef">
+      <input class="diag-outputPumps-presetRef-input" type="number" placeholder="<%- t('diagnostics', 'OUTPUT_PUMP_PRESET_REF') %>" title="<%- t('diagnostics', 'OUTPUT_PUMP_PRESET_REF') %>" min="0" max="100" value="" data-tag="outputPumps.presetRef">
+      <span class="add-on">%</span>
+    </div>
+  </div>
+  <div class="fluid-column-right diag-el-container">
+    <svg width="100%" height="100%" viewBox="0 0 900 425" xmlns="http://www.w3.org/2000/svg">
+      <defs>
+        <linearGradient id="<%- idPrefix %>-reservoirs-waterLevel-fill" x1="0" x2="0" y1="0" y2="1">
+          <stop offset="0" stop-color="#fff"></stop>
+          <stop offset="0" stop-color="#aef"></stop>
+          <stop offset="1" stop-color="#acf"></stop>
+        </linearGradient>
+        <%- renderPathEnding({dir: 'lr', type: null}) %>
+        <%- renderPathEnding({dir: 'lr', type: 'cleanWater'}) %>
+        <%- renderPathEnding({dir: 'rl', type: null}) %>
+        <%- renderPathEnding({dir: 'rl', type: 'cleanWater'}) %>
+        <%- renderPathEnding({dir: 'tb', type: null}) %>
+        <%- renderPathEnding({dir: 'tb', type: 'cleanWater'}) %>
+      </defs>
+
+      <g id="<%- idPrefix %>-reservoirs" class="el-reservoir" transform="translate(5, 50)">
+        <rect x="57.5" y="-20" width="20" height="10" />
+        <path d="M 51.5 -20 h 32 l -16 -10 z" />
+        <path d="M 0 0 Q 67.5 -20, 135 0" />
+        <rect class="el-reservoir-outerContainer" x="0" y="0" width="135" height="200" data-tag="reservoirs.1.height" />
+        <rect class="el-reservoir-innerContainer" x="1" y="1" width="133" height="198" fill="url(#<%- idPrefix %>-reservoirs-waterLevel-fill)" data-tag="reservoirs.1.waterLevel" />
+      </g>
+
+      <rect id="<%- idPrefix %>-reservoirs-in" class="diag-path-ending-lr" data-dir="lr" x="119" y="58" width="54" height="4" />
+
+      <rect id="<%- idPrefix %>-washingPump" class="diag-path-ending-tb" data-dir="tb" x="208" y="302" width="4" height="50" />
+
+      <path id="<%- idPrefix %>-reservoirs-hydroSet" class="el-path" d="M 121 226 v -22 h 39 v 150 h 100 v -100 m 0 100 h 150 v -100 m 0 100 h 150 v -100" />
+
+      <path id="<%- idPrefix %>-pump-1-out" class="el-path" d="M 260 254 v -57" />
+      <path id="<%- idPrefix %>-pump-2-out" class="el-path" d="M 410 254 v -57" />
+      <path id="<%- idPrefix %>-pump-3-out" class="el-path" d="M 560 254 v -57" />
+
+      <path id="<%- idPrefix %>-pumps-out" class="el-path" d="M 260 197 v -70 h 75 v -20 m 0 20 h 75 v 70 m 0 -70 h 75 v -20 m 0 20 h 75 v 70 m 0 -70 h 269 v 60" />
+
+      <rect id="<%- idPrefix %>-out" class="diag-path-ending-lr" data-dir="lr" x="830" y="125" width="54" height="4" />
+
+      <g id="<%- idPrefix %>-reservoirs-triangle" class="el-reservoir-triangle" transform="translate(113, 224)">
+        <path d="M 8 0 L 16 16 L 0 16 Z" />
+      </g>
+
+      <g id="<%- idPrefix %>-reservoirs-triangle-valve" class="el-valve el-valve-right" transform="translate(168, 250) rotate(90)">
+        <path d="M 0 0 L 0 16 L 16 8 Z" />
+        <path d="M 32 0 L 32 16 L 16 8 Z" />
+      </g>
+
+      <g class="el-valve" transform="translate(268, 295) rotate(90)">
+        <path d="M 0 0 L 0 16 L 16 8 Z" />
+        <path d="M 32 0 L 32 16 L 16 8 Z" />
+      </g>
+
+      <g class="el-valve" transform="translate(418, 295) rotate(90)">
+        <path d="M 0 0 L 0 16 L 16 8 Z" />
+        <path d="M 32 0 L 32 16 L 16 8 Z" />
+      </g>
+
+      <g class="el-valve" transform="translate(568, 295) rotate(90)">
+        <path d="M 0 0 L 0 16 L 16 8 Z" />
+        <path d="M 32 0 L 32 16 L 16 8 Z" />
+      </g>
+
+      <g class="el-pump el-outputPump diag-outputPump-symbol" transform="translate(260, 254)" data-pump="1">
+        <circle r="16" cx="0" cy="0" />
+        <path d="M 0 -16 l 14 24 h -28 z" />
+      </g>
+
+      <g class="el-pump el-outputPump diag-outputPump-symbol" transform="translate(410, 254)" data-pump="2">
+        <circle r="16" cx="0" cy="0" />
+        <path d="M 0 -16 l 14 24 h -28 z" />
+      </g>
+
+      <g class="el-pump el-outputPump diag-outputPump-symbol" transform="translate(560, 254)" data-pump="3">
+        <circle r="16" cx="0" cy="0" />
+        <path d="M 0 -16 l 14 24 h -28 z" />
+      </g>
+
+      <g class="el-valve el-valve-left" transform="translate(268, 181) rotate(90)">
+        <path d="M 0 0 L 0 16 L 16 8 Z" />
+        <path d="M 32 0 L 32 16 L 16 8 Z" />
+      </g>
+      <g class="el-valve" transform="translate(268, 148) rotate(90)">
+        <path d="M 0 0 L 0 16 L 16 8 Z" />
+        <path d="M 32 0 L 32 16 L 16 8 Z" />
+      </g>
+
+      <g class="el-valve el-valve-left" transform="translate(418, 181) rotate(90)">
+        <path d="M 0 0 L 0 16 L 16 8 Z" />
+        <path d="M 32 0 L 32 16 L 16 8 Z" />
+      </g>
+      <g class="el-valve" transform="translate(418, 148) rotate(90)">
+        <path d="M 0 0 L 0 16 L 16 8 Z" />
+        <path d="M 32 0 L 32 16 L 16 8 Z" />
+      </g>
+
+      <g class="el-valve el-valve-left" transform="translate(568, 181) rotate(90)">
+        <path d="M 0 0 L 0 16 L 16 8 Z" />
+        <path d="M 32 0 L 32 16 L 16 8 Z" />
+      </g>
+      <g class="el-valve" transform="translate(568, 148) rotate(90)">
+        <path d="M 0 0 L 0 16 L 16 8 Z" />
+        <path d="M 32 0 L 32 16 L 16 8 Z" />
+      </g>
+
+      <g class="el-antiBlowTank" transform="translate(314, 36)">
+        <rect x="0" y="0" width="42" height="70" rx="10" ry="10" />
+        <path d="M 0 35 h 10 a 10 10 0 0 1 22 0 h 10" />
+      </g>
+
+      <g class="el-antiBlowTank" transform="translate(464, 36)">
+        <rect x="0" y="0" width="42" height="70" rx="10" ry="10" />
+        <path d="M 0 35 h 10 a 10 10 0 0 1 22 0 h 10" />
+      </g>
+
+      <g class="el-uvLamp" transform="translate(601, 125)" data-tag="uvLamp.control">
+        <path d="M 0 0 v -50 h 15"></path>
+        <rect x="15" y="-60" width="42" height="20"></rect>
+        <path d="M 57 -50 h 15 v 50"></path>
+        <path class="el-uvLamp-valve" d="M 0 0 L 0 16 L 16 8 Z M 32 0 L 32 16 L 16 8 Z" transform="translate(4, -30) scale(.5) rotate(90)"></path>
+        <path class="el-uvLamp-valve" d="M 0 0 L 0 16 L 16 8 Z M 32 0 L 32 16 L 16 8 Z" transform="translate(76, -30) scale(.5) rotate(90)"></path>
+      </g>
+
+      <g class="el-valve" transform="translate(621, 119)">
+        <path d="M 0 0 L 0 16 L 16 8 Z"></path>
+        <path d="M 32 0 L 32 16 L 16 8 Z"></path>
+      </g>
+
+      <g class="el-flowMeter" transform="translate(788, 135) rotate(90)">
+        <circle r="12" cx="-8" cy="61" />
+        <path d="M 7 76 L -23 46 h 7 m -7 0 v 7" />
+        <path d="M 2 34 h -20 M 2 88 h -20" />
+      </g>
+
+      <g class="el-valve" transform="translate(776, 119)">
+        <path d="M 0 0 L 0 16 L 16 8 Z"></path>
+        <path d="M 32 0 L 32 16 L 16 8 Z"></path>
+      </g>
+
+      <g class="el-sensor" transform="translate(829, 218)">
+        <circle r="30" cx="0" cy="0"></circle>
+        <line x1="-30" y1="0" x2="30" y2="0"></line>
+        <text x="-11" y="-6">PS</text>
+      </g>
+
+      <text x="260" y="374" text-anchor="middle"><%- t('diagnostics', 'OUTPUT_PUMP_SYMBOL', {id: 1}) %></text>
+      <text x="410" y="374" text-anchor="middle"><%- t('diagnostics', 'OUTPUT_PUMP_SYMBOL', {id: 2}) %></text>
+      <text x="560" y="374" text-anchor="middle"><%- t('diagnostics', 'OUTPUT_PUMP_SYMBOL', {id: 3}) %></text>
+      <text x="260" y="394" text-anchor="middle"><%- t('diagnostics', 'OUTPUT_PUMP_WORK_TIME') %></text>
+      <text x="410" y="394" text-anchor="middle"><%- t('diagnostics', 'OUTPUT_PUMP_WORK_TIME') %></text>
+      <text x="560" y="394" text-anchor="middle"><%- t('diagnostics', 'OUTPUT_PUMP_WORK_TIME') %></text>
+      <text x="260" y="414" text-anchor="middle">~<tspan data-tag="outputPumps.1.workTime">0s</tspan></text>
+      <text x="410" y="414" text-anchor="middle">~<tspan data-tag="outputPumps.2.workTime">0s</tspan></text>
+      <text x="560" y="414" text-anchor="middle">~<tspan data-tag="outputPumps.3.workTime">0s</tspan></text>
+      <text transform="translate(636, 57)" text-anchor="middle"><%- t('diagnostics', 'OUTPUT_PUMP_UV_LAMP_SYMBOL') %></text>
+      <text transform="translate(699, 70)" text-anchor="left"><%- t('diagnostics', 'OUTPUT_PUMP_FLOW_METER_SYMBOL') %></text>
+      <text x="710" y="160" text-anchor="end"><%- t('diagnostics', 'OUTPUT_PUMP_OUTPUT_FLOW') %></text>
+      <text x="710" y="184" text-anchor="end"><%- t('diagnostics', 'OUTPUT_PUMP_OUTPUT_FLOW_TOTAL') %></text>
+      <text x="716" y="160" text-anchor="start"><tspan data-tag="outputFlow">?.??</tspan> m3/h</text>
+      <text x="716" y="184" text-anchor="start"><tspan data-tag="outputFlow.total.forwards">?.??</tspan> m3</text>
+      <text x="890" y="265" text-anchor="end"><%- t('diagnostics', 'OUTPUT_PUMP_OUTPUT_PRESSURE') %></text>
+      <text x="890" y="285" text-anchor="end"><tspan data-tag="outputPressure">?.??</tspan> b</text>
+      <text x="720" y="309" text-anchor="end"><%- t('diagnostics', 'OUTPUT_PUMP_VFD_PRESET_REF') %></text>
+      <text x="720" y="333" text-anchor="end"><%- t('diagnostics', 'OUTPUT_PUMP_VFD_CURRENT') %></text>
+      <text x="720" y="357" text-anchor="end"><%- t('diagnostics', 'OUTPUT_PUMP_VFD_FREQUENCY') %></text>
+      <text x="726" y="309" text-anchor="start"><tspan data-tag="outputPumps.presetRef">???.??</tspan> %</text>
+      <text x="726" y="333" text-anchor="start"><tspan data-tag="outputPumps.current">?.??</tspan> A</text>
+      <text x="726" y="357" text-anchor="start"><tspan data-tag="outputPumps.outputFrequency">??.??</tspan> Hz</text>
+      <text x="72" y="270" text-anchor="middle"><%- t('diagnostics', 'OUTPUT_PUMP_RESERVOIRS') %></text>
+      <text x="72" y="290" text-anchor="middle">
+        <tspan data-tag="reservoirs.waterLevel">?.??</tspan> m
+        /
+        <tspan data-tag="reservoirs.height">?.??</tspan> m
+      </text>
+    </svg>
+  </div>
+</div>

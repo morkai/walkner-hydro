@@ -1,0 +1,16 @@
+.analytics-changes td {
+  cursor: pointer;
+}
+.analytics-changes .analytics-changes-group {
+  font-weight: bold;
+  cursor: default;
+  font-size: 1.2em;
+}
+.analytics-changes-tag {
+  font-family: monospace;
+  width: 1%;
+}
+.analytics-changes-tag-list td:first-child {
+  width: 1%;
+  white-space: nowrap;
+}

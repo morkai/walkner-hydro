@@ -1,0 +1,51 @@
+{
+  "BREADCRUMBS_BROWSE": "Użytkownicy",
+  "BREADCRUMBS_ADD_FORM": "Dodawanie",
+  "BREADCRUMBS_EDIT_FORM": "Edycja",
+  "BREADCRUMBS_ACTION_FORM:delete": "Usuwanie",
+
+  "MSG_LOADING_USERS": "Ładowanie użytkowników...",
+  "MSG_LOADING_USERS_FAILED": "Ładowanie użytkowników nie powiodło się :(",
+  "MSG_LOADING_USER": "Ładowanie użytkownika...",
+  "MSG_LOADING_USER_FAILED": "Ładowanie użytkownika nie powiodło się :(",
+
+  "PAGE_ACTION_ADD": "Dodaj użytkownika",
+  "PAGE_ACTION_EDIT": "Edytuj użytkownika",
+  "PAGE_ACTION_DELETE": "Usuń użytkownika",
+
+  "MESSAGE_USER_DELETED": "Użytkownik <em>{login}</em> został usunięty.",
+
+  "PROPERTY_LOGIN": "Login",
+  "PROPERTY_PASSWORD": "Hasło",
+  "PROPERTY_EMAIL": "Adres e-mail",
+  "PROPERTY_MOBILE": "Telefon komórkowy",
+  "PROPERTY_PRIVILEGES": "Uprawnienia",
+
+  "ACTION_DIALOG_TITLE:delete": "Potwierdzenie usunięcia użytkownika",
+
+  "FORM_ACTION_ADD": "Dodaj użytkownika",
+  "FORM_ACTION_EDIT": "Edytuj użytkownika",
+  "FORM_PASSWORD_CONFIRM": "Powtórz hasło",
+  "FORM_ERROR_PASSWORD_MISMATCH": "Podane hasła nie pasują do siebie.",
+  "FORM_ERROR_ADD_FAILED": "Nie udało się dodać użytkownika :-(",
+  "FORM_ERROR_EDIT_FAILED": "Nie udało się zmodyfikować użytkownika :-(",
+
+  "ACTION_FORM_BUTTON:delete": "Usuń użytkownika",
+  "ACTION_FORM_MESSAGE:delete": "Czy na pewno chcesz bezpowrotnie usunąć wybranego użytkownika?",
+  "ACTION_FORM_MESSAGE_SPECIFIC:delete": "Czy na pewno chcesz bezpowrotnie usunąć użytkownika <em>{label}</em>?",
+  "ACTION_FORM_MESSAGE_FAILED:delete": "Nie udało się usunąć użytkownika :-(",
+
+  "PRIVILEGE:SETTINGS_VIEW": "Przeglądanie ustawień",
+  "PRIVILEGE:SETTINGS_MANAGE": "Zmienianie ustawień",
+  "PRIVILEGE:MONITORING_VIEW": "Monitoring",
+  "PRIVILEGE:DIAGNOSTICS_VIEW": "Diagnostyka",
+  "PRIVILEGE:ANALYTICS_VIEW": "Analiza",
+  "PRIVILEGE:EVENTS_VIEW": "Przeglądanie zdarzeń",
+  "PRIVILEGE:EVENTS_MANAGE": "Zarządzanie zdarzeniami",
+  "PRIVILEGE:ALARMS_VIEW": "Przeglądanie alarmów",
+  "PRIVILEGE:ALARMS_MANAGE": "Zarządzanie alarmami",
+  "PRIVILEGE:ALARMS_ACK": "Potwierdzanie alarmów",
+  "PRIVILEGE:ALARMS_BREAKIN": "Wyłączanie alarmu włamania",
+  "PRIVILEGE:USERS_VIEW": "Przeglądanie użytkowników",
+  "PRIVILEGE:USERS_MANAGE": "Zarządzanie użytkownikami"
+}

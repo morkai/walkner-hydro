@@ -1,0 +1,17 @@
+.diag-settings .control-label {
+  width: 220px;
+  margin-right: 1em;
+}
+.diag-settings .controls {
+  margin-left: 0;
+}
+.diag-settings .help-block {
+  margin-top: 5px!important;
+  margin-left: 220px;
+  padding-left: 1em;
+  color: grey;
+  font-size: 0.9em;
+}
+.diag-settings-header {
+  font-size: 1.2em;
+}

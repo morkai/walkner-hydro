@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+  <base href="/">
+  <title>walkner-hydro</title>
+  <link rel="stylesheet" href="assets/main.css">
+  <style type="text/css">
+    body {
+      padding-top: 40px;
+      padding-bottom: 40px;
+      background-color: #f5f5f5;
+    }
+    #login-form {
+      max-width: 300px;
+      padding: 23px 29px 29px;
+      margin: 0 auto 20px;
+      background-color: #fff;
+      border: 1px solid #e5e5e5;
+      -webkit-border-radius: 5px;
+      -moz-border-radius: 5px;
+      border-radius: 5px;
+      -webkit-box-shadow: 0 1px 2px rgba(0,0,0,.05);
+      -moz-box-shadow: 0 1px 2px rgba(0,0,0,.05);
+      box-shadow: 0 1px 2px rgba(0,0,0,.05);
+    }
+    #icon {
+      margin-bottom: 10px;
+      text-align: center;
+    }
+    #icon img {
+      height: 200px;
+    }
+    #login-form input[type="text"],
+    #login-form input[type="password"] {
+      font-size: 16px;
+      height: auto;
+      margin-bottom: 15px;
+      padding: 7px 9px;
+    }
+    .control-group {
+      margin-bottom: 0;
+    }
+    #login-form .icon-spinner {
+      display: none;
+    }
+    #login-form.loading .icon-spinner {
+      display: inline-block;
+      margin-right: 7px;
+    }
+    #submit span {
+      margin-left: 0;
+    }
+  </style>
+</head>
+<body>
+<div>
+  <form id="login-form" action="/login" method="post" autocomplete="off">
+    <div id="icon">
+      <img src="/app/core/assets/tap-water.svg">
+    </div>
+    <div class="control-group">
+      <div class="controls">
+        <input id="login" type="text" class="input-block-level" placeholder="Login" autofocus>
+        <input id="password" type="password" class="input-block-level" placeholder="Password">
+      </div>
+    </div>
+    <button id="submit" class="btn btn-large input-block-level btn-primary" type="submit">
+      <i class="icon-spinner icon-spin"></i>
+      <span>Sign in</span>
+    </button>
+  </form>
+</div>
+<script src="config.js"></script>
+<script src="vendor/jquery/jquery.js"></script>
+<script src="vendor/require/require.js"></script>
+<script>
+var $loginForm = $('#login-form');
+var $controlGroup = $('.control-group');
+var $loginEl = $('#login');
+var $passwordEl = $('#password');
+var $submitEl = $('#submit');
+
+var lang = navigator.language || navigator.browserLanguage || 'pl';
+
+if (lang.indexOf('pl') === 0)
+{
+  $passwordEl.attr('placeholder', 'Hasło');
+  $submitEl.find('span').text('Zaloguj się');
+}
+
+$loginEl.on('input', function()
+{
+  $controlGroup.removeClass('error');
+});
+
+$passwordEl.on('input', function()
+{
+  $controlGroup.removeClass('error');
+});
+
+$loginForm.submit(function()
+{
+  if ($loginForm.hasClass('loading'))
+  {
+    return;
+  }
+
+  var login = $loginEl.val().trim();
+  var password = $passwordEl.val().trim();
+
+  if (login.length === 0 || password.length === 0)
+  {
+    return;
+  }
+
+  $loginForm.addClass('loading');
+  $controlGroup.removeClass('error');
+  $submitEl.attr('disabled', true);
+
+  var req = $.ajax({
+    type: this.method,
+    url: this.action,
+    data: {
+      login: login,
+      password: password
+    }
+  });
+
+  req.done(function()
+  {
+    $submitEl.addClass('btn-success');
+
+    setTimeout(function() { window.location.reload(); }, 250);
+  });
+
+  req.fail(function()
+  {
+    $controlGroup.addClass('error');
+    $loginEl.focus().select();
+    $loginForm.removeClass('loading');
+  });
+
+  req.always(function()
+  {
+    $submitEl.attr('disabled', false);
+  });
+
+  return false;
+});
+
+</script>
+</body>
+</html>

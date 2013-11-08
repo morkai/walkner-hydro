@@ -1,0 +1,18 @@
+require = {
+  baseUrl: '/',
+  paths: <%- paths %>,
+  shim: <%- shim %>,
+  config: {
+    i18n: {
+      locale: typeof window === 'object' && window.LOCALE ? window.LOCALE : 'pl'
+    }
+  }
+};
+
+if (typeof window === 'object' && location.hostname === 'hydro.walkner.pl')
+{
+  require.baseUrl = location.protocol
+    + '//vps.walkner.pl:'
+    + (location.protocol === 'https:' ? 5443 : 5080)
+    + '/';
+}

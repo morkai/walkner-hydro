@@ -1,0 +1,8 @@
+<form class="action-form" method="post" action="<%- formAction %>">
+  <input type="hidden" name="_method" value="<%- formMethod %>">
+  <p><%- messageText %></p>
+  <div class="form-actions">
+    <button type="submit" class="btn btn-<%- formActionSeverity %>"><%- formActionText %></button>
+    <a class="cancel" href="<%- cancelUrl %>"><%- t('core', 'ACTION_FORM_BUTTON:cancel') %></a>
+  </div>
+</form>

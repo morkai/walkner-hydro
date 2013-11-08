@@ -1,0 +1,51 @@
+<form class="form-horizontal alarms-form" method="post" action="<%- formAction %>" autocomplete="off">
+  <input type="hidden" type="_method" value="<%- formMethod %>">
+  <div class="control-group">
+    <label class="control-label" for="<%- idPrefix %>-name"><%- t('alarms', 'PROPERTY_NAME') %></label>
+    <div class="controls">
+      <input id="<%- idPrefix %>-name" class="span6" type="text" name="name" value="" autofocus required maxlength="100">
+    </div>
+  </div>
+  <div class="control-group">
+    <label class="control-label" for="<%- idPrefix %>-startCondition"><%- t('alarms', 'PROPERTY_START_CONDITION') %></label>
+    <div class="controls">
+      <textarea id="<%- idPrefix %>-startCondition" class="span6 alarms-form-condition" name="startCondition" required></textarea>
+    </div>
+  </div>
+  <div class="control-group">
+    <label class="control-label" for="<%- idPrefix %>-stopCondition"><%- t('alarms', 'PROPERTY_STOP_CONDITION') %></label>
+    <div class="controls">
+      <label class="radio">
+        <input type="radio" name="stopConditionMode" value="manual">
+        <%- t('alarms', 'STOP_CONDITION_MANUAL') %>
+      </label>
+      <label class="radio">
+        <input type="radio" name="stopConditionMode" value="negated" checked>
+        <%- t('alarms', 'STOP_CONDITION_NEGATED') %>
+      </label>
+      <label class="radio">
+        <input type="radio" name="stopConditionMode" value="specified">
+        <%- t('alarms', 'STOP_CONDITION_SPECIFIED') %>
+      </label>
+    </div>
+    <div class="controls">
+      <textarea id="<%- idPrefix %>-stopCondition" class="span6 alarms-form-condition" name="stopCondition"></textarea>
+    </div>
+  </div>
+  <div class="control-group alarms-form-actions-control-group">
+    <label class="control-label" for="<%- idPrefix %>-actions-type"><%- t('alarms', 'PROPERTY_ACTIONS') %></label>
+    <div class="alarms-form-actions-arrow"></div>
+    <div class="alarms-form-actions"></div>
+    <div class="controls alarms-form-actions-controls">
+      <select id="<%- idPrefix %>-actions-type">
+        <option value="severity"><%- t('alarms', 'ACTION_SEVERITY') %></option>
+        <option value="sms"><%- t('alarms', 'ACTION_SMS') %></option>
+        <option value="email"><%- t('alarms', 'ACTION_EMAIL') %></option>
+      </select>
+      <button class="btn alarms-form-actions-add" type="button"><i class="icon icon-plus"></i></button>
+    </div>
+  </div>
+  <div class="form-actions">
+    <button type="submit" class="btn btn-primary"><%- formActionText %></button>
+  </div>
+</form>

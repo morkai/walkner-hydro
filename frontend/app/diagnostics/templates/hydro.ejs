@@ -1,0 +1,60 @@
+<div class="well diag-cabinet">
+  <div class="diag-cabinet-row">
+    <div class="well diag-cabinet-column">
+      <p class="diag-cabinet-control">
+        <img class="diag-cabinet-control-image" src="/assets/img/led.svg" data-tag="outputPumps.dryRun" data-type="led" data-on-color="yellow">
+        <span class="diag-cabinet-control-label"><%- t('diagnostics', 'CABINET_LED_OUTPUT_PUMPS_DRYRUN') %></span>
+      </p>
+    </div>
+    <div class="well diag-cabinet-column">
+      <p class="diag-cabinet-control">
+        <img class="diag-cabinet-control-image" src="/assets/img/led.svg" data-tag="masters.hydroPlc" data-type="led" data-on-color="green">
+        <span class="diag-cabinet-control-label"><%- t('diagnostics', 'CABINET_LED_OUTPUT_PUMPS_POWER') %></span>
+      </p>
+    </div>
+  </div>
+  <div class="diag-cabinet-row">
+    <a class="well diag-cabinet-column" href="#diagnostics/output-pumps?id=1">
+      <p class="diag-cabinet-control">
+        <img class="diag-cabinet-control-image" src="/assets/img/switch.svg" data-tag="outputPumps.1.switch" data-type="switch">
+        <span class="diag-cabinet-control-label"><%- t('diagnostics', 'CABINET_SWITCH_OUTPUT_PUMP', {id: 1}) %></span>
+      </p>
+      <p class="diag-cabinet-control">
+        <img class="diag-cabinet-control-image" src="/assets/img/led.svg" data-tag="outputPumps.1.status" data-type="led" data-on-color="green">
+        <span class="diag-cabinet-control-label"><%- t('diagnostics', 'CABINET_LED_OUTPUT_PUMP_STATUS') %></span>
+      </p>
+      <p class="diag-cabinet-control">
+        <img class="diag-cabinet-control-image" src="/assets/img/led.svg" data-tag="outputPumps.1.failure" data-type="led" data-on-color="red">
+        <span class="diag-cabinet-control-label"><%- t('diagnostics', 'CABINET_LED_OUTPUT_PUMP_FAILURE') %></span>
+      </p>
+    </a>
+    <a class="well diag-cabinet-column" href="#diagnostics/output-pumps?id=2">
+      <p class="diag-cabinet-control">
+        <img class="diag-cabinet-control-image" src="/assets/img/switch.svg" data-tag="outputPumps.2.switch" data-type="switch">
+        <span class="diag-cabinet-control-label"><%- t('diagnostics', 'CABINET_SWITCH_OUTPUT_PUMP', {id: 2}) %></span>
+      </p>
+      <p class="diag-cabinet-control">
+        <img class="diag-cabinet-control-image" src="/assets/img/led.svg" data-tag="outputPumps.2.status" data-type="led" data-on-color="green">
+        <span class="diag-cabinet-control-label"><%- t('diagnostics', 'CABINET_LED_OUTPUT_PUMP_STATUS') %></span>
+      </p>
+      <p class="diag-cabinet-control">
+        <img class="diag-cabinet-control-image" src="/assets/img/led.svg" data-tag="outputPumps.2.failure" data-type="led" data-on-color="red">
+        <span class="diag-cabinet-control-label"><%- t('diagnostics', 'CABINET_LED_OUTPUT_PUMP_FAILURE') %></span>
+      </p>
+    </a>
+    <a class="well diag-cabinet-column" href="#diagnostics/output-pumps?id=3">
+      <p class="diag-cabinet-control">
+        <img class="diag-cabinet-control-image" src="/assets/img/switch.svg" data-tag="outputPumps.3.switch" data-type="switch">
+        <span class="diag-cabinet-control-label"><%- t('diagnostics', 'CABINET_SWITCH_OUTPUT_PUMP', {id: 3}) %></span>
+      </p>
+      <p class="diag-cabinet-control">
+        <img class="diag-cabinet-control-image" src="/assets/img/led.svg" data-tag="outputPumps.3.status" data-type="led" data-on-color="green">
+        <span class="diag-cabinet-control-label"><%- t('diagnostics', 'CABINET_LED_OUTPUT_PUMP_STATUS') %></span>
+      </p>
+      <p class="diag-cabinet-control">
+        <img class="diag-cabinet-control-image" src="/assets/img/led.svg" data-tag="outputPumps.3.failure" data-type="led" data-on-color="red">
+        <span class="diag-cabinet-control-label"><%- t('diagnostics', 'CABINET_LED_OUTPUT_PUMP_FAILURE') %></span>
+      </p>
+    </a>
+  </div>
+</div>
