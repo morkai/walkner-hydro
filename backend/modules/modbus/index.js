@@ -228,15 +228,49 @@ exports.start = function startModbusModule(app, module, done)
       });
 
       var statusTagName = 'masters.' + masterName;
+      var wasConnected = false;
+      var resetTagsTimer = null;
+
+      master.on('transaction complete', function(err)
+      {
+        if (!wasConnected && !err)
+        {
+          module.debug("Master really connected: %s", masterName);
+
+          wasConnected = true;
+
+          module.tags[statusTagName].setValue(wasConnected);
+
+          if (resetTagsTimer !== null)
+          {
+            clearTimeout(resetTagsTimer);
+            resetTagsTimer = null;
+          }
+        }
+      });
 
       master.on('connected', function()
       {
-        module.tags[statusTagName].setValue(true);
+        module.debug("Master maybe connected: %s", masterName);
       });
 
       master.on('disconnected', function()
       {
-        module.tags[statusTagName].setValue(false);
+        module.debug("Master disconnected: %s", masterName);
+
+        wasConnected = false;
+
+        module.tags[statusTagName].setValue(wasConnected);
+
+        if (resetTagsTimer === null)
+        {
+          resetTagsTimer = app.timeout(1337, function()
+          {
+            resetTagsTimer = null;
+
+            master.tags.forEach(function(tag) { tag.setValue(null); });
+          });
+        }
       });
 
       module.masters[masterName] = master;
@@ -356,6 +390,11 @@ exports.start = function startModbusModule(app, module, done)
           maxRetries: 0,
           interval: module.config.masters[masterName].interval
             || (25 + Math.round(Math.random() * 25))
+        });
+
+        transaction.on('complete', function(err, res)
+        {
+          master.emit('transaction complete', err, res);
         });
 
         transaction.on('error', function(err)

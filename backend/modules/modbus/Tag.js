@@ -524,6 +524,11 @@ Tag.prototype.createValueBuffer = function(value)
  */
 Tag.prototype.rawValueToValue = function(rawValue)
 {
+  if (rawValue === null)
+  {
+    return null;
+  }
+
   if (this.rawMin !== null && rawValue < this.rawMin)
   {
     return null;
