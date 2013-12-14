@@ -85,24 +85,13 @@ exports.start = function startControllerModule(app, module)
   {
     app[module.config.sioId].sockets.on('connection', function(socket)
     {
-      socket.on(
-        'controller.setTagValue', handleSetTagValueMessage.bind(null, socket)
-      );
+      socket.on('controller.setTagValue', handleSetTagValueMessage.bind(null, socket));
 
-      socket.on(
-        'controller.readVfdParam',
-        handleReadVfdParamMessage.bind(null, socket)
-      );
+      socket.on('controller.readVfdParam', handleReadVfdParamMessage.bind(null, socket));
 
-      socket.on(
-        'controller.compareVfdParams',
-        handleCompareVfdParamsMessage.bind(null, socket)
-      );
+      socket.on('controller.compareVfdParams', handleCompareVfdParamsMessage.bind(null, socket));
 
-      socket.on(
-        'controller.writeVfdParam',
-        handleWriteVfdParamMessage.bind(null, socket)
-      );
+      socket.on('controller.writeVfdParam', handleWriteVfdParamMessage.bind(null, socket));
     });
   }
 
@@ -111,21 +100,13 @@ exports.start = function startControllerModule(app, module)
    */
   function setUpServerMessages()
   {
-    app.broker.subscribe(
-      'modbus.tagsChanged', handleTagsChangedMessage
-    );
+    app.broker.subscribe('modbus.tagsChanged', handleTagsChangedMessage);
 
-    app.broker.subscribe(
-      'modbus.tagValuesChanged', handleTagValuesChangedMessage
-    );
+    app.broker.subscribe('modbus.tagValuesChanged', handleTagValuesChangedMessage);
 
-    app.broker.subscribe(
-      'vfd.paramDiff', handleVfdParamDiffMessage
-    );
+    app.broker.subscribe('vfd.paramDiff', handleVfdParamDiffMessage);
 
-    app.broker.subscribe(
-      'vfd.comparingParams', handleComparingVfdParamsMessage
-    );
+    app.broker.subscribe('vfd.comparingParams', handleComparingVfdParamsMessage);
   }
 
   /**
@@ -308,7 +289,7 @@ exports.start = function startControllerModule(app, module)
       reply = function() {};
     }
 
-    if (canManageSettings(socket))
+    if (!canManageSettings(socket))
     {
       return reply({
         message: "Not allowed.",
@@ -316,7 +297,7 @@ exports.start = function startControllerModule(app, module)
       });
     }
 
-    module.request('vfd.readParam', req || {}, reply);
+    messengerClient.request('vfd.readParam', req || {}, reply);
   }
 
   /**
@@ -332,7 +313,7 @@ exports.start = function startControllerModule(app, module)
       reply = function() {};
     }
 
-    if (canManageSettings(socket))
+    if (!canManageSettings(socket))
     {
       return reply({
         message: "Not allowed.",
@@ -340,7 +321,7 @@ exports.start = function startControllerModule(app, module)
       });
     }
 
-    module.request('vfd.compareParams', req || {}, reply);
+    messengerClient.request('vfd.compareParams', req || {}, reply);
   }
 
   /**
@@ -356,7 +337,7 @@ exports.start = function startControllerModule(app, module)
       reply = function() {};
     }
 
-    if (canManageSettings(socket))
+    if (!canManageSettings(socket))
     {
       return reply({
         message: "Not allowed.",
@@ -364,6 +345,6 @@ exports.start = function startControllerModule(app, module)
       });
     }
 
-    module.request('vfd.writeParam', req || {}, reply);
+    messengerClient.request('vfd.writeParam', req || {}, reply);
   }
 };
