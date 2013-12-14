@@ -33,6 +33,11 @@ exports.start = function startVfdModule(app, module)
   messengerServer.handle('vfd.compareParams', handleCompareParamMessage);
   messengerServer.handle('vfd.writeParam', handleWriteParamMessage);
 
+  function validateParamNo(no)
+  {
+    return lodash.isString(no) && (/^[0-9]+\-[0-9]+$/.test(no) || /^[0-9]{2}\.[0-9]{2}$/.test(no));
+  }
+
   /**
    * @private
    * @param {object} req
@@ -40,7 +45,7 @@ exports.start = function startVfdModule(app, module)
    */
   function handleReadParamMessage(req, reply)
   {
-    if (!lodash.isString(req.no) || !/^[0-9]+\-[0-9]+$/.test(req.no))
+    if (!validateParamNo(req.no))
     {
       return reply({message: 'VFD_INVALID_PARAM_NO'});
     }
@@ -77,14 +82,14 @@ exports.start = function startVfdModule(app, module)
    */
   function handleWriteParamMessage(req, reply)
   {
-    if (!lodash.isString(req.no) || !/^[0-9]+\-[0-9]+$/.test(req.no))
+    if (!validateParamNo(req.no))
     {
       return reply({message: 'VFD_INVALID_PARAM_NO'});
     }
 
-    req.master = modbus.masters[req.master || 'vfd'];
+    var master = modbus.masters[req.master || 'vfd'];
 
-    if (lodash.isUndefined(req.master))
+    if (lodash.isUndefined(master))
     {
       return reply({message: 'VFD_UNKNOWN_MASTER'});
     }
@@ -173,7 +178,7 @@ exports.start = function startVfdModule(app, module)
 
         var no = words.shift();
 
-        if (!/^[0-9]+\-[0-9]+$/.test(no))
+        if (!validateParamNo(no))
         {
           return;
         }
@@ -212,6 +217,11 @@ exports.start = function startVfdModule(app, module)
    */
   function getParamAddress(paramNo)
   {
+    if (paramNo.indexOf('.'))
+    {
+      return parseInt('0x' + paramNo.replace('.', ''), 16);
+    }
+
     paramNo = paramNo.split('-');
 
     return parseInt(paramNo[0], 10) * 1000 + parseInt(paramNo[1], 10) * 10 - 1;
@@ -238,10 +248,7 @@ exports.start = function startVfdModule(app, module)
       default:
         if (paramType.indexOf('visstr[') === 0)
         {
-          return Math.min(
-            10,
-            parseInt(paramType.substring(7, paramType.length - 1), 10)
-          );
+          return Math.min(10, parseInt(paramType.substring(7, paramType.length - 1), 10));
         }
 
         return 1;
@@ -351,7 +358,7 @@ exports.start = function startVfdModule(app, module)
     var address = getParamAddress(paramInfo.no);
 
     var tag = new Tag(app.broker, modbus, paramInfo.no, {
-      master: 'vfd',
+      master: req.master || 'vfd',
       address: address,
       unit: req.unit,
       description: paramInfo.name,

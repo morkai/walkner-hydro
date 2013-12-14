@@ -87,5 +87,5 @@ exports.modbus = {
 };
 
 exports.vfd = {
-  paramsFile: __dirname + '/../vfd.txt'
+  paramsFile: __dirname + '/vfd.txt'
 };

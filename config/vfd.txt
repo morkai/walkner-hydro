@@ -1,3 +1,4 @@
+DANFOSS
 0-0* Ustawienia podstawowe
 0-01 Język [0] Angielski 1 zestaw parametrów PRAWDA - Uint8
 0-02 Jednostka prędkości silnika [0] obr/min 2 zestawy parametrów FAŁSZ - Uint8
@@ -824,3 +825,20 @@
 31-10 Słowo statusowe obejścia 0 b.d. Wszystkie zestawy parametrów FAŁSZ 0 V2
 31-11 Godziny pracy obejścia 0 godz. Wszystkie zestawy parametrów FAŁSZ 74 Uint32
 31-19 Aktywacja zdalnego obejścia [0] Wyłączone 2 zestawy parametrów PRAWDA - Uint8
+
+DELTA
+00.00 Identity Code of the AC motor drive n / a n/a - uint16
+00.01 Rated Current Display of the AC motor drive n / a n/a - uint16
+00.02 Parameter Reset n / a n/a - uint16
+00.10 Control Method n / a n/a - uint16
+01.09 Accel Time 1 n / a n/a - uint16
+01.10 Decel Time 1 n / a n/a - uint16
+01.11 Accel Time 2 n / a n/a - uint16
+01.12 Decel Time 2 n / a n/a - uint16
+01.19 Accel/Decel Time Unit n / a n/a - uint16
+06.08 Present Fault Record n / a n/a - uint16
+06.09 Second Most Recent Fault Record n / a n/a - uint16
+06.10 Third Most Recent Fault Record n / a n/a - uint16
+08.15 Auto Restart After Fault n / a n/a - uint16
+08.16 Auto Reset Time at Restart after Fault n / a n/a - uint16
+09.02 Transmission Fault Treatment n / a n/a - uint16

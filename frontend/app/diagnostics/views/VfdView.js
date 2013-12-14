@@ -51,7 +51,7 @@ define([
         var $param = $form.find('input[name="param"]');
         var paramNo = $param.val().trim();
 
-        if (!/^[0-9]+\-[0-9]+$/.test(paramNo))
+        if (!/^[0-9]+\-[0-9]+$/.test(paramNo) && !/^[0-9]{2}\.[0-9]{2}$/.test(paramNo))
         {
           $param.val('').focus();
 
@@ -88,6 +88,72 @@ define([
         var $tr = this.$(e.target).closest('tr');
 
         $tr.fadeOut(function() { $tr.empty().remove(); });
+      },
+      'mousedown .diag-vfd-param-value': function()
+      {
+        this.mousedownAt = Date.now();
+      },
+      'mouseup .diag-vfd-param-value': function(e)
+      {
+        if (Date.now() - this.mousedownAt < 500)
+        {
+          return;
+        }
+
+        var $tr = this.$(e.target).closest('tr');
+
+        if ($tr.find('.icon-spin').length)
+        {
+          return;
+        }
+
+        var $input = $('<input type="text">')
+          .attr('value', e.target.innerHTML.trim())
+          .appendTo(e.target)
+          .select();
+
+        $input.on('keydown', function(e)
+        {
+          if (e.which === 27)
+          {
+            $input.fadeOut(function() { $input.remove(); });
+          }
+          else if (e.which === 13)
+          {
+            $input.attr('disabled', true);
+
+            var $td = $tr.children();
+            var req = {
+              master: $td.eq(0).text(),
+              unit: parseInt($td.eq(1).text(), 10),
+              no: $td.eq(2).text(),
+              value: parseFloat($input.val())
+            };
+
+            socket.emit('controller.writeVfdParam', req, function(err)
+            {
+              $input.fadeOut(function() { $input.remove(); });
+
+              if ($td.parent().length === 0)
+              {
+                return;
+              }
+
+              if (err)
+              {
+                viewport.msg.show({
+                  time: 3000,
+                  type: 'error',
+                  text: err.message
+                });
+              }
+              else
+              {
+                $tr.find('.action-read-param').click();
+              }
+            });
+          }
+        });
       }
     }
 

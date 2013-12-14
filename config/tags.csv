@@ -1,314 +1,316 @@
-name,master,kind,unit,address,description,readable,writable,type,rawMin,rawMax,scaleUnit,scaleFunction,scaleMin,scaleMax,noise,archive,valueMap
-,,,,,PG: Pompy głębinowe,,,,,,,,,,,,
-inputPumps.nextAfterTimeInMin,-,setting,-,-,PG: Czas do uruchomienia następnej pompy,0,1,uint16,-,-,s,-,-,-,-,all,-
-,,,,,PG1: Pompa głębinowa 1,,,,,,,,,,,,
-inputPumps.1.switch,techPlc,input,1,X32,PG1: Przełącznik (auto/0-ręka),1,0,bool,-,-,-,-,-,-,-,all,-
-inputPumps.1.state,-,setting,-,-,PG1: Stan (aktywny/nieaktywny),0,1,bool,-,-,-,-,-,-,-,all,-
-inputPumps.1.mode,-,setting,-,-,PG1: Tryb (auto/manual),0,1,bool,-,-,-,-,-,-,-,all,-
-inputPumps.1.depth,-,setting,-,-,PG1: Głębokość pompy,0,1,float,0,255,m,-,-,-,-,all,-
-inputPumps.1.depth.sensor,-,setting,-,-,PG1: Głębokość czujnika,0,1,float,0,255,m,-,-,-,-,all,-
-inputPumps.1.depth.offset,-,setting,-,-,PG1: Offset do studni,0,1,float,0,255,m,-,-,-,-,all,-
-inputPumps.1.lastUseTime,-,setting,-,-,PG1: Czas ostatniego wyłączenia,0,1,time,-,-,-,-,-,-,-,all,-
-inputPumps.1.control,techPlc,output,1,Y24,PG1: Załączenie,1,1,bool,-,-,-,-,-,-,-,all,-
-inputPumps.1.status,techPlc,input,1,X33,PG1: Potwierdzenie załączenia,1,0,bool,-,-,-,-,-,-,-,all,-
-inputPumps.1.failure,techPlc,input,1,X34,PG1: Awaria,1,0,bool,-,-,-,flip,-,-,-,all,-
-inputPumps.1.current,vfd,register,1,16139,PG1: Prąd falownika,1,0,int32,0,3000,A,div(100),0,30,0,avg,-
-inputPumps.1.waterLevel,techPlc,input register,1,D9901,PG1: Poziom wody,1,0,int16,197,1024,m,"minMax;
+name,description,master,kind,unit,address,readable,writable,type,rawMin,rawMax,scaleUnit,scaleFunction,scaleMin,scaleMax,noise,archive,valueMap
+,PG: Pompy głębinowe,,,,,,,,,,,,,,,,
+inputPumps.nextAfterTimeInMin,PG: Czas do uruchomienia następnej pompy,-,setting,-,-,0,1,uint16,-,-,s,-,-,-,-,all,-
+,PG1: Pompa głębinowa 1,,,,,,,,,,,,,,,,
+inputPumps.1.switch,PG1: Przełącznik (auto/0-ręka),techPlc,input,1,X32,1,0,bool,-,-,-,-,-,-,-,all,-
+inputPumps.1.state,PG1: Stan (aktywny/nieaktywny),-,setting,-,-,0,1,bool,-,-,-,-,-,-,-,all,-
+inputPumps.1.mode,PG1: Tryb (auto/manual),-,setting,-,-,0,1,bool,-,-,-,-,-,-,-,all,-
+inputPumps.1.depth,PG1: Głębokość pompy,-,setting,-,-,0,1,float,0,255,m,-,-,-,-,all,-
+inputPumps.1.depth.sensor,PG1: Głębokość czujnika,-,setting,-,-,0,1,float,0,255,m,-,-,-,-,all,-
+inputPumps.1.depth.offset,PG1: Offset do studni,-,setting,-,-,0,1,float,0,255,m,-,-,-,-,all,-
+inputPumps.1.lastUseTime,PG1: Czas ostatniego wyłączenia,-,setting,-,-,0,1,time,-,-,-,-,-,-,-,all,-
+inputPumps.1.control,PG1: Załączenie,techPlc,output,1,Y24,1,1,bool,-,-,-,-,-,-,-,all,-
+inputPumps.1.status,PG1: Potwierdzenie załączenia,techPlc,input,1,X33,1,0,bool,-,-,-,-,-,-,-,all,-
+inputPumps.1.failure,PG1: Awaria,techPlc,input,1,X34,1,0,bool,-,-,-,flip,-,-,-,all,-
+inputPumps.1.current,PG1: Prąd falownika,vfd,register,1,16139,1,0,int32,0,3000,A,div(100),0,30,0,avg,-
+inputPumps.1.waterLevel,PG1: Poziom wody,techPlc,input register,1,D9901,1,0,int16,197,1024,m,"minMax;
 sub(inputPumps.1.depth.offset,inputPumps.1.depth.sensor);
 round(2)",0,25,0,avg,-
-inputPumps.1.dryRunWaterLevel,-,setting,-,-,PG1: Poziom wody dla suchobieg,0,1,float,0,100,m,-,-,-,0,all,-
-inputPumps.1.dryRunLed,techPlc,output,1,Y25,PG1: LED suchobieg,1,1,bool,-,-,-,-,-,-,0,all,-
-,,,,,PG2: Pompa głębinowa 2,,,,,,,,,,,,
-inputPumps.2.switch,techPlc,input,1,X35,PG2: Przełącznik (auto/0-ręka),1,0,bool,-,-,-,-,-,-,-,all,-
-inputPumps.2.state,-,setting,-,-,PG2: Stan (aktywny/nieaktywny),0,1,bool,-,-,-,-,-,-,-,all,-
-inputPumps.2.mode,-,setting,-,-,PG2: Tryb (auto/manual),0,1,bool,-,-,-,-,-,-,-,all,-
-inputPumps.2.depth,-,setting,-,-,PG2: Głębokość studni,0,1,float,0,255,m,-,-,-,-,all,-
-inputPumps.2.depth.sensor,-,setting,-,-,PG2: Głębokość czujnika,0,1,float,0,255,m,-,-,-,-,all,-
-inputPumps.2.depth.offset,-,setting,-,-,PG2: Offset do studni,0,1,float,0,255,m,-,-,-,-,all,-
-inputPumps.2.lastUseTime,-,setting,-,-,PG2: Czas ostatniego wyłączenia,0,1,time,-,-,-,-,-,-,-,all,-
-inputPumps.2.control,techPlc,output,1,Y26,PG2: Załączenie,1,1,bool,-,-,-,-,-,-,-,all,-
-inputPumps.2.status,techPlc,input,1,X36,PG2: Potwierdzenie załączenia,1,0,bool,-,-,-,-,-,-,-,all,-
-inputPumps.2.failure,techPlc,input,1,X37,PG2: Awaria,1,0,bool,-,-,-,flip,-,-,-,all,-
-inputPumps.2.current,vfd,register,2,16139,PG2: Prąd falownika,1,0,int32,0,3000,A,div(100),0,30,0,avg,-
-inputPumps.2.waterLevel,techPlc,input register,1,D9902,PG2: Poziom wody,1,0,int16,197,1024,m,"minMax;
+inputPumps.1.dryRunWaterLevel,PG1: Poziom wody dla suchobieg,-,setting,-,-,0,1,float,0,100,m,-,-,-,0,all,-
+inputPumps.1.dryRunLed,PG1: LED suchobieg,techPlc,output,1,Y25,1,1,bool,-,-,-,-,-,-,0,all,-
+,PG2: Pompa głębinowa 2,,,,,,,,,,,,,,,,
+inputPumps.2.switch,PG2: Przełącznik (auto/0-ręka),techPlc,input,1,X35,1,0,bool,-,-,-,-,-,-,-,all,-
+inputPumps.2.state,PG2: Stan (aktywny/nieaktywny),-,setting,-,-,0,1,bool,-,-,-,-,-,-,-,all,-
+inputPumps.2.mode,PG2: Tryb (auto/manual),-,setting,-,-,0,1,bool,-,-,-,-,-,-,-,all,-
+inputPumps.2.depth,PG2: Głębokość studni,-,setting,-,-,0,1,float,0,255,m,-,-,-,-,all,-
+inputPumps.2.depth.sensor,PG2: Głębokość czujnika,-,setting,-,-,0,1,float,0,255,m,-,-,-,-,all,-
+inputPumps.2.depth.offset,PG2: Offset do studni,-,setting,-,-,0,1,float,0,255,m,-,-,-,-,all,-
+inputPumps.2.lastUseTime,PG2: Czas ostatniego wyłączenia,-,setting,-,-,0,1,time,-,-,-,-,-,-,-,all,-
+inputPumps.2.control,PG2: Załączenie,techPlc,output,1,Y26,1,1,bool,-,-,-,-,-,-,-,all,-
+inputPumps.2.status,PG2: Potwierdzenie załączenia,techPlc,input,1,X36,1,0,bool,-,-,-,-,-,-,-,all,-
+inputPumps.2.failure,PG2: Awaria,techPlc,input,1,X37,1,0,bool,-,-,-,flip,-,-,-,all,-
+inputPumps.2.current,PG2: Prąd falownika,vfd,register,2,16139,1,0,int32,0,3000,A,div(100),0,30,0,avg,-
+inputPumps.2.waterLevel,PG2: Poziom wody,techPlc,input register,1,D9902,1,0,int16,197,1024,m,"minMax;
 sub(inputPumps.2.depth.offset,inputPumps.2.depth.sensor);
 round(2)",0,25,0,avg,-
-inputPumps.2.dryRunWaterLevel,-,setting,-,-,PG2: Poziom wody dla suchobieg,0,1,float,0,100,m,-,-,-,0,all,-
-inputPumps.2.dryRunLed,techPlc,output,1,Y27,PG2: LED suchobieg,1,1,bool,-,-,-,-,-,-,0,all,-
-,,,,,EP: Elektrozawór powietrza,,,,,,,,,,,,
-airValve.switch,techPlc,input,1,X56,EP: Przełącznik (auto/0-ręka),1,0,bool,-,-,-,-,-,-,0,all,-
-airValve.state,-,setting,-,-,EP: Stan (aktywny/nieaktywny),0,1,bool,-,-,-,-,-,-,0,all,-
-airValve.mode,-,setting,-,-,EP: Tryb (auto/manual),0,1,bool,-,-,-,-,-,-,0,all,-
-airValve.control,techPlc,output,1,Y21,EP: Załączenie,1,1,bool,-,-,-,-,-,-,0,all,-
-airValve.status,techPlc,input,1,X54,EP: Potwierdzenie załączenia,1,0,bool,-,-,-,-,-,-,0,all,-
-,,,,,ZB: Dmuchawa,,,,,,,,,,,,
-blower.switch,techPlc,input,1,X21,ZB: Przełącznik (auto/0-ręka),1,0,bool,-,-,-,-,-,-,0,all,-
-blower.state,-,setting,-,-,ZB: Stan (aktywny/nieaktywny),0,1,bool,-,-,-,-,-,-,0,all,-
-blower.mode,-,setting,-,-,ZB: Tryb (auto/manual),0,1,bool,-,-,-,-,-,-,0,all,-
-blower.control,techPlc,output,1,Y22,ZB: Załączenie,1,1,bool,-,-,-,-,-,-,0,all,-
-blower.status,techPlc,input,1,X22,ZB: Potwierdzenie załączenia,1,0,bool,-,-,-,-,-,-,0,all,-
-blower.failure,techPlc,input,1,X23,ZB: Awaria,1,0,bool,-,-,-,flip,-,-,0,all,-
-,,,,,PP: Pompa płuczna,,,,,,,,,,,,
-washingPump.switch,techPlc,input,1,X24,PP: Przełącznik (auto/0-ręka),1,0,bool,-,-,-,-,-,-,0,all,-
-washingPump.state,-,setting,-,-,PP: Stan (aktywny/nieaktywny),0,1,bool,-,-,-,-,-,-,0,all,-
-washingPump.mode,-,setting,-,-,PP: Tryb (auto/manual),0,1,bool,-,-,-,-,-,-,0,all,-
-washingPump.control,techPlc,output,1,Y23,PP: Załączenie,1,1,bool,-,-,-,-,-,-,0,all,-
-washingPump.status,techPlc,input,1,X25,PP: Potwierdzenie załączenia,1,0,bool,-,-,-,-,-,-,0,all,-
-washingPump.failure,techPlc,input,1,X26,PP: Awaria,1,0,bool,-,-,-,flip,-,-,0,all,-
-,,,,,PH: Pompy hydroforowe,,,,,,,,,,,,
-outputPumps.minTotalWaterLevel,-,setting,-,-,PH: Minimalny poziom wody w zbiornikach retencyjnych,0,1,float,0,100,m,-,-,-,0,all,-
-outputPumps.minOutputPressure,-,setting,-,-,PH: Minimalne ciśnienie w sieci,0,1,float,0,100,bar,-,-,-,0,all,-
-outputPumps.maxOutputPressure,-,setting,-,-,PH: Maksymalne ciśnienie w sieci,0,1,float,0,100,bar,-,-,-,0,all,-
-outputPumps.stabilizationTimes.firstPump,-,setting,-,-,PH: Czas stabilizacji minimalnego ciśnienia (pierwsza pompa),0,1,float,0,100,s,-,-,-,0,all,-
-outputPumps.stabilizationTimes.nextPump,-,setting,-,-,PH: Czas stabilizacji minimalnego ciśnienia (następna pompa),0,1,float,0,100,s,-,-,-,0,all,-
-outputPumps.stabilizationTimes.stopPump,-,setting,-,-,PH: Czas stabilizacji maksymalnego ciśnienia,0,1,float,0,100,s,-,-,-,0,all,-
-outputPumps.control,hydroPlc,output,1,Y30,PH: Załączenie falownika,1,1,bool,-,-,-,-,-,-,0,all,-
-outputPumps.dryRun,hydroPlc,input,1,X21,PH: Czujnik suchobiegu,1,0,bool,-,-,-,flip,-,-,0,all,
-outputPumps.current,vfd,register,3,8452,PH: Prąd,1,0,int16,0,150,A,div(10),0,15,0,avg,-
-outputPumps.outputFrequency,vfd,register,3,8451,PH: Częstotliwość wyjściowa,1,0,int16,0,10000,Hz,div(100),0,100,0,avg,-
-outputPumps.presetRef,vfd,register,3,8193,PH: Programowana wartość zadana,1,1,int16,0,5000,%,minMax,0,100,0,avg,-
-outputPumps.presetRef.startingValue,-,setting,-,-,PH: Prog. wartość zadana przy dołączaniu pompy,0,1,int16,0,100,%,-,-,-,0,all,-
-outputPumps.presetRef.adjustDelay,-,setting,-,-,PH: Opóźnienie zmiany prog. wartości zadanej po załączeniu,0,1,float,0,120,s,-,-,-,0,all,-
-outputPumps.presetRef.stepInterval,-,setting,-,-,PH: Odstęp między zmianami prog. wartości zadanej,0,1,float,0,120,s,-,-,-,0,all,-
-outputPumps.presetRef.stepValue,-,setting,-,-,PH: Wielkość zmiany prog. wartości zadanej,0,1,float,0,100,%,-,-,-,0,all,-
-,,,,,PH1: Pompa hydroforowa 1,,,,,,,,,,,,
-outputPumps.1.switch,hydroPlc,input,1,X25,PH1: Przełącznik (auto/0-ręka),1,0,bool,-,-,-,-,-,-,0,all,-
-outputPumps.1.state,-,setting,-,-,PH1: Stan (aktywny/nieaktywny),0,1,bool,-,-,-,-,-,-,0,all,-
-outputPumps.1.mode,-,setting,-,-,PH1: Tryb (auto/manual),0,1,bool,-,-,-,-,-,-,0,all,-
-outputPumps.1.control.grid,hydroPlc,output,1,Y20,PH1: Załączenie (sieć),1,1,bool,-,-,-,-,-,-,0,all,-
-outputPumps.1.control.vfd,hydroPlc,output,1,Y21,PH1: Załączenie (falownik),1,1,bool,-,-,-,-,-,-,0,all,-
-outputPumps.1.status,-,virtual,-,-,PH1: Potwierdzenie załączenia (sieć lub falownik),0,0,bool,-,-,-,-,-,-,0,all,-
-outputPumps.1.status.grid,hydroPlc,input,1,X22,PH1: Potwierdzenie załączenia (sieć),1,0,bool,-,-,-,-,-,-,0,all,-
-outputPumps.1.status.vfd,hydroPlc,input,1,X23,PH1: Potwierdzenie załączenia (falownik),1,0,bool,-,-,-,-,-,-,0,all,-
-outputPumps.1.failure,hydroPlc,input,1,X24,PH1: Awaria,1,0,bool,-,-,-,flip,-,-,0,all,-
-outputPumps.1.workTime,-,setting,-,-,PH1: Czas pracy,0,1,uint32,-,-,s,-,-,-,0,all,-
-,,,,,PH2: Pompa hydroforowa 2,,,,,,,,,,,,
-outputPumps.2.switch,hydroPlc,input,1,X31,PH2: Przełącznik (auto/0-ręka),1,0,bool,-,-,-,-,-,-,0,all,-
-outputPumps.2.state,-,setting,-,-,PH2: Stan (aktywny/nieaktywny),0,1,bool,-,-,-,-,-,-,0,all,-
-outputPumps.2.mode,-,setting,-,-,PH2: Tryb (auto/manual),0,1,bool,-,-,-,-,-,-,0,all,-
-outputPumps.2.control.grid,hydroPlc,output,1,Y22,PH2: Załączenie (sieć),1,1,bool,-,-,-,-,-,-,0,all,-
-outputPumps.2.control.vfd,hydroPlc,output,1,Y23,PH2: Załączenie (falownik),1,1,bool,-,-,-,-,-,-,0,all,-
-outputPumps.2.status,hydroPlc,virtual,-,-,PH2: Potwierdzenie załączenia (sieć lub falownik),0,0,bool,-,-,-,-,-,-,0,all,-
-outputPumps.2.status.grid,hydroPlc,input,1,X26,PH2: Potwierdzenie załączenia (sieć),1,0,bool,-,-,-,-,-,-,0,all,-
-outputPumps.2.status.vfd,hydroPlc,input,1,X27,PH2: Potwierdzenie załączenia (falownik),1,0,bool,-,-,-,-,-,-,0,all,-
-outputPumps.2.failure,hydroPlc,input,1,X30,PH2: Awaria,1,0,bool,-,-,-,flip,-,-,0,all,-
-outputPumps.2.workTime,-,setting,-,-,PH2: Czas pracy,0,1,uint32,-,-,s,-,-,-,0,all,-
-,,,,,PH3: Pompa hydroforowa 3,,,,,,,,,,,,
-outputPumps.3.switch,hydroPlc,input,1,X35,PH3: Przełącznik (auto/0-ręka),1,0,bool,-,-,-,-,-,-,0,all,-
-outputPumps.3.state,-,setting,-,-,PH3: Stan (aktywny/nieaktywny),0,1,bool,-,-,-,-,-,-,0,all,-
-outputPumps.3.mode,-,setting,-,-,PH3: Tryb (auto/manual),0,1,bool,-,-,-,-,-,-,0,all,-
-outputPumps.3.control.grid,hydroPlc,output,1,Y24,PH3: Załączenie (sieć),1,1,bool,-,-,-,-,-,-,0,all,-
-outputPumps.3.control.vfd,hydroPlc,output,1,Y25,PH3: Załączenie (falownik),1,1,bool,-,-,-,-,-,-,0,all,-
-outputPumps.3.status,hydroPlc,virtual,-,-,PH3: Potwierdzenie załączenia (sieć lub falownik),0,0,bool,-,-,-,-,-,-,0,all,-
-outputPumps.3.status.grid,hydroPlc,input,1,X32,PH3: Potwierdzenie załączenia (sieć),1,0,bool,-,-,-,-,-,-,0,all,-
-outputPumps.3.status.vfd,hydroPlc,input,1,X33,PH3: Potwierdzenie załączenia (falownik),1,0,bool,-,-,-,-,-,-,0,all,-
-outputPumps.3.failure,hydroPlc,input,1,X34,PH3: Awaria,1,0,bool,-,-,-,flip,-,-,0,all,-
-outputPumps.3.workTime,-,setting,-,-,PH3: Czas pracy,0,1,uint32,-,-,s,-,-,-,0,all,-
-,,,,,OP: Odstojnik popłuczyn,,,,,,,,,,,,
-settler.height,-,setting,-,-,OP: Wysokość,0,1,float,0,10,m,-,-,-,0,all,-
-settler.max.height,-,setting,-,-,OP: Wysokość czujnika maksimum,0,1,float,0,10,m,-,-,-,0,all,-
-settler.max.status,hydroPlc,input,1,X37,OP: Czujnik maksimum,1,0,bool,-,-,-,-,-,-,0,all,-
-settler.min.height,-,setting,-,-,OP: Wysokość czujnika minimum,0,1,float,0,10,m,-,-,-,0,all,-
-settler.min.status,hydroPlc,input,1,X36,OP: Czujnik minimum,1,0,bool,-,-,-,-,-,-,0,all,-
-,,,,,ZR1: Zbiornik retencyjny 1,,,,,,,,,,,,
-reservoirs.1.state,-,setting,-,-,ZR1: Stan (aktywny/nieaktywny),0,1,bool,-,-,-,-,-,-,0,all,-
-reservoirs.1.height,-,setting,-,-,ZR1: Wysokość,0,1,float,0,15,m,-,-,-,0,all,-
-reservoirs.1.waterLevel,hydroPlc,input register,1,D9800,ZR1: Poziom wody,1,0,int16,0,32767,m,minMax; round(2),0,4,0,avg,-
-reservoirs.1.waterLevel.max,-,setting,-,-,ZR1: Wysokość czujnika maksimum,0,1,float,0,15,m,-,-,-,0,all,-
-reservoirs.1.waterLevel.min,-,setting,-,-,ZR1: Wysokość czujnika minimum,0,1,float,0,15,m,-,-,-,0,all,-
-,,,,,ZR2: Zbiornik retencyjny 2,,,,,,,,,,,,
-reservoirs.2.state,-,setting,-,-,ZR2: Stan (aktywny/nieaktywny),0,1,bool,0,-,-,-,-,-,0,all,-
-reservoirs.2.height,-,setting,-,-,ZR2: Wysokość,0,1,float,0,15,m,-,-,-,0,all,-
-reservoirs.2.waterLevel,hydroPlc,input register,1,D9801,ZR2: Poziom wody,1,0,int16,0,32767,m,minMax; round(2); offset(0.15),0,4,0,avg,-
-reservoirs.2.waterLevel.max,-,setting,-,-,ZR2: Wysokość czujnika maksimum,0,1,float,0,15,m,-,-,-,0,all,-
-reservoirs.2.waterLevel.min,-,setting,-,-,ZR2: Wysokość czujnika minimum,0,1,float,0,15,m,-,-,-,0,all,-
-,,,,,ZF: Zestawy filtrów,,,,,,,,,,,,
-filterSets.blowingTime,-,setting,-,-,Czas fazy przedmuchiwania filtra,0,1,uint32,0,86400,s,-,-,-,0,all,-
-filterSets.drainingTime,-,setting,-,-,Czas fazy spustu filtra,0,1,uint32,0,86400,s,-,-,-,0,all,-
-filterSets.rinsingTime,-,setting,-,-,Czas fazy płukania filtra wodą,0,1,uint32,0,86400,s,-,-,-,0,all,-
-filterSets.stabilizationTime,-,setting,-,-,Czas fazy stabilizacji filtra,0,1,uint32,0,86400,s,-,-,-,0,all,-
-filterSets.washAfterFlow,-,setting,-,-,Przepływ wody uruchamiający płukanie,0,1,uint32,0,99999,m3/h,-,-,-,0,all,-
-filterSets.washAfterHours,-,setting,-,-,Ilość godzin między płukaniem filtra,0,1,uint32,0,999,h,-,-,-,0,all,-
-filterSets.washFromHour,-,setting,-,-,Początkowa godzina okna płukania filtra,0,1,uint32,0,23,h,-,-,-,0,all,-
-filterSets.washToHour,-,setting,-,-,Końcowa godzina okna płukania filtra,0,1,uint32,0,23,h,-,-,-,0,all,-
-filterSets.valveOpenDelay,-,setting,-,-,Opóźnienie załączenia zaworów,0,1,uint32,0,10000,ms,-,-,-,0,all,-
-,,,,,ZF1: Zestaw filtra 1,,,,,,,,,,,,
-filterSets.1.state,-,setting,-,-,ZF1: Stan (aktywny/nieaktywny),0,1,bool,-,-,-,-,-,-,0,all,-
-filterSets.1.mode,-,setting,-,-,ZF1: Tryb (auto/manual),0,1,bool,-,-,-,-,-,-,0,all,-
-filterSets.1.currentPhase,-,setting,-,-,ZF1: Faza,0,1,string,-,-,-,-,-,-,0,all,-
-filterSets.1.flowSinceLastWash,-,setting,-,-,ZF1: Przepływ od ostatniego płukania,0,1,float,0,-,m3/h,round(2),-,-,0,-,-
-filterSets.1.timeSinceLastWash,-,setting,-,-,ZF1: Czas uzdatniania od ustatniego płukania,0,1,uint32,0,-,s,-,-,-,0,-,-
-filterSets.1.lastPhaseChangeTime,-,setting,-,-,ZF1: Czas ostatniej zmiany fazy,0,1,time,-,-,-,-,-,-,0,-,-
-filterSets.1.lastWashTime,-,setting,-,-,ZF1: Czas ostatniego płukania,0,1,time,-,-,-,-,-,-,0,-,-
-filterSets.1.valves.1.control,techPlc,output,1,Y30,ZF1: Załączenie zaworu: woda surowa,1,1,bool,-,-,-,-,-,-,0,all,-
-filterSets.1.valves.2.control,techPlc,output,1,Y31,ZF1: Załączenie zaworu: popłuczyny,1,1,bool,-,-,-,-,-,-,0,all,-
-filterSets.1.valves.3.control,techPlc,output,1,Y32,ZF1: Załączenie zaworu: spust filtra,1,1,bool,-,-,-,-,-,-,0,all,-
-filterSets.1.valves.4.control,techPlc,output,1,Y33,ZF1: Załączenie zaworu: powietrze,1,1,bool,-,-,-,-,-,-,0,all,-
-filterSets.1.valves.5.control,techPlc,output,1,Y34,ZF1: Załączenie zaworu: woda uzdatniona,1,1,bool,-,-,-,-,-,-,0,all,-
-filterSets.1.valves.6.control,techPlc,output,1,Y35,ZF1: Załączenie zaworu: woda płuczna,1,1,bool,-,-,-,-,-,-,0,all,-
-filterSets.1.valves.1.status,techPlc,input,1,X40,ZF1: Potwierdzenie załączenia zaworu: woda surowa,1,0,bool,-,-,-,-,-,-,0,all,-
-filterSets.1.valves.2.status,techPlc,input,1,X41,ZF1: Potwierdzenie załączenia zaworu: popłuczyny,1,0,bool,-,-,-,-,-,-,0,all,-
-filterSets.1.valves.3.status,techPlc,input,1,X42,ZF1: Potwierdzenie załączenia zaworu: spust filtra,1,0,bool,-,-,-,-,-,-,0,all,-
-filterSets.1.valves.4.status,techPlc,input,1,X43,ZF1: Potwierdzenie załączenia zaworu: powietrze,1,0,bool,-,-,-,-,-,-,0,all,-
-filterSets.1.valves.5.status,techPlc,input,1,X44,ZF1: Potwierdzenie załączenia zaworu: woda uzdatniona,1,0,bool,-,-,-,-,-,-,0,all,-
-filterSets.1.valves.6.status,techPlc,input,1,X45,ZF1: Potwierdzenie załączenia zaworu: woda płuczna,1,0,bool,-,-,-,-,-,-,0,all,-
-,,,,,ZF2: Zestaw filtra 2,,,,,,,,,,,,
-filterSets.2.state,-,setting,-,-,ZF2: Stan (aktywny/nieaktywny),0,1,bool,-,-,-,-,-,-,0,all,-
-filterSets.2.mode,-,setting,-,-,ZF2: Tryb (auto/manual),0,1,bool,-,-,-,-,-,-,0,all,-
-filterSets.2.currentPhase,-,setting,-,-,ZF2: Faza,0,1,string,-,-,-,-,-,-,0,all,-
-filterSets.2.flowSinceLastWash,-,setting,-,-,ZF2: Przepływ od ostatniego płukania,0,1,float,0,-,m3/h,round(2),-,-,0,-,-
-filterSets.2.timeSinceLastWash,-,setting,-,-,ZF2: Czas uzdatniania od ustatniego płukania,0,1,uint32,0,-,s,-,-,-,0,-,-
-filterSets.2.lastPhaseChangeTime,-,setting,-,-,ZF2: Czas ostatniej zmiany fazy,0,1,time,-,-,-,-,-,-,0,-,-
-filterSets.2.lastWashTime,-,setting,-,-,ZF2: Czas ostatniego płukania,0,1,time,-,-,-,-,-,-,0,-,-
-filterSets.2.valves.1.control,techPlc,output,1,Y36,ZF2: Załączenie zaworu: woda surowa,1,1,bool,-,-,-,-,-,-,0,all,-
-filterSets.2.valves.2.control,techPlc,output,1,Y37,ZF2: Załączenie zaworu: popłuczyny,1,1,bool,-,-,-,-,-,-,0,all,-
-filterSets.2.valves.3.control,techPlc,output,1,Y40,ZF2: Załączenie zaworu: spust filtra,1,1,bool,-,-,-,-,-,-,0,all,-
-filterSets.2.valves.4.control,techPlc,output,1,Y41,ZF2: Załączenie zaworu: powietrze,1,1,bool,-,-,-,-,-,-,0,all,-
-filterSets.2.valves.5.control,techPlc,output,1,Y42,ZF2: Załączenie zaworu: woda uzdatniona,1,1,bool,-,-,-,-,-,-,0,all,-
-filterSets.2.valves.6.control,techPlc,output,1,Y43,ZF2: Załączenie zaworu: woda płuczna,1,1,bool,-,-,-,-,-,-,0,all,-
-filterSets.2.valves.1.status,techPlc,input,1,X46,ZF2: Potwierdzenie załączenia zaworu: woda surowa,1,0,bool,-,-,-,-,-,-,0,all,-
-filterSets.2.valves.2.status,techPlc,input,1,X47,ZF2: Potwierdzenie załączenia zaworu: popłuczyny,1,0,bool,-,-,-,-,-,-,0,all,-
-filterSets.2.valves.3.status,techPlc,input,1,X50,ZF2: Potwierdzenie załączenia zaworu: spust filtra,1,0,bool,-,-,-,-,-,-,0,all,-
-filterSets.2.valves.4.status,techPlc,input,1,X51,ZF2: Potwierdzenie załączenia zaworu: powietrze,1,0,bool,-,-,-,-,-,-,0,all,-
-filterSets.2.valves.5.status,techPlc,input,1,X52,ZF2: Potwierdzenie załączenia zaworu: woda uzdatniona,1,0,bool,-,-,-,-,-,-,0,all,-
-filterSets.2.valves.6.status,techPlc,input,1,X53,ZF2: Potwierdzenie załączenia zaworu: woda płuczna,1,0,bool,-,-,-,-,-,-,0,all,-
-,,,,,UV: Lampa UV,,,,,,,,,,,,
-uvLamp.startDelay,-,setting,-,-,UV: Opóźnienie załączenia,0,1,float,0,60,s,-,-,-,0,all,-
-uvLamp.stopDelay,-,setting,-,-,UV: Opóźnienie wyłączenia,0,1,float,0,60,s,-,-,-,0,all,-
-uvLamp.state,-,setting,-,-,UV: Stan (aktywny/nieaktywny),0,1,bool,-,-,-,-,-,-,0,all,-
-uvLamp.mode,-,setting,-,-,UV: Tryb (auto/manual),0,1,bool,-,-,-,-,-,-,0,all,-
-uvLamp.control,hydroPlc,output,1,Y26,UV: Załączenie,1,1,bool,-,-,-,-,-,-,0,all,-
-,,,,,PWG: Przepływomierz wody głębinowej,,,,,,,,,,,,
-inputFlow,flowMeters,register,3,15,PWG: Wartość chwilowa,1,1,float,-,-,m3/h,round(2),-,-,0,avg,-
-inputFlow.dnIdx,flowMeters,register,3,0,PWG: Średnica głowicy,1,1,uint8,0,22,-,-,-,-,0,all,"[3, 4, 6, 8, 10, 15, 20, 25, 32, 40, 50, 65, 80, 100, 125, 150, 200, 250, 300, 350, 400, 500, 600]"
-inputFlow.status1,flowMeters,register,3,1,PWG: 1 bajt statusu,1,1,uint8,0,255,-,-,-,-,0,-,-
-inputFlow.status2,flowMeters,register,3,2,PWG: 2 bajt statusu,1,1,uint8,0,255,-,-,-,-,0,-,-
-inputFlow.corrCoefA,flowMeters,register,3,11,PWG: Współczynnik korekcyjny A,1,1,float,-0.2499,0.2499,-,-,-,-,0,all,-
-inputFlow.corrCoefC,flowMeters,register,3,13,PWG: Współczynnik korekcyjny C,1,1,float,-0.9999,0.9999,-,-,-,-,0,all,-
-inputFlow.total.forwards,flowMeters,register,3,17,PWG: Przepływ całkowity w przód,1,1,uint32,-,-,l lub m3,div(10),-,-,0,avg,-
-inputFlow.total.backwards,flowMeters,register,3,19,PWG: Przepływ całkowity w tył,1,1,uint32,-,-,l lub m3,div(10),-,-,0,-,-
-inputFlow.cutoff,flowMeters,register,3,3,PWG: Próg odcięcia przepływu,1,1,uint8,0,99,%,-,0,9.9,0,all,-
-inputFlow.timeConstant,flowMeters,register,3,4,PWG: Stała czasowa,1,1,uint8,0,14,s,-,-,-,0,all,"[0.5, 1.0, 1.5, 2.0, 2.5, 3.0, 3.5, 4.0, 4.5, 5.0, 10.0, 15.0, 20.0, 25.0, 30.0]"
-inputFlow.qRange,flowMeters,register,3,5,PWG: Zakres pomiarowy,1,1,uint32,-,-,l/h,-,-,-,0,all,-
-inputFlow.alarm1.value,flowMeters,register,3,7,PWG: Próg alarmowy 1,1,1,uint32,-,-,l/h,-,-,-,0,all,-
-inputFlow.alarm2.value,flowMeters,register,3,9,PWG: Próg alarmowy 2,1,1,uint32,-,-,l/h,-,-,-,0,all,-
-inputFlow.unit,flowMeters,virtual,-,inputFlow.status1&0-1,PWG: Jednostka licznika przepływu chwilowego,0,1,uint8,0,2,-,-,-,-,0,all,"0 - przepływ chwilowy w l/h
+inputPumps.2.dryRunWaterLevel,PG2: Poziom wody dla suchobieg,-,setting,-,-,0,1,float,0,100,m,-,-,-,0,all,-
+inputPumps.2.dryRunLed,PG2: LED suchobieg,techPlc,output,1,Y27,1,1,bool,-,-,-,-,-,-,0,all,-
+,EP: Elektrozawór powietrza,,,,,,,,,,,,,,,,
+airValve.switch,EP: Przełącznik (auto/0-ręka),techPlc,input,1,X56,1,0,bool,-,-,-,-,-,-,0,all,-
+airValve.state,EP: Stan (aktywny/nieaktywny),-,setting,-,-,0,1,bool,-,-,-,-,-,-,0,all,-
+airValve.mode,EP: Tryb (auto/manual),-,setting,-,-,0,1,bool,-,-,-,-,-,-,0,all,-
+airValve.control,EP: Załączenie,techPlc,output,1,Y21,1,1,bool,-,-,-,-,-,-,0,all,-
+airValve.status,EP: Potwierdzenie załączenia,techPlc,input,1,X54,1,0,bool,-,-,-,-,-,-,0,all,-
+,ZB: Dmuchawa,,,,,,,,,,,,,,,,
+blower.switch,ZB: Przełącznik (auto/0-ręka),techPlc,input,1,X21,1,0,bool,-,-,-,-,-,-,0,all,-
+blower.state,ZB: Stan (aktywny/nieaktywny),-,setting,-,-,0,1,bool,-,-,-,-,-,-,0,all,-
+blower.mode,ZB: Tryb (auto/manual),-,setting,-,-,0,1,bool,-,-,-,-,-,-,0,all,-
+blower.control,ZB: Załączenie,techPlc,output,1,Y22,1,1,bool,-,-,-,-,-,-,0,all,-
+blower.status,ZB: Potwierdzenie załączenia,techPlc,input,1,X22,1,0,bool,-,-,-,-,-,-,0,all,-
+blower.failure,ZB: Awaria,techPlc,input,1,X23,1,0,bool,-,-,-,flip,-,-,0,all,-
+,PP: Pompa płuczna,,,,,,,,,,,,,,,,
+washingPump.switch,PP: Przełącznik (auto/0-ręka),techPlc,input,1,X24,1,0,bool,-,-,-,-,-,-,0,all,-
+washingPump.state,PP: Stan (aktywny/nieaktywny),-,setting,-,-,0,1,bool,-,-,-,-,-,-,0,all,-
+washingPump.mode,PP: Tryb (auto/manual),-,setting,-,-,0,1,bool,-,-,-,-,-,-,0,all,-
+washingPump.control,PP: Załączenie,techPlc,output,1,Y23,1,1,bool,-,-,-,-,-,-,0,all,-
+washingPump.status,PP: Potwierdzenie załączenia,techPlc,input,1,X25,1,0,bool,-,-,-,-,-,-,0,all,-
+washingPump.failure,PP: Awaria,techPlc,input,1,X26,1,0,bool,-,-,-,flip,-,-,0,all,-
+,PH: Pompy hydroforowe,,,,,,,,,,,,,,,,
+outputPumps.minTotalWaterLevel,PH: Minimalny poziom wody w zbiornikach retencyjnych,-,setting,-,-,0,1,float,0,100,m,-,-,-,0,all,-
+outputPumps.minOutputPressure,PH: Minimalne ciśnienie w sieci,-,setting,-,-,0,1,float,0,100,bar,-,-,-,0,all,-
+outputPumps.maxOutputPressure,PH: Maksymalne ciśnienie w sieci,-,setting,-,-,0,1,float,0,100,bar,-,-,-,0,all,-
+outputPumps.stabilizationTimes.firstPump,PH: Czas stabilizacji minimalnego ciśnienia (pierwsza pompa),-,setting,-,-,0,1,float,0,100,s,-,-,-,0,all,-
+outputPumps.stabilizationTimes.nextPump,PH: Czas stabilizacji minimalnego ciśnienia (następna pompa),-,setting,-,-,0,1,float,0,100,s,-,-,-,0,all,-
+outputPumps.stabilizationTimes.stopPump,PH: Czas stabilizacji maksymalnego ciśnienia,-,setting,-,-,0,1,float,0,100,s,-,-,-,0,all,-
+outputPumps.control,PH: Załączenie falownika,hydroPlc,output,1,Y30,1,1,bool,-,-,-,-,-,-,0,all,-
+outputPumps.dryRun,PH: Czujnik suchobiegu,hydroPlc,input,1,X21,1,0,bool,-,-,-,flip,-,-,0,all,
+outputPumps.current,PH: Prąd,vfd,register,3,8452,1,0,int16,0,150,A,div(10),0,15,0,avg,-
+outputPumps.outputFrequency,PH: Częstotliwość wyjściowa,vfd,register,3,8451,1,0,int16,0,10000,Hz,div(100),0,100,0,avg,-
+outputPumps.presetRef,PH: Programowana wartość zadana,vfd,register,3,8193,1,1,int16,0,5000,%,minMax,0,100,0,avg,-
+outputPumps.presetRef.startingValue,PH: Prog. wartość zadana przy dołączaniu pompy,-,setting,-,-,0,1,int16,0,100,%,-,-,-,0,all,-
+outputPumps.presetRef.adjustDelay,PH: Opóźnienie zmiany prog. wartości zadanej po załączeniu,-,setting,-,-,0,1,float,0,120,s,-,-,-,0,all,-
+outputPumps.presetRef.stepInterval,PH: Odstęp między zmianami prog. wartości zadanej,-,setting,-,-,0,1,float,0,120,s,-,-,-,0,all,-
+outputPumps.presetRef.stepValue,PH: Wielkość zmiany prog. wartości zadanej,-,setting,-,-,0,1,float,0,100,%,-,-,-,0,all,-
+outputPumps.vfd.status,PH: Status falownika,vfd,register,3,8448,1,0,int16,-,-,-,-,-,-,0,all,-
+outputPumps.vfd.reset,PH: RESET falownika,vfd,register,3,8194,1,1,int16,0,3,-,-,-,-,0,-,-
+,PH1: Pompa hydroforowa 1,,,,,,,,,,,,,,,,
+outputPumps.1.switch,PH1: Przełącznik (auto/0-ręka),hydroPlc,input,1,X25,1,0,bool,-,-,-,-,-,-,0,all,-
+outputPumps.1.state,PH1: Stan (aktywny/nieaktywny),-,setting,-,-,0,1,bool,-,-,-,-,-,-,0,all,-
+outputPumps.1.mode,PH1: Tryb (auto/manual),-,setting,-,-,0,1,bool,-,-,-,-,-,-,0,all,-
+outputPumps.1.control.grid,PH1: Załączenie (sieć),hydroPlc,output,1,Y20,1,1,bool,-,-,-,-,-,-,0,all,-
+outputPumps.1.control.vfd,PH1: Załączenie (falownik),hydroPlc,output,1,Y21,1,1,bool,-,-,-,-,-,-,0,all,-
+outputPumps.1.status,PH1: Potwierdzenie załączenia (sieć lub falownik),-,virtual,-,-,0,0,bool,-,-,-,-,-,-,0,all,-
+outputPumps.1.status.grid,PH1: Potwierdzenie załączenia (sieć),hydroPlc,input,1,X22,1,0,bool,-,-,-,-,-,-,0,all,-
+outputPumps.1.status.vfd,PH1: Potwierdzenie załączenia (falownik),hydroPlc,input,1,X23,1,0,bool,-,-,-,-,-,-,0,all,-
+outputPumps.1.failure,PH1: Awaria,hydroPlc,input,1,X24,1,0,bool,-,-,-,flip,-,-,0,all,-
+outputPumps.1.workTime,PH1: Czas pracy,-,setting,-,-,0,1,uint32,-,-,s,-,-,-,0,all,-
+,PH2: Pompa hydroforowa 2,,,,,,,,,,,,,,,,
+outputPumps.2.switch,PH2: Przełącznik (auto/0-ręka),hydroPlc,input,1,X31,1,0,bool,-,-,-,-,-,-,0,all,-
+outputPumps.2.state,PH2: Stan (aktywny/nieaktywny),-,setting,-,-,0,1,bool,-,-,-,-,-,-,0,all,-
+outputPumps.2.mode,PH2: Tryb (auto/manual),-,setting,-,-,0,1,bool,-,-,-,-,-,-,0,all,-
+outputPumps.2.control.grid,PH2: Załączenie (sieć),hydroPlc,output,1,Y22,1,1,bool,-,-,-,-,-,-,0,all,-
+outputPumps.2.control.vfd,PH2: Załączenie (falownik),hydroPlc,output,1,Y23,1,1,bool,-,-,-,-,-,-,0,all,-
+outputPumps.2.status,PH2: Potwierdzenie załączenia (sieć lub falownik),hydroPlc,virtual,-,-,0,0,bool,-,-,-,-,-,-,0,all,-
+outputPumps.2.status.grid,PH2: Potwierdzenie załączenia (sieć),hydroPlc,input,1,X26,1,0,bool,-,-,-,-,-,-,0,all,-
+outputPumps.2.status.vfd,PH2: Potwierdzenie załączenia (falownik),hydroPlc,input,1,X27,1,0,bool,-,-,-,-,-,-,0,all,-
+outputPumps.2.failure,PH2: Awaria,hydroPlc,input,1,X30,1,0,bool,-,-,-,flip,-,-,0,all,-
+outputPumps.2.workTime,PH2: Czas pracy,-,setting,-,-,0,1,uint32,-,-,s,-,-,-,0,all,-
+,PH3: Pompa hydroforowa 3,,,,,,,,,,,,,,,,
+outputPumps.3.switch,PH3: Przełącznik (auto/0-ręka),hydroPlc,input,1,X35,1,0,bool,-,-,-,-,-,-,0,all,-
+outputPumps.3.state,PH3: Stan (aktywny/nieaktywny),-,setting,-,-,0,1,bool,-,-,-,-,-,-,0,all,-
+outputPumps.3.mode,PH3: Tryb (auto/manual),-,setting,-,-,0,1,bool,-,-,-,-,-,-,0,all,-
+outputPumps.3.control.grid,PH3: Załączenie (sieć),hydroPlc,output,1,Y24,1,1,bool,-,-,-,-,-,-,0,all,-
+outputPumps.3.control.vfd,PH3: Załączenie (falownik),hydroPlc,output,1,Y25,1,1,bool,-,-,-,-,-,-,0,all,-
+outputPumps.3.status,PH3: Potwierdzenie załączenia (sieć lub falownik),hydroPlc,virtual,-,-,0,0,bool,-,-,-,-,-,-,0,all,-
+outputPumps.3.status.grid,PH3: Potwierdzenie załączenia (sieć),hydroPlc,input,1,X32,1,0,bool,-,-,-,-,-,-,0,all,-
+outputPumps.3.status.vfd,PH3: Potwierdzenie załączenia (falownik),hydroPlc,input,1,X33,1,0,bool,-,-,-,-,-,-,0,all,-
+outputPumps.3.failure,PH3: Awaria,hydroPlc,input,1,X34,1,0,bool,-,-,-,flip,-,-,0,all,-
+outputPumps.3.workTime,PH3: Czas pracy,-,setting,-,-,0,1,uint32,-,-,s,-,-,-,0,all,-
+,OP: Odstojnik popłuczyn,,,,,,,,,,,,,,,,
+settler.height,OP: Wysokość,-,setting,-,-,0,1,float,0,10,m,-,-,-,0,all,-
+settler.max.height,OP: Wysokość czujnika maksimum,-,setting,-,-,0,1,float,0,10,m,-,-,-,0,all,-
+settler.max.status,OP: Czujnik maksimum,hydroPlc,input,1,X37,1,0,bool,-,-,-,-,-,-,0,all,-
+settler.min.height,OP: Wysokość czujnika minimum,-,setting,-,-,0,1,float,0,10,m,-,-,-,0,all,-
+settler.min.status,OP: Czujnik minimum,hydroPlc,input,1,X36,1,0,bool,-,-,-,-,-,-,0,all,-
+,ZR1: Zbiornik retencyjny 1,,,,,,,,,,,,,,,,
+reservoirs.1.state,ZR1: Stan (aktywny/nieaktywny),-,setting,-,-,0,1,bool,-,-,-,-,-,-,0,all,-
+reservoirs.1.height,ZR1: Wysokość,-,setting,-,-,0,1,float,0,15,m,-,-,-,0,all,-
+reservoirs.1.waterLevel,ZR1: Poziom wody,hydroPlc,input register,1,D9800,1,0,int16,0,32767,m,minMax; round(2),0,4,0,avg,-
+reservoirs.1.waterLevel.max,ZR1: Wysokość czujnika maksimum,-,setting,-,-,0,1,float,0,15,m,-,-,-,0,all,-
+reservoirs.1.waterLevel.min,ZR1: Wysokość czujnika minimum,-,setting,-,-,0,1,float,0,15,m,-,-,-,0,all,-
+,ZR2: Zbiornik retencyjny 2,,,,,,,,,,,,,,,,
+reservoirs.2.state,ZR2: Stan (aktywny/nieaktywny),-,setting,-,-,0,1,bool,0,-,-,-,-,-,0,all,-
+reservoirs.2.height,ZR2: Wysokość,-,setting,-,-,0,1,float,0,15,m,-,-,-,0,all,-
+reservoirs.2.waterLevel,ZR2: Poziom wody,hydroPlc,input register,1,D9801,1,0,int16,0,32767,m,minMax; round(2); offset(0.15),0,4,0,avg,-
+reservoirs.2.waterLevel.max,ZR2: Wysokość czujnika maksimum,-,setting,-,-,0,1,float,0,15,m,-,-,-,0,all,-
+reservoirs.2.waterLevel.min,ZR2: Wysokość czujnika minimum,-,setting,-,-,0,1,float,0,15,m,-,-,-,0,all,-
+,ZF: Zestawy filtrów,,,,,,,,,,,,,,,,
+filterSets.blowingTime,Czas fazy przedmuchiwania filtra,-,setting,-,-,0,1,uint32,0,86400,s,-,-,-,0,all,-
+filterSets.drainingTime,Czas fazy spustu filtra,-,setting,-,-,0,1,uint32,0,86400,s,-,-,-,0,all,-
+filterSets.rinsingTime,Czas fazy płukania filtra wodą,-,setting,-,-,0,1,uint32,0,86400,s,-,-,-,0,all,-
+filterSets.stabilizationTime,Czas fazy stabilizacji filtra,-,setting,-,-,0,1,uint32,0,86400,s,-,-,-,0,all,-
+filterSets.washAfterFlow,Przepływ wody uruchamiający płukanie,-,setting,-,-,0,1,uint32,0,99999,m3/h,-,-,-,0,all,-
+filterSets.washAfterHours,Ilość godzin między płukaniem filtra,-,setting,-,-,0,1,uint32,0,999,h,-,-,-,0,all,-
+filterSets.washFromHour,Początkowa godzina okna płukania filtra,-,setting,-,-,0,1,uint32,0,23,h,-,-,-,0,all,-
+filterSets.washToHour,Końcowa godzina okna płukania filtra,-,setting,-,-,0,1,uint32,0,23,h,-,-,-,0,all,-
+filterSets.valveOpenDelay,Opóźnienie załączenia zaworów,-,setting,-,-,0,1,uint32,0,10000,ms,-,-,-,0,all,-
+,ZF1: Zestaw filtra 1,,,,,,,,,,,,,,,,
+filterSets.1.state,ZF1: Stan (aktywny/nieaktywny),-,setting,-,-,0,1,bool,-,-,-,-,-,-,0,all,-
+filterSets.1.mode,ZF1: Tryb (auto/manual),-,setting,-,-,0,1,bool,-,-,-,-,-,-,0,all,-
+filterSets.1.currentPhase,ZF1: Faza,-,setting,-,-,0,1,string,-,-,-,-,-,-,0,all,-
+filterSets.1.flowSinceLastWash,ZF1: Przepływ od ostatniego płukania,-,setting,-,-,0,1,float,0,-,m3/h,round(2),-,-,0,-,-
+filterSets.1.timeSinceLastWash,ZF1: Czas uzdatniania od ustatniego płukania,-,setting,-,-,0,1,uint32,0,-,s,-,-,-,0,-,-
+filterSets.1.lastPhaseChangeTime,ZF1: Czas ostatniej zmiany fazy,-,setting,-,-,0,1,time,-,-,-,-,-,-,0,-,-
+filterSets.1.lastWashTime,ZF1: Czas ostatniego płukania,-,setting,-,-,0,1,time,-,-,-,-,-,-,0,-,-
+filterSets.1.valves.1.control,ZF1: Załączenie zaworu: woda surowa,techPlc,output,1,Y30,1,1,bool,-,-,-,-,-,-,0,all,-
+filterSets.1.valves.2.control,ZF1: Załączenie zaworu: popłuczyny,techPlc,output,1,Y31,1,1,bool,-,-,-,-,-,-,0,all,-
+filterSets.1.valves.3.control,ZF1: Załączenie zaworu: spust filtra,techPlc,output,1,Y32,1,1,bool,-,-,-,-,-,-,0,all,-
+filterSets.1.valves.4.control,ZF1: Załączenie zaworu: powietrze,techPlc,output,1,Y33,1,1,bool,-,-,-,-,-,-,0,all,-
+filterSets.1.valves.5.control,ZF1: Załączenie zaworu: woda uzdatniona,techPlc,output,1,Y34,1,1,bool,-,-,-,-,-,-,0,all,-
+filterSets.1.valves.6.control,ZF1: Załączenie zaworu: woda płuczna,techPlc,output,1,Y35,1,1,bool,-,-,-,-,-,-,0,all,-
+filterSets.1.valves.1.status,ZF1: Potwierdzenie załączenia zaworu: woda surowa,techPlc,input,1,X40,1,0,bool,-,-,-,-,-,-,0,all,-
+filterSets.1.valves.2.status,ZF1: Potwierdzenie załączenia zaworu: popłuczyny,techPlc,input,1,X41,1,0,bool,-,-,-,-,-,-,0,all,-
+filterSets.1.valves.3.status,ZF1: Potwierdzenie załączenia zaworu: spust filtra,techPlc,input,1,X42,1,0,bool,-,-,-,-,-,-,0,all,-
+filterSets.1.valves.4.status,ZF1: Potwierdzenie załączenia zaworu: powietrze,techPlc,input,1,X43,1,0,bool,-,-,-,-,-,-,0,all,-
+filterSets.1.valves.5.status,ZF1: Potwierdzenie załączenia zaworu: woda uzdatniona,techPlc,input,1,X44,1,0,bool,-,-,-,-,-,-,0,all,-
+filterSets.1.valves.6.status,ZF1: Potwierdzenie załączenia zaworu: woda płuczna,techPlc,input,1,X45,1,0,bool,-,-,-,-,-,-,0,all,-
+,ZF2: Zestaw filtra 2,,,,,,,,,,,,,,,,
+filterSets.2.state,ZF2: Stan (aktywny/nieaktywny),-,setting,-,-,0,1,bool,-,-,-,-,-,-,0,all,-
+filterSets.2.mode,ZF2: Tryb (auto/manual),-,setting,-,-,0,1,bool,-,-,-,-,-,-,0,all,-
+filterSets.2.currentPhase,ZF2: Faza,-,setting,-,-,0,1,string,-,-,-,-,-,-,0,all,-
+filterSets.2.flowSinceLastWash,ZF2: Przepływ od ostatniego płukania,-,setting,-,-,0,1,float,0,-,m3/h,round(2),-,-,0,-,-
+filterSets.2.timeSinceLastWash,ZF2: Czas uzdatniania od ustatniego płukania,-,setting,-,-,0,1,uint32,0,-,s,-,-,-,0,-,-
+filterSets.2.lastPhaseChangeTime,ZF2: Czas ostatniej zmiany fazy,-,setting,-,-,0,1,time,-,-,-,-,-,-,0,-,-
+filterSets.2.lastWashTime,ZF2: Czas ostatniego płukania,-,setting,-,-,0,1,time,-,-,-,-,-,-,0,-,-
+filterSets.2.valves.1.control,ZF2: Załączenie zaworu: woda surowa,techPlc,output,1,Y36,1,1,bool,-,-,-,-,-,-,0,all,-
+filterSets.2.valves.2.control,ZF2: Załączenie zaworu: popłuczyny,techPlc,output,1,Y37,1,1,bool,-,-,-,-,-,-,0,all,-
+filterSets.2.valves.3.control,ZF2: Załączenie zaworu: spust filtra,techPlc,output,1,Y40,1,1,bool,-,-,-,-,-,-,0,all,-
+filterSets.2.valves.4.control,ZF2: Załączenie zaworu: powietrze,techPlc,output,1,Y41,1,1,bool,-,-,-,-,-,-,0,all,-
+filterSets.2.valves.5.control,ZF2: Załączenie zaworu: woda uzdatniona,techPlc,output,1,Y42,1,1,bool,-,-,-,-,-,-,0,all,-
+filterSets.2.valves.6.control,ZF2: Załączenie zaworu: woda płuczna,techPlc,output,1,Y43,1,1,bool,-,-,-,-,-,-,0,all,-
+filterSets.2.valves.1.status,ZF2: Potwierdzenie załączenia zaworu: woda surowa,techPlc,input,1,X46,1,0,bool,-,-,-,-,-,-,0,all,-
+filterSets.2.valves.2.status,ZF2: Potwierdzenie załączenia zaworu: popłuczyny,techPlc,input,1,X47,1,0,bool,-,-,-,-,-,-,0,all,-
+filterSets.2.valves.3.status,ZF2: Potwierdzenie załączenia zaworu: spust filtra,techPlc,input,1,X50,1,0,bool,-,-,-,-,-,-,0,all,-
+filterSets.2.valves.4.status,ZF2: Potwierdzenie załączenia zaworu: powietrze,techPlc,input,1,X51,1,0,bool,-,-,-,-,-,-,0,all,-
+filterSets.2.valves.5.status,ZF2: Potwierdzenie załączenia zaworu: woda uzdatniona,techPlc,input,1,X52,1,0,bool,-,-,-,-,-,-,0,all,-
+filterSets.2.valves.6.status,ZF2: Potwierdzenie załączenia zaworu: woda płuczna,techPlc,input,1,X53,1,0,bool,-,-,-,-,-,-,0,all,-
+,UV: Lampa UV,,,,,,,,,,,,,,,,
+uvLamp.startDelay,UV: Opóźnienie załączenia,-,setting,-,-,0,1,float,0,60,s,-,-,-,0,all,-
+uvLamp.stopDelay,UV: Opóźnienie wyłączenia,-,setting,-,-,0,1,float,0,60,s,-,-,-,0,all,-
+uvLamp.state,UV: Stan (aktywny/nieaktywny),-,setting,-,-,0,1,bool,-,-,-,-,-,-,0,all,-
+uvLamp.mode,UV: Tryb (auto/manual),-,setting,-,-,0,1,bool,-,-,-,-,-,-,0,all,-
+uvLamp.control,UV: Załączenie,hydroPlc,output,1,Y26,1,1,bool,-,-,-,-,-,-,0,all,-
+,PWG: Przepływomierz wody głębinowej,,,,,,,,,,,,,,,,
+inputFlow,PWG: Wartość chwilowa,flowMeters,register,3,15,1,1,float,-,-,m3/h,round(2),-,-,0,avg,-
+inputFlow.dnIdx,PWG: Średnica głowicy,flowMeters,register,3,0,1,1,uint8,0,22,-,-,-,-,0,all,"[3, 4, 6, 8, 10, 15, 20, 25, 32, 40, 50, 65, 80, 100, 125, 150, 200, 250, 300, 350, 400, 500, 600]"
+inputFlow.status1,PWG: 1 bajt statusu,flowMeters,register,3,1,1,1,uint8,0,255,-,-,-,-,0,-,-
+inputFlow.status2,PWG: 2 bajt statusu,flowMeters,register,3,2,1,1,uint8,0,255,-,-,-,-,0,-,-
+inputFlow.corrCoefA,PWG: Współczynnik korekcyjny A,flowMeters,register,3,11,1,1,float,-0.2499,0.2499,-,-,-,-,0,all,-
+inputFlow.corrCoefC,PWG: Współczynnik korekcyjny C,flowMeters,register,3,13,1,1,float,-0.9999,0.9999,-,-,-,-,0,all,-
+inputFlow.total.forwards,PWG: Przepływ całkowity w przód,flowMeters,register,3,17,1,1,uint32,-,-,l lub m3,div(10),-,-,0,avg,-
+inputFlow.total.backwards,PWG: Przepływ całkowity w tył,flowMeters,register,3,19,1,1,uint32,-,-,l lub m3,div(10),-,-,0,-,-
+inputFlow.cutoff,PWG: Próg odcięcia przepływu,flowMeters,register,3,3,1,1,uint8,0,99,%,-,0,9.9,0,all,-
+inputFlow.timeConstant,PWG: Stała czasowa,flowMeters,register,3,4,1,1,uint8,0,14,s,-,-,-,0,all,"[0.5, 1.0, 1.5, 2.0, 2.5, 3.0, 3.5, 4.0, 4.5, 5.0, 10.0, 15.0, 20.0, 25.0, 30.0]"
+inputFlow.qRange,PWG: Zakres pomiarowy,flowMeters,register,3,5,1,1,uint32,-,-,l/h,-,-,-,0,all,-
+inputFlow.alarm1.value,PWG: Próg alarmowy 1,flowMeters,register,3,7,1,1,uint32,-,-,l/h,-,-,-,0,all,-
+inputFlow.alarm2.value,PWG: Próg alarmowy 2,flowMeters,register,3,9,1,1,uint32,-,-,l/h,-,-,-,0,all,-
+inputFlow.unit,PWG: Jednostka licznika przepływu chwilowego,flowMeters,virtual,-,inputFlow.status1&0-1,0,1,uint8,0,2,-,-,-,-,0,all,"0 - przepływ chwilowy w l/h
 1 - przepływ chwilowy w m3/h
 2 - przepływ chwilowy w l/min"
-inputFlow.totalUnit,flowMeters,virtual,-,inputFlow.status1&2,PWG: Jednostka licznika przepływu całkowitego,0,1,uint8,0,1,-,-,-,-,0,all,"0 - licznik zlicza m3
+inputFlow.totalUnit,PWG: Jednostka licznika przepływu całkowitego,flowMeters,virtual,-,inputFlow.status1&2,0,1,uint8,0,1,-,-,-,-,0,all,"0 - licznik zlicza m3
 1 - licznik zlicza l"
-inputFlow.impulse,flowMeters,virtual,-,inputFlow.status1&3-4,PWG: Waga impulsu,0,1,uint8,0,3,-,-,-,-,0,all,"0 - impuls co 1 jednostkę objętości
+inputFlow.impulse,PWG: Waga impulsu,flowMeters,virtual,-,inputFlow.status1&3-4,0,1,uint8,0,3,-,-,-,-,0,all,"0 - impuls co 1 jednostkę objętości
 1 - impuls co 10 jednostek objętości
 2 - impuls co 100 jednostek objętości
 3 - brak możliwości ustawiania wagi impulsu"
-inputFlow.alarm2.status,flowMeters,virtual,-,inputFlow.status2&2,PWG: Flaga alarmu 2,0,1,uint8,0,1,-,-,-,-,0,all,-
-inputFlow.alarm1.status,flowMeters,virtual,-,inputFlow.status2&3,PWG: Flaga alarmu 1,0,1,uint8,0,1,-,-,-,-,0,all,-
-inputFlow.err,flowMeters,virtual,-,inputFlow.status2&4,PWG: Flaga błędu od falownika,0,1,uint8,0,1,-,-,-,-,0,all,-
-inputFlow.empty,flowMeters,virtual,-,inputFlow.status2&5,"PWG: Flaga stanu układu wykrywania ""pustej pompy""",0,1,uint8,0,1,-,-,-,-,0,all,-
-inputFlow.curr,flowMeters,virtual,-,inputFlow.status2&6,PWG: Flaga zakresu pomiarowego,0,1,uint8,0,1,-,-,-,-,0,all,"0 - pomiar mieści się w zakresie pomiarowym
+inputFlow.alarm2.status,PWG: Flaga alarmu 2,flowMeters,virtual,-,inputFlow.status2&2,0,1,uint8,0,1,-,-,-,-,0,all,-
+inputFlow.alarm1.status,PWG: Flaga alarmu 1,flowMeters,virtual,-,inputFlow.status2&3,0,1,uint8,0,1,-,-,-,-,0,all,-
+inputFlow.err,PWG: Flaga błędu od falownika,flowMeters,virtual,-,inputFlow.status2&4,0,1,uint8,0,1,-,-,-,-,0,all,-
+inputFlow.empty,"PWG: Flaga stanu układu wykrywania ""pustej pompy""",flowMeters,virtual,-,inputFlow.status2&5,0,1,uint8,0,1,-,-,-,-,0,all,-
+inputFlow.curr,PWG: Flaga zakresu pomiarowego,flowMeters,virtual,-,inputFlow.status2&6,0,1,uint8,0,1,-,-,-,-,0,all,"0 - pomiar mieści się w zakresie pomiarowym
 1 - przekroczenie zakresu pomiarowego"
-inputFlow.rev,flowMeters,virtual,-,inputFlow.status2&7,PWG: Flaga kierunku przepływu,0,1,uint8,0,1,-,-,-,-,0,all,"0 - przepływ w przód
+inputFlow.rev,PWG: Flaga kierunku przepływu,flowMeters,virtual,-,inputFlow.status2&7,0,1,uint8,0,1,-,-,-,-,0,all,"0 - przepływ w przód
 1 - przepływ w tył"
-,,,,,PWP: Przepływomierz wody płucznej,,,,,,,,,,,,
-washingFlow,flowMeters,register,2,15,PWP: Wartość chwilowa,1,1,float,-,-,m3/h,round(2),-,-,0,avg,-
-washingFlow.dnIdx,flowMeters,register,2,0,PWP: Średnica głowicy,1,1,uint8,0,22,-,-,-,-,0,all,"[3, 4, 6, 8, 10, 15, 20, 25, 32, 40, 50, 65, 80, 100, 125, 150, 200, 250, 300, 350, 400, 500, 600]"
-washingFlow.status1,flowMeters,register,2,1,PWP: 1 bajt statusu,1,1,uint8,0,255,-,-,-,-,0,-,-
-washingFlow.status2,flowMeters,register,2,2,PWP: 2 bajt statusu,1,1,uint8,0,255,-,-,-,-,0,-,-
-washingFlow.corrCoefA,flowMeters,register,2,11,PWP: Współczynnik korekcyjny A,1,1,float,-0.2499,0.2499,-,-,-,-,0,all,-
-washingFlow.corrCoefC,flowMeters,register,2,13,PWP: Współczynnik korekcyjny C,1,1,float,-0.9999,0.9999,-,-,-,-,0,all,-
-washingFlow.total.forwards,flowMeters,register,2,17,PWP: Przepływ całkowity w przód,1,1,uint32,-,-,l lub m3,div(10),-,-,0,avg,-
-washingFlow.total.backwards,flowMeters,register,2,19,PWP: Przepływ całkowity w tył,1,1,uint32,-,-,l lub m3,div(10),-,-,0,-,-
-washingFlow.cutoff,flowMeters,register,2,3,PWP: Próg odcięcia przepływu,1,1,uint8,0,99,%,-,0,9.9,0,all,-
-washingFlow.timeConstant,flowMeters,register,2,4,PWP: Stała czasowa,1,1,uint8,0,14,s,-,-,-,0,all,"[0.5, 1.0, 1.5, 2.0, 2.5, 3.0, 3.5, 4.0, 4.5, 5.0, 10.0, 15.0, 20.0, 25.0, 30.0]"
-washingFlow.qRange,flowMeters,register,2,5,PWP: Zakres pomiarowy,1,1,uint32,-,-,l/h,-,-,-,0,all,-
-washingFlow.alarm1.value,flowMeters,register,2,7,PWP: Próg alarmowy 1,1,1,uint32,-,-,l/h,-,-,-,0,all,-
-washingFlow.alarm2.value,flowMeters,register,2,9,PWP: Próg alarmowy 2,1,1,uint32,-,-,l/h,-,-,-,0,all,-
-washingFlow.unit,flowMeters,virtual,-,washingFlow.status1&0-1,PWP: Jednostka licznika przepływu chwilowego,0,1,uint8,0,2,-,-,-,-,0,all,"0 - przepływ chwilowy w l/h
+,PWP: Przepływomierz wody płucznej,,,,,,,,,,,,,,,,
+washingFlow,PWP: Wartość chwilowa,flowMeters,register,2,15,1,1,float,-,-,m3/h,round(2),-,-,0,avg,-
+washingFlow.dnIdx,PWP: Średnica głowicy,flowMeters,register,2,0,1,1,uint8,0,22,-,-,-,-,0,all,"[3, 4, 6, 8, 10, 15, 20, 25, 32, 40, 50, 65, 80, 100, 125, 150, 200, 250, 300, 350, 400, 500, 600]"
+washingFlow.status1,PWP: 1 bajt statusu,flowMeters,register,2,1,1,1,uint8,0,255,-,-,-,-,0,-,-
+washingFlow.status2,PWP: 2 bajt statusu,flowMeters,register,2,2,1,1,uint8,0,255,-,-,-,-,0,-,-
+washingFlow.corrCoefA,PWP: Współczynnik korekcyjny A,flowMeters,register,2,11,1,1,float,-0.2499,0.2499,-,-,-,-,0,all,-
+washingFlow.corrCoefC,PWP: Współczynnik korekcyjny C,flowMeters,register,2,13,1,1,float,-0.9999,0.9999,-,-,-,-,0,all,-
+washingFlow.total.forwards,PWP: Przepływ całkowity w przód,flowMeters,register,2,17,1,1,uint32,-,-,l lub m3,div(10),-,-,0,avg,-
+washingFlow.total.backwards,PWP: Przepływ całkowity w tył,flowMeters,register,2,19,1,1,uint32,-,-,l lub m3,div(10),-,-,0,-,-
+washingFlow.cutoff,PWP: Próg odcięcia przepływu,flowMeters,register,2,3,1,1,uint8,0,99,%,-,0,9.9,0,all,-
+washingFlow.timeConstant,PWP: Stała czasowa,flowMeters,register,2,4,1,1,uint8,0,14,s,-,-,-,0,all,"[0.5, 1.0, 1.5, 2.0, 2.5, 3.0, 3.5, 4.0, 4.5, 5.0, 10.0, 15.0, 20.0, 25.0, 30.0]"
+washingFlow.qRange,PWP: Zakres pomiarowy,flowMeters,register,2,5,1,1,uint32,-,-,l/h,-,-,-,0,all,-
+washingFlow.alarm1.value,PWP: Próg alarmowy 1,flowMeters,register,2,7,1,1,uint32,-,-,l/h,-,-,-,0,all,-
+washingFlow.alarm2.value,PWP: Próg alarmowy 2,flowMeters,register,2,9,1,1,uint32,-,-,l/h,-,-,-,0,all,-
+washingFlow.unit,PWP: Jednostka licznika przepływu chwilowego,flowMeters,virtual,-,washingFlow.status1&0-1,0,1,uint8,0,2,-,-,-,-,0,all,"0 - przepływ chwilowy w l/h
 1 - przepływ chwilowy w m3/h
 2 - przepływ chwilowy w l/min"
-washingFlow.totalUnit,flowMeters,virtual,-,washingFlow.status1&2,PWP: Jednostka licznika przepływu całkowitego,0,1,uint8,0,1,-,-,-,-,0,all,"0 - licznik zlicza m3
+washingFlow.totalUnit,PWP: Jednostka licznika przepływu całkowitego,flowMeters,virtual,-,washingFlow.status1&2,0,1,uint8,0,1,-,-,-,-,0,all,"0 - licznik zlicza m3
 1 - licznik zlicza l"
-washingFlow.impulse,flowMeters,virtual,-,washingFlow.status1&3-4,PWP: Waga impulsu,0,1,uint8,0,3,-,-,-,-,0,all,"0 - impuls co 1 jednostkę objętości
+washingFlow.impulse,PWP: Waga impulsu,flowMeters,virtual,-,washingFlow.status1&3-4,0,1,uint8,0,3,-,-,-,-,0,all,"0 - impuls co 1 jednostkę objętości
 1 - impuls co 10 jednostek objętości
 2 - impuls co 100 jednostek objętości
 3 - brak możliwości ustawiania wagi impulsu"
-washingFlow.alarm2.status,flowMeters,virtual,-,washingFlow.status2&2,PWP: Flaga alarmu 2,0,1,uint8,0,1,-,-,-,-,0,all,-
-washingFlow.alarm1.status,flowMeters,virtual,-,washingFlow.status2&3,PWP: Flaga alarmu 1,0,1,uint8,0,1,-,-,-,-,0,all,-
-washingFlow.err,flowMeters,virtual,-,washingFlow.status2&4,PWP: Flaga błędu od falownika,0,1,uint8,0,1,-,-,-,-,0,all,-
-washingFlow.empty,flowMeters,virtual,-,washingFlow.status2&5,"PWP: Flaga stanu układu wykrywania ""pustej pompy""",0,1,uint8,0,1,-,-,-,-,0,all,-
-washingFlow.curr,flowMeters,virtual,-,washingFlow.status2&6,PWP: Flaga zakresu pomiarowego,0,1,uint8,0,1,-,-,-,-,0,all,"0 - pomiar mieści się w zakresie pomiarowym
+washingFlow.alarm2.status,PWP: Flaga alarmu 2,flowMeters,virtual,-,washingFlow.status2&2,0,1,uint8,0,1,-,-,-,-,0,all,-
+washingFlow.alarm1.status,PWP: Flaga alarmu 1,flowMeters,virtual,-,washingFlow.status2&3,0,1,uint8,0,1,-,-,-,-,0,all,-
+washingFlow.err,PWP: Flaga błędu od falownika,flowMeters,virtual,-,washingFlow.status2&4,0,1,uint8,0,1,-,-,-,-,0,all,-
+washingFlow.empty,"PWP: Flaga stanu układu wykrywania ""pustej pompy""",flowMeters,virtual,-,washingFlow.status2&5,0,1,uint8,0,1,-,-,-,-,0,all,-
+washingFlow.curr,PWP: Flaga zakresu pomiarowego,flowMeters,virtual,-,washingFlow.status2&6,0,1,uint8,0,1,-,-,-,-,0,all,"0 - pomiar mieści się w zakresie pomiarowym
 1 - przekroczenie zakresu pomiarowego"
-washingFlow.rev,flowMeters,virtual,-,washingFlow.status2&7,PWP: Flaga kierunku przepływu,0,1,uint8,0,1,-,-,-,-,0,all,"0 - przepływ w przód
+washingFlow.rev,PWP: Flaga kierunku przepływu,flowMeters,virtual,-,washingFlow.status2&7,0,1,uint8,0,1,-,-,-,-,0,all,"0 - przepływ w przód
 1 - przepływ w tył"
-,,,,,PWS: Przepływomierz wody w sieci,,,,,,,,,,,,
-outputFlow,flowMeters,register,1,15,PWS: Wartość chwilowa,1,1,float,-,-,m3/h,round(2),-,-,0,avg,-
-outputFlow.dnIdx,flowMeters,register,1,0,PWS: Średnica głowicy,1,1,uint8,0,22,-,-,-,-,0,all,"[3, 4, 6, 8, 10, 15, 20, 25, 32, 40, 50, 65, 80, 100, 125, 150, 200, 250, 300, 350, 400, 500, 600]"
-outputFlow.status1,flowMeters,register,1,1,PWS: 1 bajt statusu,1,1,uint8,0,255,-,-,-,-,0,-,-
-outputFlow.status2,flowMeters,register,1,2,PWS: 2 bajt statusu,1,1,uint8,0,255,-,-,-,-,0,-,-
-outputFlow.corrCoefA,flowMeters,register,1,11,PWS: Współczynnik korekcyjny A,1,1,float,-0.2499,0.2499,-,-,-,-,0,all,-
-outputFlow.corrCoefC,flowMeters,register,1,13,PWS: Współczynnik korekcyjny C,1,1,float,-0.9999,0.9999,-,-,-,-,0,all,-
-outputFlow.total.forwards,flowMeters,register,1,17,PWS: Przepływ całkowity w przód,1,1,uint32,-,-,l lub m3,div(10),-,-,0,avg,-
-outputFlow.total.backwards,flowMeters,register,1,19,PWS: Przepływ całkowity w tył,1,1,uint32,-,-,l lub m3,div(10),-,-,0,-,-
-outputFlow.cutoff,flowMeters,register,1,3,PWS: Próg odcięcia przepływu,1,1,uint8,0,99,%,-,0,9.9,0,all,-
-outputFlow.timeConstant,flowMeters,register,1,4,PWS: Stała czasowa,1,1,uint8,0,14,s,-,-,-,0,all,"[0.5, 1.0, 1.5, 2.0, 2.5, 3.0, 3.5, 4.0, 4.5, 5.0, 10.0, 15.0, 20.0, 25.0, 30.0]"
-outputFlow.qRange,flowMeters,register,1,5,PWS: Zakres pomiarowy,1,1,uint32,-,-,l/h,-,-,-,0,all,-
-outputFlow.alarm1.value,flowMeters,register,1,7,PWS: Próg alarmowy 1,1,1,uint32,-,-,l/h,-,-,-,0,all,-
-outputFlow.alarm2.value,flowMeters,register,1,9,PWS: Próg alarmowy 2,1,1,uint32,-,-,l/h,-,-,-,0,all,-
-outputFlow.unit,flowMeters,virtual,-,outputFlow.status1&0-1,PWS: Jednostka licznika przepływu chwilowego,0,1,uint8,0,2,-,-,-,-,0,all,"0 - przepływ chwilowy w l/h
+,PWS: Przepływomierz wody w sieci,,,,,,,,,,,,,,,,
+outputFlow,PWS: Wartość chwilowa,flowMeters,register,1,15,1,1,float,-,-,m3/h,round(2),-,-,0,avg,-
+outputFlow.dnIdx,PWS: Średnica głowicy,flowMeters,register,1,0,1,1,uint8,0,22,-,-,-,-,0,all,"[3, 4, 6, 8, 10, 15, 20, 25, 32, 40, 50, 65, 80, 100, 125, 150, 200, 250, 300, 350, 400, 500, 600]"
+outputFlow.status1,PWS: 1 bajt statusu,flowMeters,register,1,1,1,1,uint8,0,255,-,-,-,-,0,-,-
+outputFlow.status2,PWS: 2 bajt statusu,flowMeters,register,1,2,1,1,uint8,0,255,-,-,-,-,0,-,-
+outputFlow.corrCoefA,PWS: Współczynnik korekcyjny A,flowMeters,register,1,11,1,1,float,-0.2499,0.2499,-,-,-,-,0,all,-
+outputFlow.corrCoefC,PWS: Współczynnik korekcyjny C,flowMeters,register,1,13,1,1,float,-0.9999,0.9999,-,-,-,-,0,all,-
+outputFlow.total.forwards,PWS: Przepływ całkowity w przód,flowMeters,register,1,17,1,1,uint32,-,-,l lub m3,div(10),-,-,0,avg,-
+outputFlow.total.backwards,PWS: Przepływ całkowity w tył,flowMeters,register,1,19,1,1,uint32,-,-,l lub m3,div(10),-,-,0,-,-
+outputFlow.cutoff,PWS: Próg odcięcia przepływu,flowMeters,register,1,3,1,1,uint8,0,99,%,-,0,9.9,0,all,-
+outputFlow.timeConstant,PWS: Stała czasowa,flowMeters,register,1,4,1,1,uint8,0,14,s,-,-,-,0,all,"[0.5, 1.0, 1.5, 2.0, 2.5, 3.0, 3.5, 4.0, 4.5, 5.0, 10.0, 15.0, 20.0, 25.0, 30.0]"
+outputFlow.qRange,PWS: Zakres pomiarowy,flowMeters,register,1,5,1,1,uint32,-,-,l/h,-,-,-,0,all,-
+outputFlow.alarm1.value,PWS: Próg alarmowy 1,flowMeters,register,1,7,1,1,uint32,-,-,l/h,-,-,-,0,all,-
+outputFlow.alarm2.value,PWS: Próg alarmowy 2,flowMeters,register,1,9,1,1,uint32,-,-,l/h,-,-,-,0,all,-
+outputFlow.unit,PWS: Jednostka licznika przepływu chwilowego,flowMeters,virtual,-,outputFlow.status1&0-1,0,1,uint8,0,2,-,-,-,-,0,all,"0 - przepływ chwilowy w l/h
 1 - przepływ chwilowy w m3/h
 2 - przepływ chwilowy w l/min"
-outputFlow.totalUnit,flowMeters,virtual,-,outputFlow.status1&2,PWS: Jednostka licznika przepływu całkowitego,0,1,uint8,0,1,-,-,-,-,0,all,"0 - licznik zlicza m3
+outputFlow.totalUnit,PWS: Jednostka licznika przepływu całkowitego,flowMeters,virtual,-,outputFlow.status1&2,0,1,uint8,0,1,-,-,-,-,0,all,"0 - licznik zlicza m3
 1 - licznik zlicza l"
-outputFlow.impulse,flowMeters,virtual,-,outputFlow.status1&3-4,PWS: Waga impulsu,0,1,uint8,0,3,-,-,-,-,0,all,"0 - impuls co 1 jednostkę objętości
+outputFlow.impulse,PWS: Waga impulsu,flowMeters,virtual,-,outputFlow.status1&3-4,0,1,uint8,0,3,-,-,-,-,0,all,"0 - impuls co 1 jednostkę objętości
 1 - impuls co 10 jednostek objętości
 2 - impuls co 100 jednostek objętości
 3 - brak możliwości ustawiania wagi impulsu"
-outputFlow.alarm2.status,flowMeters,virtual,-,outputFlow.status2&2,PWS: Flaga alarmu 2,0,1,uint8,0,1,-,-,-,-,0,all,-
-outputFlow.alarm1.status,flowMeters,virtual,-,outputFlow.status2&3,PWS: Flaga alarmu 1,0,1,uint8,0,1,-,-,-,-,0,all,-
-outputFlow.err,flowMeters,virtual,-,outputFlow.status2&4,PWS: Flaga błędu od falownika,0,1,uint8,0,1,-,-,-,-,0,all,-
-outputFlow.empty,flowMeters,virtual,-,outputFlow.status2&5,"PWS: Flaga stanu układu wykrywania ""pustej pompy""",0,1,uint8,0,1,-,-,-,-,0,all,-
-outputFlow.curr,flowMeters,virtual,-,outputFlow.status2&6,PWS: Flaga zakresu pomiarowego,0,1,uint8,0,1,-,-,-,-,0,all,"0 - pomiar mieści się w zakresie pomiarowym
+outputFlow.alarm2.status,PWS: Flaga alarmu 2,flowMeters,virtual,-,outputFlow.status2&2,0,1,uint8,0,1,-,-,-,-,0,all,-
+outputFlow.alarm1.status,PWS: Flaga alarmu 1,flowMeters,virtual,-,outputFlow.status2&3,0,1,uint8,0,1,-,-,-,-,0,all,-
+outputFlow.err,PWS: Flaga błędu od falownika,flowMeters,virtual,-,outputFlow.status2&4,0,1,uint8,0,1,-,-,-,-,0,all,-
+outputFlow.empty,"PWS: Flaga stanu układu wykrywania ""pustej pompy""",flowMeters,virtual,-,outputFlow.status2&5,0,1,uint8,0,1,-,-,-,-,0,all,-
+outputFlow.curr,PWS: Flaga zakresu pomiarowego,flowMeters,virtual,-,outputFlow.status2&6,0,1,uint8,0,1,-,-,-,-,0,all,"0 - pomiar mieści się w zakresie pomiarowym
 1 - przekroczenie zakresu pomiarowego"
-outputFlow.rev,flowMeters,virtual,-,outputFlow.status2&7,PWS: Flaga kierunku przepływu,0,1,uint8,0,1,-,-,-,-,0,all,"0 - przepływ w przód
+outputFlow.rev,PWS: Flaga kierunku przepływu,flowMeters,virtual,-,outputFlow.status2&7,0,1,uint8,0,1,-,-,-,-,0,all,"0 - przepływ w przód
 1 - przepływ w tył"
-,,,,,Włamanie,,,,,,,,,,,,
-breakin.state,-,setting,-,-,Stan alarmu włamania,0,1,bool,-,-,-,-,-,-,0,all,-
-breakin.timeout,-,setting,-,-,Ilość sekund na zablokowanie uruchomienia alarmu włamania,0,1,uint16,1,3600,s,-,-,-,0,all,-
-breakin.operatorLoggedIn,-,setting,-,-,Stan zalogowania na stanowisku operatora,0,1,bool,-,-,-,-,-,-,0,all,
-breakin.hydro,techPlc,input,1,X04,Włamanie - hydrofornia ,1,0,bool,-,-,-,flip,-,-,0,all,-
-breakin.chlor,techPlc,input,1,X05,Włamanie - chlorownia,1,0,bool,-,-,-,flip,-,-,0,all,-
-breakin.inputPump1,techPlc,input,1,X06,Włamanie - studnia głebinowa 1,1,0,bool,-,-,-,flip,-,-,0,all,-
-breakin.inputPump2,techPlc,input,1,X07,Włamanie - studnia głębinowa 2,1,0,bool,-,-,-,flip,-,-,0,all,-
-breakin.sounds,techPlc,output,1,Y00,Sygnalizator dzwiękowy alarmu,1,1,bool,-,-,-,-,-,-,0,all,-
-breakin.lights,techPlc,output,1,Y01,Sygnalizator optyczny alarmu,1,1,bool,-,-,-,-,-,-,0,all,-
-,,,,,Stany połączenia z urządzeniami,,,,,,,,,,,,
-masters.controlProcess,-,virtual,-,-,"Stan połączenia z urządzeniami sterowania (techPlc, hydroPlc, vfd)",0,0,bool,-,-,-,-,-,-,-,-,-
-masters.hydroPlc,hydroPlc,virtual,-,-,Stan połączenia ze sterownikiem szafy zestawu hydroforowego,0,0,bool,-,-,-,-,-,-,0,all,-
-masters.techPlc,techPlc,virtual,-,-,Stan połączenia ze sterownikiem szafy technologicznej,0,0,bool,-,-,-,-,-,-,0,all,-
-masters.vfd,vfd,virtual,-,-,Stan połączenia z NPortem do falowników,0,0,bool,-,-,-,-,-,-,0,all,-
-masters.flowMeters,flowMeters,virtual,-,-,Stan połączenia z NPortem do przepływomierzy,0,1,bool,-,-,-,-,-,-,0,all,-
-masters.hydroHmi,hydroHmi,virtual,-,-,Stan połączenia z panelem szafy zestawu hydroforowego,0,0,bool,-,-,-,-,-,-,0,all,-
-masters.techHmi,techHmi,virtual,-,-,Stan połączenia z panelem szafy technologicznej,0,0,bool,-,-,-,-,-,-,0,all,-
-,,,,,Inne,,,,,,,,,,,,
-hydro.supplyOrderStatus,hydroPlc,input,1,X20,Kontrola zasilania kolejności faz,1,0,bool,-,-,-,-,-,-,0,all,-
-hydro.deaeration,hydroPlc,output,1,Y27,Sygnalizator optyczny szafy zestawu hydroforowego,1,1,bool,-,-,-,-,-,-,0,all,-
-tech.supplyOrderStatus,techPlc,input,1,X20,Kontrola zasilania kolejności faz,1,0,bool,-,-,-,-,-,-,0,all,-
-tech.failure,techPlc,output,1,Y20,LED awaria zbiorcza,1,1,bool,-,-,-,-,-,-,0,all,-
-mainDistBoardFailure,techPlc,input,1,X55,Awaria zasilania rozdzielni głównej (RG),1,0,bool,-,-,-,-,-,-,0,all,-
-compressorPressure,techPlc,input register,1,D9900,Wartość ciśnienia sprężarki w rozdzielni pneumatycznej,1,0,int16,197,1023,bar,minMax; round(2),0,10,0,avg,-
-outputPressure,vfd,input register,3,42946,Wartość ciśnienia w sieci,1,0,int16,135,1023,bar,minMax; round(2),0,10,0,avg,-
-,,,,,Wysyłanie e-maili,,,,,,,,,,,,
-mailer.from,-,setting,-,-,Nagłówek e-mail: From,0,1,string,-,-,-,-,-,-,0,all,-
-mailer.replyTo,-,setting,-,-,Nagłowek e-mail: Reply-To,0,1,string,-,-,-,-,-,-,0,all,-
-mailer.bcc,-,setting,-,-,Nagłowek e-mail: BCC,0,1,string,-,-,-,-,-,-,0,all,-
-,,,,,Diagnostyka,,,,,,,,,,,,
-health.os.uptime,-,setting,-,-,System: uptime,0,1,double,-,-,-,-,-,-,0,avg,-
-health.os.cpu,-,setting,-,-,System: obciążenie CPU,0,1,float,-,-,-,-,-,-,0,avg,-
-health.os.memory,-,setting,-,-,System: zajęta pamięć,0,1,double,-,-,-,-,-,-,0,avg,-
-health.controller.uptime,-,setting,-,-,Serwer sterownika: uptime,0,1,double,-,-,-,-,-,-,0,avg,-
-health.controller.memory,-,setting,-,-,Serwer sterownika: zajeta pamięć,0,1,double,-,-,-,-,-,-,0,avg,-
-health.frontend.uptime,-,setting,-,-,Serwer aplikacji: uptime,0,1,double,-,-,-,-,-,-,0,avg,-
-health.frontend.memory,-,setting,-,-,Serwer aplikacji: zajęta pamięć,0,1,double,-,-,-,-,-,-,0,avg,-
-health.frontend.websockets,-,setting,-,-,Serwer aplikacji: ilość połączonych klientów,0,1,uint16,-,-,-,-,-,-,0,avg,-
-health.alarms.uptime,-,setting,-,-,Serwer alarmów: uptime,0,1,double,-,-,-,-,-,-,0,avg,-
-health.alarms.memory,-,setting,-,-,Serwer alarmów: zajęta pamięć,0,1,double,-,-,-,-,-,-,0,avg,-
+,Włamanie,,,,,,,,,,,,,,,,
+breakin.state,Stan alarmu włamania,-,setting,-,-,0,1,bool,-,-,-,-,-,-,0,all,-
+breakin.timeout,Ilość sekund na zablokowanie uruchomienia alarmu włamania,-,setting,-,-,0,1,uint16,1,3600,s,-,-,-,0,all,-
+breakin.operatorLoggedIn,Stan zalogowania na stanowisku operatora,-,setting,-,-,0,1,bool,-,-,-,-,-,-,0,all,
+breakin.hydro,Włamanie - hydrofornia ,techPlc,input,1,X04,1,0,bool,-,-,-,flip,-,-,0,all,-
+breakin.chlor,Włamanie - chlorownia,techPlc,input,1,X05,1,0,bool,-,-,-,flip,-,-,0,all,-
+breakin.inputPump1,Włamanie - studnia głebinowa 1,techPlc,input,1,X06,1,0,bool,-,-,-,flip,-,-,0,all,-
+breakin.inputPump2,Włamanie - studnia głębinowa 2,techPlc,input,1,X07,1,0,bool,-,-,-,flip,-,-,0,all,-
+breakin.sounds,Sygnalizator dzwiękowy alarmu,techPlc,output,1,Y00,1,1,bool,-,-,-,-,-,-,0,all,-
+breakin.lights,Sygnalizator optyczny alarmu,techPlc,output,1,Y01,1,1,bool,-,-,-,-,-,-,0,all,-
+,Stany połączenia z urządzeniami,,,,,,,,,,,,,,,,
+masters.controlProcess,"Stan połączenia z urządzeniami sterowania (techPlc, hydroPlc, vfd)",-,virtual,-,-,0,0,bool,-,-,-,-,-,-,-,-,-
+masters.hydroPlc,Stan połączenia ze sterownikiem szafy zestawu hydroforowego,hydroPlc,virtual,-,-,0,0,bool,-,-,-,-,-,-,0,all,-
+masters.techPlc,Stan połączenia ze sterownikiem szafy technologicznej,techPlc,virtual,-,-,0,0,bool,-,-,-,-,-,-,0,all,-
+masters.vfd,Stan połączenia z NPortem do falowników,vfd,virtual,-,-,0,0,bool,-,-,-,-,-,-,0,all,-
+masters.flowMeters,Stan połączenia z NPortem do przepływomierzy,flowMeters,virtual,-,-,0,1,bool,-,-,-,-,-,-,0,all,-
+masters.hydroHmi,Stan połączenia z panelem szafy zestawu hydroforowego,hydroHmi,virtual,-,-,0,0,bool,-,-,-,-,-,-,0,all,-
+masters.techHmi,Stan połączenia z panelem szafy technologicznej,techHmi,virtual,-,-,0,0,bool,-,-,-,-,-,-,0,all,-
+,Inne,,,,,,,,,,,,,,,,
+hydro.supplyOrderStatus,Kontrola zasilania kolejności faz,hydroPlc,input,1,X20,1,0,bool,-,-,-,-,-,-,0,all,-
+hydro.deaeration,Sygnalizator optyczny szafy zestawu hydroforowego,hydroPlc,output,1,Y27,1,1,bool,-,-,-,-,-,-,0,all,-
+tech.supplyOrderStatus,Kontrola zasilania kolejności faz,techPlc,input,1,X20,1,0,bool,-,-,-,-,-,-,0,all,-
+tech.failure,LED awaria zbiorcza,techPlc,output,1,Y20,1,1,bool,-,-,-,-,-,-,0,all,-
+mainDistBoardFailure,Awaria zasilania rozdzielni głównej (RG),techPlc,input,1,X55,1,0,bool,-,-,-,-,-,-,0,all,-
+compressorPressure,Wartość ciśnienia sprężarki w rozdzielni pneumatycznej,techPlc,input register,1,D9900,1,0,int16,197,1023,bar,minMax; round(2),0,10,0,avg,-
+outputPressure,Wartość ciśnienia w sieci,vfd,input register,3,42946,1,0,int16,135,1023,bar,minMax; round(2),0,10,0,avg,-
+,Wysyłanie e-maili,,,,,,,,,,,,,,,,
+mailer.from,Nagłówek e-mail: From,-,setting,-,-,0,1,string,-,-,-,-,-,-,0,all,-
+mailer.replyTo,Nagłowek e-mail: Reply-To,-,setting,-,-,0,1,string,-,-,-,-,-,-,0,all,-
+mailer.bcc,Nagłowek e-mail: BCC,-,setting,-,-,0,1,string,-,-,-,-,-,-,0,all,-
+,Diagnostyka,,,,,,,,,,,,,,,,
+health.os.uptime,System: uptime,-,setting,-,-,0,1,double,-,-,-,-,-,-,0,avg,-
+health.os.cpu,System: obciążenie CPU,-,setting,-,-,0,1,float,-,-,-,-,-,-,0,avg,-
+health.os.memory,System: zajęta pamięć,-,setting,-,-,0,1,double,-,-,-,-,-,-,0,avg,-
+health.controller.uptime,Serwer sterownika: uptime,-,setting,-,-,0,1,double,-,-,-,-,-,-,0,avg,-
+health.controller.memory,Serwer sterownika: zajeta pamięć,-,setting,-,-,0,1,double,-,-,-,-,-,-,0,avg,-
+health.frontend.uptime,Serwer aplikacji: uptime,-,setting,-,-,0,1,double,-,-,-,-,-,-,0,avg,-
+health.frontend.memory,Serwer aplikacji: zajęta pamięć,-,setting,-,-,0,1,double,-,-,-,-,-,-,0,avg,-
+health.frontend.websockets,Serwer aplikacji: ilość połączonych klientów,-,setting,-,-,0,1,uint16,-,-,-,-,-,-,0,avg,-
+health.alarms.uptime,Serwer alarmów: uptime,-,setting,-,-,0,1,double,-,-,-,-,-,-,0,avg,-
+health.alarms.memory,Serwer alarmów: zajęta pamięć,-,setting,-,-,0,1,double,-,-,-,-,-,-,0,avg,-
