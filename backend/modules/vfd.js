@@ -123,7 +123,19 @@ exports.start = function startVfdModule(app, module)
     {
       if (lodash.isUndefined(module.params[paramNo]))
       {
-        return done({message: 'VFD_UNKNOWN_PARAM'});
+        if (paramNo.indexOf('.') === -1)
+        {
+          return done({message: 'VFD_UNKNOWN_PARAM'});
+        }
+
+        module.params[paramNo] = {
+          no: paramNo,
+          type: 'uint16',
+          name: paramNo + '???',
+          workWrite: 'n/a',
+          cIdx: 'n/a',
+          sets: 'n/a'
+        };
       }
 
       return done(null, module.params[paramNo]);
@@ -217,7 +229,7 @@ exports.start = function startVfdModule(app, module)
    */
   function getParamAddress(paramNo)
   {
-    if (paramNo.indexOf('.'))
+    if (paramNo.indexOf('.') !== -1)
     {
       return parseInt('0x' + paramNo.replace('.', ''), 16);
     }
