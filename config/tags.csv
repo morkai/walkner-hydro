@@ -183,8 +183,8 @@ uvLamp.control,UV: Załączenie,hydroPlc,output,1,Y26,1,1,bool,-,-,-,-,-,-,0,all
 ,PWG: Przepływomierz wody głębinowej,,,,,,,,,,,,,,,,
 inputFlow,PWG: Wartość chwilowa,flowMeters,register,3,15,1,1,float,-,-,m3/h,round(2),-,-,0,avg,-
 inputFlow.dnIdx,PWG: Średnica głowicy,flowMeters,register,3,0,1,1,uint8,0,22,-,-,-,-,0,all,"[3, 4, 6, 8, 10, 15, 20, 25, 32, 40, 50, 65, 80, 100, 125, 150, 200, 250, 300, 350, 400, 500, 600]"
-inputFlow.status1,PWG: 1 bajt statusu,flowMeters,register,3,1,1,1,uint8,0,255,-,-,-,-,0,-,-
-inputFlow.status2,PWG: 2 bajt statusu,flowMeters,register,3,2,1,1,uint8,0,255,-,-,-,-,0,-,-
+inputFlow.status1,PWG: 1 bajt statusu,flowMeters,register,3,1,0,1,uint8,0,255,-,-,-,-,0,-,-
+inputFlow.status2,PWG: 2 bajt statusu,flowMeters,register,3,2,0,1,uint8,0,255,-,-,-,-,0,-,-
 inputFlow.corrCoefA,PWG: Współczynnik korekcyjny A,flowMeters,register,3,11,1,1,float,-0.2499,0.2499,-,-,-,-,0,all,-
 inputFlow.corrCoefC,PWG: Współczynnik korekcyjny C,flowMeters,register,3,13,1,1,float,-0.9999,0.9999,-,-,-,-,0,all,-
 inputFlow.total.forwards,PWG: Przepływ całkowity w przód,flowMeters,register,3,17,1,1,uint32,-,-,l lub m3,div(10),-,-,0,avg,-
@@ -214,8 +214,8 @@ inputFlow.rev,PWG: Flaga kierunku przepływu,flowMeters,virtual,-,inputFlow.stat
 ,PWP: Przepływomierz wody płucznej,,,,,,,,,,,,,,,,
 washingFlow,PWP: Wartość chwilowa,flowMeters,register,2,15,1,1,float,-,-,m3/h,round(2),-,-,0,avg,-
 washingFlow.dnIdx,PWP: Średnica głowicy,flowMeters,register,2,0,1,1,uint8,0,22,-,-,-,-,0,all,"[3, 4, 6, 8, 10, 15, 20, 25, 32, 40, 50, 65, 80, 100, 125, 150, 200, 250, 300, 350, 400, 500, 600]"
-washingFlow.status1,PWP: 1 bajt statusu,flowMeters,register,2,1,1,1,uint8,0,255,-,-,-,-,0,-,-
-washingFlow.status2,PWP: 2 bajt statusu,flowMeters,register,2,2,1,1,uint8,0,255,-,-,-,-,0,-,-
+washingFlow.status1,PWP: 1 bajt statusu,flowMeters,register,2,1,0,1,uint8,0,255,-,-,-,-,0,-,-
+washingFlow.status2,PWP: 2 bajt statusu,flowMeters,register,2,2,0,1,uint8,0,255,-,-,-,-,0,-,-
 washingFlow.corrCoefA,PWP: Współczynnik korekcyjny A,flowMeters,register,2,11,1,1,float,-0.2499,0.2499,-,-,-,-,0,all,-
 washingFlow.corrCoefC,PWP: Współczynnik korekcyjny C,flowMeters,register,2,13,1,1,float,-0.9999,0.9999,-,-,-,-,0,all,-
 washingFlow.total.forwards,PWP: Przepływ całkowity w przód,flowMeters,register,2,17,1,1,uint32,-,-,l lub m3,div(10),-,-,0,avg,-
@@ -245,8 +245,8 @@ washingFlow.rev,PWP: Flaga kierunku przepływu,flowMeters,virtual,-,washingFlow.
 ,PWS: Przepływomierz wody w sieci,,,,,,,,,,,,,,,,
 outputFlow,PWS: Wartość chwilowa,flowMeters,register,1,15,1,1,float,-,-,m3/h,round(2),-,-,0,avg,-
 outputFlow.dnIdx,PWS: Średnica głowicy,flowMeters,register,1,0,1,1,uint8,0,22,-,-,-,-,0,all,"[3, 4, 6, 8, 10, 15, 20, 25, 32, 40, 50, 65, 80, 100, 125, 150, 200, 250, 300, 350, 400, 500, 600]"
-outputFlow.status1,PWS: 1 bajt statusu,flowMeters,register,1,1,1,1,uint8,0,255,-,-,-,-,0,-,-
-outputFlow.status2,PWS: 2 bajt statusu,flowMeters,register,1,2,1,1,uint8,0,255,-,-,-,-,0,-,-
+outputFlow.status1,PWS: 1 bajt statusu,flowMeters,register,1,1,0,1,uint8,0,255,-,-,-,-,0,-,-
+outputFlow.status2,PWS: 2 bajt statusu,flowMeters,register,1,2,0,1,uint8,0,255,-,-,-,-,0,-,-
 outputFlow.corrCoefA,PWS: Współczynnik korekcyjny A,flowMeters,register,1,11,1,1,float,-0.2499,0.2499,-,-,-,-,0,all,-
 outputFlow.corrCoefC,PWS: Współczynnik korekcyjny C,flowMeters,register,1,13,1,1,float,-0.9999,0.9999,-,-,-,-,0,all,-
 outputFlow.total.forwards,PWS: Przepływ całkowity w przód,flowMeters,register,1,17,1,1,uint32,-,-,l lub m3,div(10),-,-,0,avg,-
