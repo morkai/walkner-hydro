@@ -49,7 +49,7 @@ module.exports = function setUpAggregator(app, collectorModule)
     {
       if (err)
       {
-        module.error("Failed to fetch collector info: %s", err.message);
+        collectorModule.error("Failed to fetch collector info: %s", err.message);
 
         return this.done(null);
       }
