@@ -140,5 +140,6 @@ pm2 startup
 
 ## License
 
-This project is released under the
-[NPOSL-3.0](https://raw.github.com/morkai/walkner-hydro/master/license.md).
+walkner-hydro is released under the [CC BY-NC-SA 4.0 License](https://github.com/morkai/walkner-hydro/blob/master/license.md).
+
+Copyright (c) 2014, Łukasz Walukiewicz <lukasz@walukiewicz.eu>. Some Rights Reserved.

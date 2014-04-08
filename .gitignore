@@ -2,5 +2,5 @@
 node_modules/
 build/
 frontend-build/
-config/chelsty/
-bin/processes-chelsty.json
+config/production/
+bin/processes-production.json
