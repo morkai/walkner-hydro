@@ -9,21 +9,25 @@
     <tbody>
     <% Object.keys(groups).forEach(function(group) { %>
     <tr>
-      <td class="analytics-changes-group" colspan="2"><%= t('tags', 'GROUP:' + group) %>
-      <% groups[group].tags.forEach(function(tag) { %>
+      <td class="analytics-changes-group" colspan="2"><%= t('tags', 'GROUP:' + group) %></td>
+    </tr>
+    <% groups[group].tags.forEach(function(tag) { %>
     <tr>
-      <td class="analytics-changes-tag"><%- tag %>
-      <td><a><%= t('tags', 'TAG:' + tag) %></a>
-      <% }) %>
-      <% Object.keys(groups[group].groups).forEach(function(subgroup) { %>
+      <td class="analytics-changes-tag"><%- tag %></td>
+      <td><a><%= t('tags', 'TAG:' + tag) %></a></td>
+    </tr>
+    <% }) %>
+    <% Object.keys(groups[group].groups).forEach(function(subgroup) { %>
     <tr>
-      <td class="analytics-changes-group" colspan="2"><%= t('tags', 'SUBGROUP:' + group, {id: subgroup}) %>
-        <% groups[group].groups[subgroup].forEach(function(tag) { %>
+      <td class="analytics-changes-group" colspan="2"><%= t('tags', 'SUBGROUP:' + group, {id: subgroup}) %></td>
+    </tr>
+    <% groups[group].groups[subgroup].forEach(function(tag) { %>
     <tr>
-      <td class="analytics-changes-tag"><%- tag %>
-      <td><a><%= t('tags', 'TAG:' + tag) %></a>
-        <% }) %>
-      <% }) %>
+      <td class="analytics-changes-tag"><%- tag %></td>
+      <td><a><%= t('tags', 'TAG:' + tag) %></a></td>
+    </tr>
+    <% }) %>
+    <% }) %>
     <% }) %>
     </tbody>
   </table>

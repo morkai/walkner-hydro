@@ -32,12 +32,6 @@ define([
 
   });
 
-  /**
-   * @returns {object.<
-   *   string,
-   *   {tags: Array.<string>, groups: object.<string, Array.<string>}
-   * >}
-   */
   TagsCollection.prototype.group = function()
   {
     var result = {other: {tags: [], groups: {}}};
@@ -71,6 +65,11 @@ define([
       if (!result[group])
       {
         result[group] = {tags: [], groups: {}};
+      }
+
+      if (!currentTag.archive)
+      {
+        continue;
       }
 
       if (subgroup === null)

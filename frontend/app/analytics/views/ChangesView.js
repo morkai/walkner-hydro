@@ -27,8 +27,7 @@ define([
     events: {
       'click tr': function(e)
       {
-        var $tag =
-          this.$(e.target).closest('tr').find('.analytics-changes-tag');
+        var $tag = this.$(e.target).closest('tr').find('.analytics-changes-tag');
 
         if ($tag.length === 1)
         {
