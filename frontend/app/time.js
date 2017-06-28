@@ -1,30 +1,84 @@
-// Copyright (c) 2014, Łukasz Walukiewicz <lukasz@walukiewicz.eu>. Some Rights Reserved.
-// Licensed under CC BY-NC-SA 4.0 <http://creativecommons.org/licenses/by-nc-sa/4.0/>.
-// Part of the walkner-hydro project <http://lukasz.walukiewicz.eu/p/walkner-hydro>
+// Part of <http://miracle.systems/p/walkner-wmes> licensed under <CC BY-NC-SA 4.0>
 
 define([
-  'jquery',
-  './socket'
+  'moment-timezone',
+  'app/socket'
 ], function(
-  $,
+  moment,
   socket
 ) {
   'use strict';
 
-  var time = {offset: 0};
+  var OFFSET_STORAGE_KEY = 'TIME:OFFSET';
+  var TZ_STORAGE_KEY = 'TIME:ZONE';
+
+  var time = {
+    synced: false,
+    offset: parseFloat(localStorage.getItem(OFFSET_STORAGE_KEY)) || 0,
+    zone: localStorage.getItem(TZ_STORAGE_KEY) || 'Europe/Warsaw',
+    appData: window.TIME || 0
+  };
+
+  delete window.TIME;
 
   time.sync = function()
   {
     var startTime = Date.now();
 
-    socket.emit('time', function(serverTime)
+    socket.emit('time', function(serverTime, serverTz)
     {
       time.offset = ((serverTime - startTime) + (serverTime - Date.now())) / 2;
+      time.zone = serverTz;
+      time.synced = true;
+
+      localStorage.setItem(OFFSET_STORAGE_KEY, time.offset.toString());
+      localStorage.setItem(TZ_STORAGE_KEY, time.zone);
     });
   };
 
+  time.getServerMoment = function()
+  {
+    return moment(Date.now() + time.offset).tz(time.zone);
+  };
+
+  time.getMoment = function(date, inputFormat)
+  {
+    return moment(date, inputFormat).tz(time.zone);
+  };
+
+  time.format = function(date, format)
+  {
+    var dateMoment = time.getMoment(date);
+
+    return dateMoment.isValid() ? dateMoment.format(format) : null;
+  };
+
+  time.toTagData = function(date, absolute)
+  {
+    if (!date)
+    {
+      return {
+        iso: '?',
+        long: '?',
+        human: '?',
+        daysAgo: 0
+      };
+    }
+
+    var timeMoment = time.getMoment(date);
+    var then = timeMoment.valueOf();
+    var now = Date.now();
+
+    return {
+      iso: timeMoment.toISOString(),
+      long: timeMoment.format('LLLL'),
+      human: absolute === true ? timeMoment.from(then > now ? then : now) : timeMoment.fromNow(),
+      daysAgo: -timeMoment.diff(now, 'days')
+    };
+  };
+
   /**
-   * @param {string} str
+   * @param {string|number} str
    * @returns {number}
    */
   time.toSeconds = function(str)
@@ -43,7 +97,8 @@ define([
       g: 3600,
       h: 3600,
       m: 60,
-      s: 1
+      s: 1,
+      ms: 0.001
     };
 
     var time = str.trim();
@@ -51,14 +106,14 @@ define([
 
     if (/^[0-9]+\.?[0-9]*$/.test(time) === false)
     {
-      var re = /([0-9\.]+) *(h|m|s)[a-z]*/ig;
+      var re = /([0-9\.]+)\s*(h|ms|m|s)[a-z]*/ig;
       var match;
 
       seconds = 0;
 
       while ((match = re.exec(time)))
       {
-        seconds += match[1] * multipliers[match[2].toLowerCase()];
+        seconds += parseFloat(match[1]) * multipliers[match[2].toLowerCase()];
       }
     }
 
@@ -68,11 +123,12 @@ define([
   /**
    * @param {number} time
    * @param {boolean} [compact]
+   * @param {boolean} [ms]
    * @returns {string}
    */
-  time.toString = function(time, compact)
+  time.toString = function(time, compact, ms)
   {
-    if (typeof time !== 'number' || time <= 0)
+    if (typeof time !== 'number' || time <= 0 || isNaN(time))
     {
       return compact ? '00:00:00' : '0s';
     }
@@ -107,8 +163,15 @@ define([
     if (seconds >= 1)
     {
       str += compact
-        ? rpad0(Math.round(seconds), 2)
-        : (' ' + Math.round(seconds) + 's');
+        ? rpad0(Math[ms ? 'floor' : 'round'](seconds), 2)
+        : (' ' + Math[ms ? 'floor' : 'round'](seconds) + 's');
+
+      if (ms && seconds % 1 !== 0)
+      {
+        str += compact
+          ? ('.' + rpad0(Math.round(seconds % 1 * 1000), 3))
+          : (' ' + (Math.round(seconds % 1 * 1000) + 'ms'));
+      }
     }
     else if (seconds > 0 && str === '')
     {
@@ -143,6 +206,8 @@ define([
   {
     time.sync();
   }
+
+  window.time = time;
 
   return time;
 });

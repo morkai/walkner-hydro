@@ -29,6 +29,7 @@
     }
 
     var errorEl = document.createElement('p');
+
     errorEl.className = 'error';
     errorEl.innerHTML = '<span class="error-type">'
       + err.requireType
@@ -78,15 +79,16 @@ require([
   'backbone',
   'backbone.layout',
   'moment',
+  'app/monkeyPatch',
   'app/broker',
   'app/time',
   'app/i18n',
   'app/viewport',
+  'app/socket',
+  'app/router',
   'app/core/views/PageLayout',
   'app/core/views/NavbarView',
-  'app/socket',
   'app/controller',
-  'app/router',
   'app/monitoring/routes',
   'app/diagnostics/routes',
   'app/analytics/routes',
@@ -104,23 +106,23 @@ function(
   Backbone,
   Layout,
   moment,
+  monkeyPatch,
   broker,
   time,
   i18n,
   viewport,
+  socket,
+  router,
   PageLayout,
   NavbarView)
 {
   'use strict';
 
-  moment.lang(window.LOCALE || 'pl');
+  var startBroker = null;
 
-  broker.subscribe('page.titleChanged', function(newTitle)
-  {
-    newTitle.unshift(i18n('core', 'TITLE'));
+  socket.connect();
 
-    document.title = newTitle.reverse().join(' < ');
-  });
+  moment.locale(window.LOCALE || 'pl');
 
   $.ajaxSetup({
     dataType: 'json',
@@ -137,20 +139,133 @@ function(
     keep: true
   });
 
-  viewport.registerLayout('page', new PageLayout({
-    views: {
-      '.navbar': new NavbarView()
-    }
-  }));
-
-  domReady(function()
+  viewport.registerLayout('page', function createPageLayout()
   {
-    $('.loading').fadeOut(function() { $(this).remove(); });
+    var req = router.getCurrentRequest();
 
-    Backbone.history.start({
-      root: '/',
-      hashChange: true,
-      pushState: false
+    return new PageLayout({
+      views: {
+        '.navbar': new NavbarView({
+          currentPath: req === null ? '/' : req.path
+        })
+      }
     });
   });
+
+  broker.subscribe('page.titleChanged', function(newTitle)
+  {
+    newTitle.unshift(i18n('core', 'TITLE'));
+
+    document.title = newTitle.reverse().join(' < ');
+  });
+
+  if (navigator.onLine)
+  {
+    startBroker = broker.sandbox();
+
+    startBroker.subscribe('user.reloaded', doStartApp);
+    startBroker.subscribe('socket.connectFailed', doStartApp);
+  }
+  else
+  {
+    doStartApp();
+  }
+
+  function doStartApp()
+  {
+    if (startBroker !== null)
+    {
+      startBroker.destroy();
+      startBroker = null;
+    }
+
+    var userReloadTimer = null;
+
+    broker.subscribe('i18n.reloaded', function(message)
+    {
+      localStorage.setItem('LOCALE', message.newLocale);
+      viewport.render();
+    });
+
+    broker.subscribe('user.reloaded', function()
+    {
+      if (userReloadTimer)
+      {
+        clearTimeout(userReloadTimer);
+      }
+
+      userReloadTimer = setTimeout(function()
+      {
+        userReloadTimer = null;
+
+        var currentRequest = router.getCurrentRequest();
+
+        viewport.render();
+
+        router.dispatch(currentRequest.url);
+      }, 1);
+    });
+
+    broker.subscribe('user.loggedIn', function()
+    {
+      if (userReloadTimer)
+      {
+        clearTimeout(userReloadTimer);
+        userReloadTimer = null;
+      }
+
+      var req = router.getCurrentRequest();
+
+      if (!req)
+      {
+        return;
+      }
+
+      viewport.render();
+
+      var url = req.url;
+
+      if (url === '/' || url === '/login')
+      {
+        router.dispatch(window.DASHBOARD_URL_AFTER_LOG_IN || '/');
+      }
+      else
+      {
+        router.dispatch(url);
+      }
+    });
+
+    broker.subscribe('user.loggedOut', function()
+    {
+      viewport.msg.show({
+        type: 'success',
+        text: i18n('core', 'MSG:LOG_OUT:SUCCESS'),
+        time: 2500
+      });
+
+      setTimeout(function()
+      {
+        broker.publish('router.navigate', {
+          url: '/',
+          trigger: true
+        });
+      }, 1);
+    });
+
+    domReady(function()
+    {
+      $('#app-loading').fadeOut(function() { $(this).remove(); });
+
+      if (window.ENV)
+      {
+        document.body.classList.add('is-' + window.ENV + '-env');
+      }
+
+      Backbone.history.start({
+        root: '/',
+        hashChange: true,
+        pushState: false
+      });
+    });
+  }
 });

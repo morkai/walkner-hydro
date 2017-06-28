@@ -8,12 +8,12 @@ var findUsers = require('./helpers').findUsers;
 
 exports.execute = function(app, alarmsModule, runningAlarm, action)
 {
-  var mailer = app[alarmsModule.config.mailerId];
+  var mailSender = app[alarmsModule.config.mailSenderId];
 
-  if (!mailer)
+  if (!mailSender)
   {
     return alarmsModule.warn(
-      "Cannot send emails: mailer module not available!"
+      "Cannot send emails: mailSender module not available!"
     );
   }
 
@@ -50,7 +50,7 @@ exports.execute = function(app, alarmsModule, runningAlarm, action)
     var subject = runningAlarm.model.name;
     var text = action.parameters.text;
 
-    mailer.send(recipients, subject, text, function(err)
+    mailSender.send(recipients, subject, text, function(err)
     {
       if (runningAlarm.isStopped())
       {

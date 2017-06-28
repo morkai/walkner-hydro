@@ -1,5 +1,7 @@
 'use strict';
 
+const mongodb = require('./mongodb');
+
 exports.id = 'alarms';
 
 exports.modules = [
@@ -7,7 +9,7 @@ exports.modules = [
   'mongoose',
   'events',
   'messenger/server',
-  'mailer',
+  'mail/sender',
   'gammu',
   {id: 'messenger/client', name: 'messenger/client:controller'},
   'controller',
@@ -20,7 +22,6 @@ exports.events = {
   insertDelay: 1000,
   topics: {
     debug: [
-      'app.started',
       'alarms.actionExecuted',
       'alarms.actions.emailSent',
       'alarms.actions.smsSent'
@@ -35,6 +36,7 @@ exports.events = {
       'alarms.stopped'
     ],
     error: [
+      'app.started',
       'alarms.compileFailed',
       'alarms.conditionCheckFailed',
       'alarms.actions.emailFailed',
@@ -45,10 +47,13 @@ exports.events = {
 };
 
 exports.mongoose = {
+  uri: mongodb.uri,
+  options: mongodb,
   maxConnectTries: 10,
   connectAttemptDelay: 500,
-  uri: require('./mongodb').uri,
-  options: {}
+  models: [
+    'event', 'user', 'alarm'
+  ]
 };
 
 exports['messenger/server'] = {
@@ -83,19 +88,16 @@ exports.controller = {
   expressId: null
 };
 
-exports.mailer = {
-  transport: 'smtp',
-  options: {
-    maxConnections: 2,
+exports['mail/sender'] = {
+  smtp: {
     service: 'gmail',
     auth: {
       user: 'someone@gmail.com',
       pass: 'P4$$W0RD'
     }
   },
-  from: {tagName: 'mailer.from', default: 'someone+hydro@the.net'},
-  replyTo: {tagName: 'mailer.replyTo', default: 'someone+hydro@the.net'},
-  bcc: {tagName: 'mailer.bcc', default: ''}
+  from: 'someone+hydro@the.net',
+  replyTo: 'someone+hydro@the.net'
 };
 
 exports.gammu = {

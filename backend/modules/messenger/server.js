@@ -1,10 +1,8 @@
-// Copyright (c) 2014, Łukasz Walukiewicz <lukasz@walukiewicz.eu>. Some Rights Reserved.
-// Licensed under CC BY-NC-SA 4.0 <http://creativecommons.org/licenses/by-nc-sa/4.0/>.
-// Part of the walkner-hydro project <http://lukasz.walukiewicz.eu/p/walkner-hydro>
+// Part of <http://miracle.systems/p/walkner-wmes> licensed under <CC BY-NC-SA 4.0>
 
 'use strict';
 
-var lodash = require('lodash');
+var _ = require('lodash');
 var axon = require('axon');
 
 exports.DEFAULT_CONFIG = {
@@ -12,6 +10,8 @@ exports.DEFAULT_CONFIG = {
   pubPort: 5050,
   repHost: '0.0.0.0',
   repPort: 5051,
+  pullHost: null,
+  pullPort: 5052,
   broadcastTopics: []
 };
 
@@ -20,14 +20,17 @@ exports.start = function startMessengerServerModule(app, module, done)
   var requestHandlers = {};
   var pubSocket = null;
   var repSocket = null;
+  var pullSocket = null;
 
-  module.config.broadcastTopics.forEach(function(broadcastTopic)
+  _.forEach(module.config.broadcastTopics, function(broadcastTopic)
   {
     app.broker.subscribe(broadcastTopic, function(message, topic)
     {
       module.broadcast(topic, typeof message === 'undefined' ? null : message);
     });
   });
+
+  createPullSocket();
 
   createPubSocket(function(err, socket)
   {
@@ -85,7 +88,6 @@ exports.start = function startMessengerServerModule(app, module, done)
     var pub = axon.socket('pub');
 
     pub.set('hwm', 10);
-    pub.format('json');
     pub.bind(module.config.pubPort, module.config.pubHost);
 
     pub.once('error', done);
@@ -107,7 +109,6 @@ exports.start = function startMessengerServerModule(app, module, done)
     var rep = axon.socket('rep');
 
     rep.set('hwm', 10);
-    rep.format('json');
     rep.bind(module.config.repPort, module.config.repHost);
 
     rep.once('error', done);
@@ -124,25 +125,74 @@ exports.start = function startMessengerServerModule(app, module, done)
 
   /**
    * @private
+   */
+  function createPullSocket()
+  {
+    if (!module.config.pullHost)
+    {
+      return module.debug("pull socket not used.");
+    }
+
+    var connected = false;
+
+    pullSocket = axon.socket('rep');
+
+    pullSocket.set('hwm', 10);
+    pullSocket.connect(module.config.pullPort, module.config.pullHost);
+
+    pullSocket.on('error', function(err)
+    {
+      module.error("[pull] %s", err.message);
+    });
+
+    pullSocket.on('connect', function()
+    {
+      connected = true;
+
+      module.debug("[pull] Connected on port %d...", module.config.pullPort);
+
+      app.broker.publish('messenger.client.connected', {
+        moduleName: module.name,
+        socketType: 'pull',
+        host: module.config.pullHost,
+        port: module.config.pullPort
+      });
+    });
+
+    pullSocket.on('reconnect attempt', function()
+    {
+      if (connected)
+      {
+        module.debug("[pull] Disconnected. Reconnecting...");
+
+        connected = false;
+      }
+    });
+
+    pullSocket.on('message', handleRequest);
+  }
+
+  /**
+   * @private
    * @param {string} type
    * @param {object} req
    * @param {function} reply
    */
   function handleRequest(type, req, reply)
   {
-    if (!lodash.isString(type) || !lodash.isFunction(reply))
+    if (!_.isString(type) || !_.isFunction(reply))
     {
       return;
     }
 
     var requestHandler = requestHandlers[type];
 
-    if (!lodash.isFunction(requestHandler))
+    if (!_.isFunction(requestHandler))
     {
       return;
     }
 
-    requestHandler(lodash.isObject(req) ? req : {}, function(err)
+    requestHandler(_.isObject(req) ? req : {}, function(err)
     {
       if (err instanceof Error)
       {

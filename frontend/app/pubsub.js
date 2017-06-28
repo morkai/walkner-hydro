@@ -1,12 +1,10 @@
-// Copyright (c) 2014, Łukasz Walukiewicz <lukasz@walukiewicz.eu>. Some Rights Reserved.
-// Licensed under CC BY-NC-SA 4.0 <http://creativecommons.org/licenses/by-nc-sa/4.0/>.
-// Part of the walkner-hydro project <http://lukasz.walukiewicz.eu/p/walkner-hydro>
+// Part of <http://miracle.systems/p/walkner-wmes> licensed under <CC BY-NC-SA 4.0>
 
 define([
   'underscore',
   'h5.pubsub/MessageBroker',
-  './broker',
-  './socket'
+  'app/broker',
+  'app/socket'
 ],
 /**
  * @param {underscore} _
@@ -24,23 +22,40 @@ function(
 
   var pubsub = new MessageBroker();
 
+  var pendingUnsubscriptions = {};
+  var pendingSubscriptions = [];
+  var subscribeTimer = null;
+  var unsubscribeTimer = null;
+
   pubsub.on('new topic', function(topic)
   {
-    var topics = [topic];
+    if (typeof pendingUnsubscriptions[topic] !== 'undefined')
+    {
+      delete pendingUnsubscriptions[topic];
+    }
 
     if (socket.isConnected())
     {
-      socket.emit(
-        'pubsub.subscribe', topics, onSocketSubscribe.bind(null, topics)
-      );
+      pendingSubscriptions.push(topic);
+
+      if (subscribeTimer === null)
+      {
+        subscribeTimer = setTimeout(sendPendingSubscriptions, 0);
+      }
     }
   });
 
   pubsub.on('empty topic', function(topic)
   {
-    socket.emit('pubsub.unsubscribe', [topic]);
+    if (socket.isConnected())
+    {
+      pendingUnsubscriptions[topic] = true;
 
-    broker.publish('pubsub.unsubscribed', {topic: topic});
+      if (unsubscribeTimer === null)
+      {
+        unsubscribeTimer = setTimeout(sendPendingUnsubscriptions, 0);
+      }
+    }
   });
 
   pubsub.on('message', function(topic, message, meta)
@@ -76,19 +91,22 @@ function(
   {
     var topics = Object.keys(pubsub.count());
 
-    if (topics.length === 0)
+    if (topics.length)
     {
-      return;
+      socket.emit('pubsub.subscribe', topics, onSocketSubscribe.bind(null, topics));
     }
-
-    socket.emit(
-      'pubsub.subscribe', topics, onSocketSubscribe.bind(null, topics)
-    );
   });
 
-  socket.on('pubsub.message', function(topic, message)
+  socket.on('pubsub.message', function(topic, message, meta)
   {
-    pubsub.publish(topic, message, {remote: true});
+    meta.remote = true;
+
+    if (meta.json && typeof message === 'string')
+    {
+      message = JSON.parse(message);
+    }
+
+    pubsub.publish(topic, message, meta);
   });
 
   function onSocketSubscribe(topics, err, notAllowedTopics)
@@ -119,6 +137,38 @@ function(
       });
     }
   }
+
+  function sendPendingSubscriptions()
+  {
+    if (socket.isConnected())
+    {
+      socket.emit(
+        'pubsub.subscribe',
+        pendingSubscriptions,
+        onSocketSubscribe.bind(null, pendingSubscriptions)
+      );
+    }
+
+    pendingSubscriptions = [];
+    subscribeTimer = null;
+  }
+
+  function sendPendingUnsubscriptions()
+  {
+    var topics = Object.keys(pendingUnsubscriptions);
+
+    if (socket.isConnected())
+    {
+      socket.emit('pubsub.unsubscribe', topics);
+    }
+
+    pendingUnsubscriptions = {};
+    unsubscribeTimer = null;
+
+    broker.publish('pubsub.unsubscribed', {topics: topics});
+  }
+
+  window.pubsub = pubsub;
 
   return pubsub;
 });

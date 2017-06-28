@@ -14,8 +14,7 @@ define([
   'use strict';
 
   var controller = {
-    values: typeof window === 'object' && window.TAG_VALUES
-      ? window.TAG_VALUES : {}
+    values: typeof window === 'object' && window.TAG_VALUES ? window.TAG_VALUES : {}
   };
 
   controller.getValue = function(tagName)

@@ -1,34 +1,32 @@
-// Copyright (c) 2014, Łukasz Walukiewicz <lukasz@walukiewicz.eu>. Some Rights Reserved.
-// Licensed under CC BY-NC-SA 4.0 <http://creativecommons.org/licenses/by-nc-sa/4.0/>.
-// Part of the walkner-hydro project <http://lukasz.walukiewicz.eu/p/walkner-hydro>
+// Part of <https://miracle.systems/p/walkner-furmon> licensed under <CC BY-NC-SA 4.0>
 
 'use strict';
 
-module.exports = function setUpCleaner(app, collectorModule)
+module.exports = function setUpCleaner(app, module)
 {
-  var settingsCollection = collectorModule.config.collection('settings');
-  var allTagsCollection = collectorModule.config.collection('tags.all');
+  const settingsCollection = module.config.collection('tags.settings');
+  const allTagsCollection = module.config.collection('tags.all');
 
-  var lastCleaningTime = 0;
-  var removingDocs = false;
-  var pendingDocs = [];
-  var removedDocCount = 0;
+  let lastCleaningTime = 0;
+  let removingDocs = false;
+  let pendingDocs = [];
+  let removedDocCount = 0;
 
   app.timeout(4321, function()
   {
     getLastCleaningTime(function()
     {
-      var tagValues = {};
-      var selector = {t: {$gte: lastCleaningTime}};
+      const tagValues = {};
+      const selector = {t: {$gte: lastCleaningTime}};
 
       if (lastCleaningTime === 0)
       {
         lastCleaningTime = Date.now();
       }
 
-      var cursor = allTagsCollection.find(selector, {n: 1, v: 1}, {t: 1});
+      const cursor = allTagsCollection.find(selector, {n: 1, v: 1}, {t: 1});
 
-      cursor.each(function(err, doc)
+      cursor.forEach(function(err, doc)
       {
         if (err)
         {
@@ -71,9 +69,7 @@ module.exports = function setUpCleaner(app, collectorModule)
     {
       if (err)
       {
-        collectorModule.error(
-          "Failed to read the last cleaning time: %s", err.message
-        );
+        module.error(`Failed to read the last cleaning time: ${err.message}`);
       }
 
       if (doc)
@@ -98,7 +94,7 @@ module.exports = function setUpCleaner(app, collectorModule)
 
     removingDocs = true;
 
-    var docsToRemove = pendingDocs;
+    const docsToRemove = pendingDocs;
 
     pendingDocs = [];
 
@@ -133,15 +129,11 @@ module.exports = function setUpCleaner(app, collectorModule)
       {
         if (err)
         {
-          collectorModule.error(
-            "Failed to update the last cleaning time: %s", err.message
-          );
+          module.error(`Failed to update the last cleaning time: ${err.message}`);
         }
         else
         {
-          collectorModule.debug(
-            "Removed %d redundant values!", removedDocCount
-          );
+          module.debug('Removed ${removedDocCount} redundant values!');
         }
       }
     );

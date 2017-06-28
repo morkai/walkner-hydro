@@ -1,22 +1,19 @@
-// Copyright (c) 2014, Łukasz Walukiewicz <lukasz@walukiewicz.eu>. Some Rights Reserved.
-// Licensed under CC BY-NC-SA 4.0 <http://creativecommons.org/licenses/by-nc-sa/4.0/>.
-// Part of the walkner-hydro project <http://lukasz.walukiewicz.eu/p/walkner-hydro>
+// Part of <https://miracle.systems/p/walkner-furmon> licensed under <CC BY-NC-SA 4.0>
 
 'use strict';
 
-var fs = require('fs');
-var csv = require('csv');
-var lodash = require('lodash');
-var modbus = require('h5.modbus');
-var Tag = require('./Tag');
+const fs = require('fs');
+const _ = require('lodash');
+const csv = require('csv');
+const modbus = require('h5.modbus');
+const Tag = require('./Tag');
 
 exports.DEFAULT_CONFIG = {
   messengerServerId: 'messenger/server',
-  mongodbId: 'mongodb',
   programId: 'program',
   settingsCollection: function(app)
   {
-    return app.mongodb.db.collection('settings');
+    return app.mongodb.db.collection('tags.settings');
   },
   broadcastDelay: 100,
   broadcastFilter: [],
@@ -26,17 +23,49 @@ exports.DEFAULT_CONFIG = {
   controlMasters: [],
   masters: {},
   tagsFile: null,
-  tags: {}
+  tags: {},
+  ignoreRe: null
 };
 
 exports.start = function startModbusModule(app, module, done)
 {
-  module.config.settingsCollection =
-    module.config.settingsCollection.bind(null, app);
+  module.config.settingsCollection = module.config.settingsCollection.bind(null, app);
 
   module.masters = {};
   module.tags = {};
   module.values = {};
+  module.setTagValue = function(tagName, newValue, done)
+  {
+    if (!done)
+    {
+      done = function() {};
+    }
+
+    if (module.config.ignoreRe && module.config.ignoreRe.test(tagName))
+    {
+      done();
+
+      return;
+    }
+
+    const tag = module.tags[tagName];
+
+    if (typeof tag === 'undefined')
+    {
+      done(new Error('UNKNOWN_TAG'));
+
+      return;
+    }
+
+    if (newValue === tag.getValue())
+    {
+      done();
+
+      return;
+    }
+
+    tag.writeValue(newValue, done);
+  };
 
   app.onModuleReady(module.config.messengerServerId, setUpServerMessages);
 
@@ -57,8 +86,7 @@ exports.start = function startModbusModule(app, module, done)
     setUpMasters();
     setUpTags();
     setUpReadTransactions();
-
-    app.onModuleReady(module.config.mongodbId, setUpSettingsTags);
+    setUpSettingsTags();
 
     require('./virtuals')(app, module);
     require('./safeGuards')(app, module);
@@ -71,7 +99,7 @@ exports.start = function startModbusModule(app, module, done)
    */
   function setUpServerMessages()
   {
-    var messengerServer = app[module.config.messengerServerId];
+    const messengerServer = app[module.config.messengerServerId];
 
     messengerServer.handle('modbus.sync', function(req, reply)
     {
@@ -91,8 +119,8 @@ exports.start = function startModbusModule(app, module, done)
    */
   function setUpTagValuesBroadcast()
   {
-    var messengerServer = app[module.config.messengerServerId];
-    var pendingChanges = null;
+    const messengerServer = app[module.config.messengerServerId];
+    let pendingChanges = null;
 
     app.broker.subscribe('tagValueChanged.**', function(message)
     {
@@ -107,6 +135,8 @@ exports.start = function startModbusModule(app, module, done)
 
         app.timeout(module.config.broadcastDelay, function()
         {
+          app.broker.publish('tagValuesChanged', pendingChanges);
+
           messengerServer.broadcast('modbus.tagValuesChanged', pendingChanges);
 
           pendingChanges = null;
@@ -119,35 +149,23 @@ exports.start = function startModbusModule(app, module, done)
 
   /**
    * @private
-   * @param {object} req
+   * @param {Object} req
    * @param {function} reply
    */
   function handleSetTagValueMessage(req, reply)
   {
-    var tag = module.tags[req.name];
-
-    if (typeof tag === 'undefined')
-    {
-      return reply('UNKNOWN_TAG');
-    }
-
-    if (req.value === tag.getValue())
-    {
-      return reply();
-    }
-
-    tag.writeValue(req.value, reply);
+    module.setTagValue(req.name, req.value, reply);
   }
 
   /**
    * @private
    * @param {string} csvPath
-   * @param {object} tags
+   * @param {Object} tags
    * @param {function} done
    */
   function importTagsCsv(csvPath, tags, done)
   {
-    var tagsCsv;
+    let tagsCsv;
 
     try
     {
@@ -155,48 +173,42 @@ exports.start = function startModbusModule(app, module, done)
     }
     catch (err)
     {
-      return done();
+      done();
+
+      return;
     }
 
-    var csvOptions = {
+    const csvOptions = {
       delimiter: ',',
       rowDelimiter: '\n',
       quote: '"',
       trim: true,
       columns: true
     };
-
-    var csvReader = csv().from.string(tagsCsv, csvOptions);
+    const csvReader = csv().from.string(tagsCsv, csvOptions);
 
     csvReader.on('record', function(record)
     {
-      Object.keys(record).forEach(function(key)
-      {
-        if (tags[record.name] !== undefined)
-        {
-          return;
-        }
-
-        if (/^[A-Z]/.test(key))
-        {
-          delete record[key];
-          return;
-        }
-
-        if (record[key] === '-' || record[key] === '?')
-        {
-          record[key] = null;
-        }
-        else if (/^[0-9]+(\.[0-9]+)?$/.test(record[key]))
-        {
-          record[key] = parseFloat(record[key]);
-        }
-      });
-
-      if (record.name === '')
+      if (_.isEmpty(record.name) || tags[record.name])
       {
         return;
       }
+
+      _.forEach(record, function(value, key)
+      {
+        if (/^[A-Z]/.test(key))
+        {
+          delete record[key];
+        }
+        else if (value === '-' || value === '?')
+        {
+          record[key] = null;
+        }
+        else if (/^[0-9]+(\.[0-9]+)?$/.test(value))
+        {
+          record[key] = parseFloat(value);
+        }
+      });
 
       tags[record.name] = record;
     });
@@ -209,76 +221,77 @@ exports.start = function startModbusModule(app, module, done)
    */
   function setUpMasters()
   {
-    var config = module.config;
+    Object.keys(module.config.masters).forEach(createMaster);
+  }
 
-    Object.keys(config.masters).forEach(function createMaster(masterName)
+  function createMaster(masterName)
+  {
+    const config = module.config;
+    const master = modbus.createMaster(config.masters[masterName]);
+
+    master.tags = [];
+
+    master.on('error', function(err)
     {
-      var master = modbus.createMaster(config.masters[masterName]);
-
-      master.tags = [];
-
-      master.on('error', function(err)
+      if (config.ignoredErrors.indexOf(err.code) === -1)
       {
-        if (config.ignoredErrors.indexOf(err.code) === -1)
-        {
-          app.broker.publish('modbus.error', {
-            severity: 'debug',
-            master: masterName,
-            unit: -1,
-            message: err.message,
-            code: err.code
-          });
-        }
-      });
+        app.broker.publish('modbus.error', {
+          severity: 'debug',
+          master: masterName,
+          unit: -1,
+          message: err.message,
+          code: err.code
+        });
+      }
+    });
 
-      var statusTagName = 'masters.' + masterName;
-      var wasConnected = false;
-      var resetTagsTimer = null;
+    const statusTagName = `masters.${masterName}`;
+    let wasConnected = false;
+    let resetTagsTimer = null;
 
-      master.on('transaction complete', function(err)
+    master.on('transaction complete', function(err)
+    {
+      if (!wasConnected && !err)
       {
-        if (!wasConnected && !err)
-        {
-          module.debug("Master really connected: %s", masterName);
+        module.debug(`Master really connected: ${masterName}`);
 
-          wasConnected = true;
-
-          module.tags[statusTagName].setValue(wasConnected);
-
-          if (resetTagsTimer !== null)
-          {
-            clearTimeout(resetTagsTimer);
-            resetTagsTimer = null;
-          }
-        }
-      });
-
-      master.on('connected', function()
-      {
-        module.debug("Master maybe connected: %s", masterName);
-      });
-
-      master.on('disconnected', function()
-      {
-        module.debug("Master disconnected: %s", masterName);
-
-        wasConnected = false;
+        wasConnected = true;
 
         module.tags[statusTagName].setValue(wasConnected);
 
-        if (resetTagsTimer === null)
+        if (resetTagsTimer !== null)
         {
-          resetTagsTimer = app.timeout(1337, function()
-          {
-            resetTagsTimer = null;
-
-            master.tags.forEach(function(tag) { tag.setValue(null); });
-          });
+          clearTimeout(resetTagsTimer);
+          resetTagsTimer = null;
         }
-      });
-
-      module.masters[masterName] = master;
+      }
     });
+
+    master.on('open', function()
+    {
+      module.debug(`Master maybe connected: ${masterName}`);
+    });
+
+    master.on('close', function()
+    {
+      module.debug(`Master disconnected: ${masterName}`);
+
+      wasConnected = false;
+
+      module.tags[statusTagName].setValue(wasConnected);
+
+      if (resetTagsTimer === null)
+      {
+        resetTagsTimer = app.timeout(1337, function()
+        {
+          resetTagsTimer = null;
+
+          _.forEach(master.tags, tag => { tag.setValue(null); });
+        });
+      }
+    });
+
+    module.masters[masterName] = master;
   }
 
   /**
@@ -286,12 +299,12 @@ exports.start = function startModbusModule(app, module, done)
    */
   function setUpTags()
   {
-    var config = module.config;
+    const config = module.config;
 
-    Object.keys(module.masters).forEach(function addStatusTag(masterName)
+    _.forEach(Object.keys(module.masters), function addStatusTag(masterName)
     {
-      var statusTagName = 'masters.' + masterName;
-      var statusTag = config.tags[statusTagName];
+      const statusTagName = `masters.${masterName}`;
+      let statusTag = config.tags[statusTagName];
 
       if (statusTag === null || typeof statusTag !== 'object')
       {
@@ -309,19 +322,18 @@ exports.start = function startModbusModule(app, module, done)
       module.values[statusTagName] = false;
     });
 
-    var address = 0;
+    let address = 0;
 
-    Object.keys(config.tags).forEach(function setUpTag(tagName)
+    _.forEach(config.tags, function setUpTag(tagConfig, tagName)
     {
-      var tagConfig = config.tags[tagName];
-      var master = module.masters[tagConfig.master];
+      let master = module.masters[tagConfig.master];
 
       if (config.writeAllTheThings
         && (!master || master.writeAllTheThings !== false)
         && tagConfig.kind !== 'virtual'
         && tagConfig.kind !== 'setting')
       {
-        lodash.merge(tagConfig, {
+        _.assign(tagConfig, {
           kind: 'register',
           address: address,
           master: config.writeAllTheThings,
@@ -333,16 +345,16 @@ exports.start = function startModbusModule(app, module, done)
         address += getRegisterQuantityFromType(tagConfig.type);
       }
 
-      var tag = new Tag(app.broker, module, tagName, tagConfig);
+      const tag = new Tag(app.broker, module, tagName, tagConfig);
 
-      if (typeof master !== 'undefined')
+      if (master)
       {
         master.tags.push(tag);
       }
 
       module.tags[tagName] = tag;
 
-      if (module.values[tagName] === undefined)
+      if (module.values[tagName] == null)
       {
         module.values[tagName] = null;
       }
@@ -363,37 +375,33 @@ exports.start = function startModbusModule(app, module, done)
    */
   function setUpMasterReadTransaction(masterName)
   {
-    var master = module.masters[masterName];
-    var tagsByUnit = groupTagsByUnitAndCode(master.tags);
-    var transactions = [];
+    const master = module.masters[masterName];
+    const tagsByUnit = groupTagsByUnitAndCode(master.tags);
+    const transactions = [];
 
-    Object.keys(tagsByUnit).forEach(function(unit)
+    _.forEach(tagsByUnit, function(tagsByCode)
     {
-      var tagsByCode = tagsByUnit[unit];
-
-      Object.keys(tagsByCode).forEach(function(code)
+      _.forEach(tagsByCode, function(tags)
       {
-        createReadTransactions(transactions, tagsByCode[code]);
+        createReadTransactions(transactions, tags);
       });
     });
 
-    master.once('connected', function()
+    master.once('open', function()
     {
-      transactions.forEach(function(tInfo)
+      _.forEach(transactions, function(tInfo)
       {
-        var request = {
-          code: tInfo.functionCode,
-          address: tInfo.startingAddress,
+        const request = {
+          functionCode: tInfo.functionCode,
+          startingAddress: tInfo.startingAddress,
           quantity: tInfo.quantity
         };
-        var unit = tInfo.unit;
-
-        var transaction = master.execute({
+        const unit = tInfo.unit;
+        const transaction = master.execute({
           request: request,
           unit: unit,
           maxRetries: 0,
-          interval: module.config.masters[masterName].interval
-            || (25 + Math.round(Math.random() * 25))
+          interval: module.config.masters[masterName].interval || (25 + Math.round(Math.random() * 25))
         });
 
         transaction.on('complete', function(err, res)
@@ -403,7 +411,7 @@ exports.start = function startModbusModule(app, module, done)
 
         transaction.on('error', function(err)
         {
-          var code = err.code || err.name.replace('Error', '');
+          const code = (err.code || err.name).replace('Error', '');
 
           if (module.config.ignoredErrors.indexOf(code) === -1)
           {
@@ -424,21 +432,21 @@ exports.start = function startModbusModule(app, module, done)
 
   /**
    * @private
-   * @param {Array.<Tag>} tags
-   * @returns {object.<number, object.<number, Tag>>}
+   * @param {Array<Tag>} tags
+   * @returns {Object<number, Object<number, Tag>>}
    */
   function groupTagsByUnitAndCode(tags)
   {
-    var groupedTags = {};
+    const groupedTags = {};
 
-    tags.forEach(function(tag)
+    _.forEach(tags, function(tag)
     {
       if (!tag.isReadable())
       {
         return;
       }
 
-      if (typeof groupedTags[tag.unit] === 'undefined')
+      if (groupedTags[tag.unit] == null)
       {
         groupedTags[tag.unit] = {};
       }
@@ -456,15 +464,14 @@ exports.start = function startModbusModule(app, module, done)
 
   /**
    * @private
-   * @param {Array.<object>} transactions
-   * @param {Array.<Tag>} tags
+   * @param {Array<Object>} transactions
+   * @param {Array<Tag>} tags
    */
   function createReadTransactions(transactions, tags)
   {
-    var tInfo;
-    var lastAddress;
-
-    var lastTagIndex = tags.length - 1;
+    const lastTagIndex = tags.length - 1;
+    let tInfo;
+    let lastAddress;
 
     function adjustQuantity(tInfo, tag, i)
     {
@@ -474,12 +481,9 @@ exports.start = function startModbusModule(app, module, done)
       }
     }
 
-    tags.sort(function(a, b)
-    {
-      return a.address - b.address;
-    });
+    tags.sort((a, b) => a.address - b.address);
 
-    tags.forEach(function(tag, i)
+    _.forEach(tags, function(tag, i)
     {
       if (i === 0)
       {
@@ -493,9 +497,9 @@ exports.start = function startModbusModule(app, module, done)
         return;
       }
 
-      var diff = tag.address - lastAddress;
+      const addressDiff = tag.address - lastAddress;
 
-      if (tInfo.quantity + diff > module.config.maxReadQuantity)
+      if (tInfo.quantity + addressDiff > getMaxReadQuantity(tag.master))
       {
         tInfo.quantity += getRegisterQuantityFromType(tags[i - 1].type) - 1;
 
@@ -509,7 +513,7 @@ exports.start = function startModbusModule(app, module, done)
         return;
       }
 
-      tInfo.quantity += diff;
+      tInfo.quantity += addressDiff;
 
       adjustQuantity(tInfo, tag, i);
 
@@ -519,10 +523,17 @@ exports.start = function startModbusModule(app, module, done)
     });
   }
 
+  function getMaxReadQuantity(masterName)
+  {
+    const master = module.config.masters[masterName];
+
+    return master && master.maxReadQuantity || module.config.maxReadQuantity;
+  }
+
   /**
    * @private
    * @param {Tag} tag
-   * @returns {object}
+   * @returns {Object}
    */
   function createNewReadTransaction(tag)
   {
@@ -542,8 +553,6 @@ exports.start = function startModbusModule(app, module, done)
    */
   function getRegisterQuantityFromType(tagType)
   {
-    /*jshint -W015*/
-
     switch (tagType)
     {
       case 'double':
@@ -562,45 +571,51 @@ exports.start = function startModbusModule(app, module, done)
   /**
    * @private
    * @param {string} masterName
-   * @param {object} tInfo
+   * @param {Object} tInfo
    * @returns {function}
    */
   function createResponseHandler(masterName, tInfo)
   {
-    var bits = tInfo.functionCode === 0x01 || tInfo.functionCode === 0x02;
+    const bits = tInfo.functionCode === modbus.FunctionCode.ReadDiscreteInputs
+      || tInfo.functionCode === modbus.FunctionCode.ReadCoils;
 
     return function(res)
     {
       if (res.isException())
       {
+        if (res.exceptionCode === modbus.ExceptionCode.GatewayTargetDeviceFailedToRespond)
+        {
+          return nullifyTags(tInfo.tags);
+        }
+
         app.broker.publish('modbus.exception', {
           severity: 'debug',
           master: masterName,
           unit: tInfo.unit,
-          functionCode: res.getCode(),
-          exceptionCode: res.getExceptionCode(),
+          functionCode: res.functionCode,
+          exceptionCode: res.exceptionCode,
           message: res.toString()
         });
 
         return;
       }
 
-      if (res.getCount() < tInfo.quantity)
+      if (res.quantity < tInfo.quantity)
       {
         app.broker.publish('modbus.incompleteResponse', {
           severity: 'debug',
           master: masterName,
           unit: tInfo.unit,
           expectedQuantity: tInfo.quantity,
-          actualQuantity: res.getCount()
+          actualQuantity: res.quantity
         });
 
         return;
       }
 
-      var data = bits ? res.getStates() : res.getValues();
+      const data = bits ? res.states : res.data;
 
-      for (var i = 0, l = tInfo.tags.length; i < l; ++i)
+      for (let i = 0, l = tInfo.tags.length; i < l; ++i)
       {
         var tag = module.tags[tInfo.tags[i]];
         var newValue = bits
@@ -614,15 +629,30 @@ exports.start = function startModbusModule(app, module, done)
 
   /**
    * @private
-   * @param {object} tInfo
-   * @param {object} tag
+   * @param {Array<string>} tagNames
+   */
+  function nullifyTags(tagNames)
+  {
+    _.forEach(tagNames, function(tagName)
+    {
+      var tag = module.tags[tagName];
+
+      if (tag)
+      {
+        tag.setValue(null);
+      }
+    });
+  }
+
+  /**
+   * @private
+   * @param {Object} tInfo
+   * @param {Object} tag
    * @param {Buffer} buffer
-   * @returns {number|string}
+   * @returns {(number|string)}
    */
   function readTypedValue(tInfo, tag, buffer)
   {
-    /*jshint -W015*/
-
     var offset = (tag.address - tInfo.startingAddress) * 2;
 
     switch (tag.type)
@@ -663,20 +693,20 @@ exports.start = function startModbusModule(app, module, done)
     {
       if (err)
       {
-        module.error("Failed to read the setting tags: %s", err.message);
+        return module.error(`Failed to read the setting tags: ${err.message}`);
       }
-      else
-      {
-        docs.forEach(function(doc)
-        {
-          var tag = module.tags[doc._id];
 
-          if (lodash.isObject(tag))
-          {
-            tag.setValue(doc.value, doc.time);
-          }
-        });
-      }
+      const now = Date.now();
+
+      _.forEach(docs, function(doc)
+      {
+        const tag = module.tags[doc._id];
+
+        if (tag)
+        {
+          tag.setValue(doc.value, now);
+        }
+      });
     });
   }
 };

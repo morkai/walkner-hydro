@@ -1,40 +1,37 @@
-// Copyright (c) 2014, Łukasz Walukiewicz <lukasz@walukiewicz.eu>. Some Rights Reserved.
-// Licensed under CC BY-NC-SA 4.0 <http://creativecommons.org/licenses/by-nc-sa/4.0/>.
-// Part of the walkner-hydro project <http://lukasz.walukiewicz.eu/p/walkner-hydro>
+// Part of <https://miracle.systems/p/walkner-furmon> licensed under <CC BY-NC-SA 4.0>
 
 'use strict';
 
-/*jshint maxparams:5*/
+const _ = require('lodash');
+const ObjectID = require('mongodb').ObjectID;
+const step = require('h5.step');
+const round = require('./round');
 
-var lodash = require('lodash');
-var ObjectID = require('mongodb').ObjectID;
-var step = require('h5.step');
-
-module.exports = function setUpAggregator(app, collectorModule)
+module.exports = function setUpAggregator(app, module)
 {
   /**
    * @private
-   * @type {object.<string, Tag>}
+   * @type {Object<string, Tag>}
    */
-  var tags = app[collectorModule.config.modbusId].tags;
+  const tags = app[module.config.modbusId].tags;
 
   /**
    * @private
-   * @type {Array.<string>}
+   * @type {Array<string>}
    */
-  var avgTagNames = getAvgTagNames();
+  const avgTagNames = getAvgTagNames();
 
   /**
    * @private
    * @type {function(string): Collection}
    */
-  var collection = collectorModule.config.collection;
+  const collection = module.config.collection;
 
   /**
    * @private
-   * @type {Array.<TagInfo>}
+   * @type {Array<TagInfo>}
    */
-  var collectorInfo = [];
+  let collectorInfo = [];
 
   step(
     function ensureIndexesStep()
@@ -45,51 +42,40 @@ module.exports = function setUpAggregator(app, collectorModule)
     },
     function fetchCollectorInfoStep()
     {
-      collection('collectorInfo')
-        .find({_id: {$in: avgTagNames}})
-        .toArray(this.next());
+      collection('collectorInfo').find({_id: {$in: avgTagNames}}).toArray(this.next());
     },
     function prefillCollectorInfoStep(err, rawCollectorInfo)
     {
       if (err)
       {
-        collectorModule.error("Failed to fetch collector info: %s", err.message);
+        module.error(`Failed to fetch collector info: ${err.message}`);
 
         return this.done(null);
       }
 
-      var existingTagNames = lodash.pluck(rawCollectorInfo, '_id');
-      var missingTagNames =
-        lodash.without.apply(null, [avgTagNames].concat(existingTagNames));
+      const existingTagNames = _.map(rawCollectorInfo, '_id');
+      const missingTagNames = _.without.apply(null, [avgTagNames].concat(existingTagNames));
 
       collectorInfo = rawCollectorInfo;
 
-      missingTagNames.forEach(function(missingTagName)
-      {
-        collectorInfo.push({
-          _id: missingTagName,
-          lastHourly: 0,
-          lastDaily: 0,
-          lastMonthly: 0
-        });
-      });
+      _.forEach(missingTagNames, missingTagName => collectorInfo.push({
+        _id: missingTagName,
+        lastHourly: 0,
+        lastDaily: 0,
+        lastMonthly: 0
+      }));
 
       setImmediate(this.next());
     },
     function aggregateMissingDataStep()
     {
-      var step = this;
-
-      collectorInfo.forEach(function(tagInfo)
-      {
-        aggregateMissingTagData(tagInfo, step.parallel());
-      });
+      _.forEach(collectorInfo, tagInfo => aggregateMissingTagData(tagInfo, this.parallel()));
     },
     function scheduleNextAggregationStep(err)
     {
       if (err)
       {
-        collectorModule.error("Failed to aggregate data: %s", err.message);
+        module.error(`Failed to aggregate data: ${err.message}`);
       }
 
       scheduleNextAggregation();
@@ -103,17 +89,13 @@ module.exports = function setUpAggregator(app, collectorModule)
    */
   function ensureIndex(levelCollection, done)
   {
-    var options = {unique: true, dropDups: true};
+    const options = {unique: true, dropDups: true};
 
     levelCollection.ensureIndex({tag: 1, time: 1}, options, function(err)
     {
       if (err)
       {
-        collectorModule.error(
-          "Failed to ensure indexes for collection %s: %s",
-          levelCollection.name,
-          err.message
-        );
+        module.error(`Failed to ensure indexes for collection [${levelCollection.name}]: ${err.message}`);
       }
 
       done();
@@ -122,16 +104,14 @@ module.exports = function setUpAggregator(app, collectorModule)
 
   /**
    * @private
-   * @returns {Array.<string>}
+   * @returns {Array<string>}
    */
   function getAvgTagNames()
   {
-    var tagNames = [];
+    const tagNames = [];
 
-    Object.keys(tags).forEach(function(tagName)
+    _.forEach(tags, function(tag, tagName)
     {
-      var tag = tags[tagName];
-
       if (tag.archive === 'avg' && tag.kind !== 'setting')
       {
         tagNames.push(tagName);
@@ -144,40 +124,34 @@ module.exports = function setUpAggregator(app, collectorModule)
   /**
    * @private
    * @param {TagInfo} tagInfo
-   * @param {function(Error|null)} done
+   * @param {function(?Error)} done
    */
   function aggregateMissingTagData(tagInfo, done)
   {
-    var steps = [];
+    const steps = [];
 
-    var currentHourly = resetDate(new Date(), false, false);
-    var lastHourly = resetDate(new Date(tagInfo.lastHourly), false, false);
+    const currentHourly = resetDate(new Date(), false, false);
+    const lastHourly = resetDate(new Date(tagInfo.lastHourly), false, false);
 
     if (lastHourly < currentHourly)
     {
-      steps.push(
-        lodash.partial(aggregateHourlyDataStep, tagInfo, currentHourly)
-      );
+      steps.push(_.partial(aggregateHourlyDataStep, tagInfo, currentHourly));
     }
 
-    var currentDaily = resetDate(new Date(), true, false);
-    var lastDaily = resetDate(new Date(tagInfo.lastDaily), true, false);
+    const currentDaily = resetDate(new Date(), true, false);
+    const lastDaily = resetDate(new Date(tagInfo.lastDaily), true, false);
 
     if (lastDaily < currentDaily)
     {
-      steps.push(
-        lodash.partial(aggregateDailyDataStep, tagInfo, currentDaily)
-      );
+      steps.push(_.partial(aggregateDailyDataStep, tagInfo, currentDaily));
     }
 
-    var currentMonthly = resetDate(new Date(), true, true);
-    var lastMonthly = resetDate(new Date(tagInfo.lastMonthly), true, true);
+    const currentMonthly = resetDate(new Date(), true, true);
+    const lastMonthly = resetDate(new Date(tagInfo.lastMonthly), true, true);
 
     if (lastMonthly < currentMonthly)
     {
-      steps.push(
-        lodash.partial(aggregateMonthlyDataStep, tagInfo, currentMonthly)
-      );
+      steps.push(_.partial(aggregateMonthlyDataStep, tagInfo, currentMonthly));
     }
 
     steps.push(done);
@@ -189,25 +163,26 @@ module.exports = function setUpAggregator(app, collectorModule)
    * @private
    * @param {TagInfo} tagInfo
    * @param {Date} currentMonthly
-   * @param {Error|null} err
+   * @param {?Error} err
+   * @returns {undefined}
    */
   function aggregateMonthlyDataStep(tagInfo, currentMonthly, err)
   {
-    /*jshint validthis:true*/
-
     if (err)
     {
       return this.skip(err);
     }
 
-    var options = {
+    const options = {
       from: tagInfo.lastMonthly,
       to: currentMonthly.getTime(),
       tag: tagInfo._id,
       srcCollectionName: 'tags.avg.daily',
       dstCollectionName: 'tags.avg.monthly',
       dstTimeProperty: 'lastMonthly',
-      resetDate: lodash.partialRight(resetDate, true, true)
+      timeDiff: 31 * 24 * 3600 * 1000,
+      interval: 'monthly',
+      resetDate: _.partialRight(resetDate, true, true)
     };
 
     aggregateAndSaveData(options, this.next());
@@ -217,25 +192,26 @@ module.exports = function setUpAggregator(app, collectorModule)
    * @private
    * @param {TagInfo} tagInfo
    * @param {Date} currentDaily
-   * @param {Error|null} err
+   * @param {?Error} err
+   * @returns {undefined}
    */
   function aggregateDailyDataStep(tagInfo, currentDaily, err)
   {
-    /*jshint validthis:true*/
-
     if (err)
     {
       return this.skip(err);
     }
 
-    var options = {
+    const options = {
       from: tagInfo.lastDaily,
       to: currentDaily.getTime(),
       tag: tagInfo._id,
       srcCollectionName: 'tags.avg.hourly',
       dstCollectionName: 'tags.avg.daily',
       dstTimeProperty: 'lastDaily',
-      resetDate: lodash.partialRight(resetDate, true, false)
+      timeDiff: 24 * 3600 * 1000,
+      interval: 'daily',
+      resetDate: _.partialRight(resetDate, true, false)
     };
 
     aggregateAndSaveData(options, this.next());
@@ -245,12 +221,11 @@ module.exports = function setUpAggregator(app, collectorModule)
    * @private
    * @param {TagInfo} tagInfo
    * @param {Date} currentHourly
-   * @param {Error|null} err
+   * @param {?Error} err
+   * @returns {undefined}
    */
   function aggregateHourlyDataStep(tagInfo, currentHourly, err)
   {
-    /*jshint validthis:true*/
-
     if (err)
     {
       return this.skip(err);
@@ -258,119 +233,332 @@ module.exports = function setUpAggregator(app, collectorModule)
 
     currentHourly = currentHourly.getTime();
 
-    var done = lodash.once(this.next());
-    var selector = {
-      _id: {
-        $gte: ObjectID.createFromTime(Math.floor(tagInfo.lastHourly / 1000)),
-        $lt: ObjectID.createFromTime(Math.floor(currentHourly / 1000))
+    step(
+      function findMinuteDataStep(err)
+      {
+        if (err)
+        {
+          return this.skip(err);
+        }
+
+        const next = this.next();
+        const averagedSrcDocs = [];
+        const conditions = {
+          _id: {
+            $gte: ObjectID.createFromTime(Math.floor(tagInfo.lastHourly / 1000)),
+            $lt: ObjectID.createFromTime(Math.floor(currentHourly / 1000))
+          }
+        };
+        const fields = {
+          _id: 1,
+          c: 1,
+          s: 1,
+          v: 1,
+          n: 1,
+          x: 1
+        };
+
+        collection(`tags.${tagInfo._id}.avg`).find(conditions).project(fields).sort({_id: 1}).forEach(
+          function(minuteData)
+          {
+            averagedSrcDocs.push({
+              tag: tagInfo._id,
+              time: minuteData._id.getTimestamp().getTime(),
+              count: minuteData.c,
+              sum: minuteData.s,
+              min: minuteData.n,
+              max: minuteData.x,
+              avg: minuteData.v,
+              dMin: minuteData.dn,
+              dMax: minuteData.dx,
+              dAvg: minuteData.dv
+            });
+          },
+          function(err)
+          {
+            next(err, averagedSrcDocs);
+          }
+        );
+      },
+      function groupDocsStep(err, averagedSrcDocs)
+      {
+        if (err)
+        {
+          return this.skip(err);
+        }
+
+        const resetHourlyDate = _.partialRight(resetDate, false, false);
+        const groupedDocs = groupDocs(averagedSrcDocs, resetHourlyDate);
+
+        setImmediate(this.next(), null, groupedDocs);
+      },
+      function averageGroupedDocsStep(err, groupedDocs)
+      {
+        if (err)
+        {
+          return this.skip(err);
+        }
+
+        const averagedDstDocs = averageGroupedDocs(groupedDocs, tagInfo._id);
+
+        setImmediate(this.next(), null, averagedDstDocs);
+      },
+      function calculateDeltasStep(err, averagedDstDocs)
+      {
+        if (err)
+        {
+          return this.skip(err);
+        }
+
+        calculateDeltas(
+          tagInfo._id,
+          !tagInfo.lastHourly,
+          3600 * 1000,
+          'hourly',
+          averagedDstDocs,
+          this.next()
+        );
+      },
+      function saveAveragedDocsStep(err, averagedDstDocs)
+      {
+        if (err)
+        {
+          return this.skip(err);
+        }
+
+        saveAveragedDocs('tags.avg.hourly', 'lastHourly', currentHourly, averagedDstDocs, this.next());
+      },
+      this.next()
+    );
+  }
+
+  /**
+   * @private
+   * @param {string} tagName
+   * @param {boolean} fromTheBeginning
+   * @param {number} timeDiff
+   * @param {string} interval
+   * @param {Array<AveragedDoc>} averagedDocs
+   * @param {function(?Error, Array<AveragedDoc>)} done
+   */
+  function calculateDeltas(tagName, fromTheBeginning, timeDiff, interval, averagedDocs, done)
+  {
+    step(
+      function()
+      {
+        if (fromTheBeginning)
+        {
+          collection(`tags.${tagName}.avg`)
+            .find({v: {$ne: null}})
+            .sort({_id: 1})
+            .limit(1)
+            .toArray(this.next());
+        }
+      },
+      function(err, firstMinuteData)
+      {
+        if (err)
+        {
+          return this.skip(err);
+        }
+
+        if (firstMinuteData && firstMinuteData.length)
+        {
+          const minuteData = firstMinuteData[0];
+
+          this.firstAveragedDoc = {
+            min: minuteData.n,
+            max: minuteData.x,
+            avg: minuteData.v
+          };
+        }
+      },
+      function()
+      {
+        for (let i = 0; i < averagedDocs.length; ++i)
+        {
+          calculateDelta(
+            tagName,
+            timeDiff,
+            interval,
+            averagedDocs[i - 1] || this.firstAveragedDoc,
+            averagedDocs[i],
+            this.group()
+          );
+        }
+      },
+      function(err)
+      {
+        done(err, averagedDocs);
+      }
+    );
+  }
+
+  /**
+   * @private
+   * @param {string} tagName
+   * @param {number} timeDiff
+   * @param {string} interval
+   * @param {?AveragedDoc} prevDoc
+   * @param {AveragedDoc} doc
+   * @param {function(?Error)} done
+   * @returns {undefined}
+   */
+  function calculateDelta(tagName, timeDiff, interval, prevDoc, doc, done)
+  {
+    if (prevDoc && (!prevDoc.time || (doc.time - prevDoc.time) <= timeDiff))
+    {
+      if (doc.min !== null && prevDoc.min !== null)
+      {
+        doc.dMin = round(doc.min - prevDoc.min);
+      }
+
+      if (doc.max !== null && prevDoc.max !== null)
+      {
+        doc.dMax = round(doc.max - prevDoc.max);
+      }
+
+      if (doc.avg !== null && prevDoc.avg !== null)
+      {
+        doc.dAvg = round(doc.avg - prevDoc.avg);
+      }
+
+      return done();
+    }
+
+    const conditions = {
+      tag: tagName,
+      time: {
+        $gte: doc.time - timeDiff,
+        $lt: doc.time
       }
     };
-    var fields = {
-      _id: 1,
-      v: 1,
-      n: 1,
-      x: 1
+    const sort = {
+      tag: -1,
+      time: -1
     };
-    var options = {
-      sort: '_id'
-    };
-    var cursor = collection('tags.' + tagInfo._id + '.avg').find(
-      selector, fields, options
-    );
-    var averagedSrcDocs = [];
-    var resetHourlyDate = lodash.partialRight(resetDate, false, false);
 
-    cursor.each(function(err, minuteData)
+    collection(`tags.avg.${interval}`).find(conditions).sort(sort).limit(1).toArray(function(err, prevDoc)
     {
       if (err)
       {
         return done(err);
       }
 
-      if (minuteData === null)
+      if (!prevDoc.length)
       {
-        var groupedDocs = groupDocs(averagedSrcDocs, resetHourlyDate);
-        var averagedDstDocs = averageGroupedDocs(groupedDocs, tagInfo._id);
-
-        return saveAveragedDocs(
-          'tags.avg.hourly', 'lastHourly', currentHourly, averagedDstDocs, done
-        );
+        return done();
       }
 
-      averagedSrcDocs.push({
-        tag: tagInfo._id,
-        time: minuteData._id.getTimestamp().getTime(),
-        min: minuteData.n,
-        max: minuteData.x,
-        avg: minuteData.v
-      });
+      return calculateDelta(tagName, timeDiff, interval, prevDoc[0], doc, done);
     });
   }
 
   /**
    * @private
    * @param {AggregateDataOptions} options
-   * @param {function(Error|null)} done
+   * @param {function(?Error)} done
    */
   function aggregateAndSaveData(options, done)
   {
-    var selector = {
-      tag: options.tag,
-      time: {
-        $gte: options.from,
-        $lt: options.to
-      }
-    };
+    step(
+      function()
+      {
+        const selector = {
+          tag: options.tag,
+          time: {
+            $gte: options.from,
+            $lt: options.to
+          }
+        };
 
-    var cursor = collection(options.srcCollectionName).find(
-      selector, null, {sort: 'time'}
+        collection(options.srcCollectionName)
+          .find(selector)
+          .sort({tag: 1, time: 1})
+          .toArray(this.next());
+      },
+      function(err, averagedSrcDocs)
+      {
+        if (err)
+        {
+          return this.skip(err);
+        }
+
+        if (averagedSrcDocs.length === 0)
+        {
+          return this.skip();
+        }
+
+        const groupedDocs = groupDocs(averagedSrcDocs, options.resetDate);
+
+        setImmediate(this.next(), null, groupedDocs);
+      },
+      function(err, groupedDocs)
+      {
+        if (err)
+        {
+          return this.skip(err);
+        }
+
+        const averagedDstDocs = averageGroupedDocs(groupedDocs, options.tag);
+
+        setImmediate(this.next(), null, averagedDstDocs);
+      },
+      function(err, averagedDstDocs)
+      {
+        if (err)
+        {
+          return this.skip(err);
+        }
+
+        calculateDeltas(
+          options.tag,
+          !options.from,
+          options.timeDiff,
+          options.interval,
+          averagedDstDocs,
+          this.next()
+        );
+      },
+      function(err, averagedDstDocs)
+      {
+        if (err)
+        {
+          return this.skip(err);
+        }
+
+        saveAveragedDocs(
+          options.dstCollectionName,
+          options.dstTimeProperty,
+          options.to,
+          averagedDstDocs,
+          this.next()
+        );
+      },
+      done
     );
-
-    cursor.toArray(function(err, averagedSrcDocs)
-    {
-      if (err)
-      {
-        return done(err);
-      }
-
-      if (averagedSrcDocs.length === 0)
-      {
-        return done(null);
-      }
-
-      var groupedDocs = groupDocs(averagedSrcDocs, options.resetDate);
-      var averagedDstDocs = averageGroupedDocs(groupedDocs, options.tag);
-
-      saveAveragedDocs(
-        options.dstCollectionName,
-        options.dstTimeProperty,
-        options.to,
-        averagedDstDocs,
-        done
-      );
-    });
   }
 
   /**
-   * @param {Array.<AveragedDoc>} docs
+   * @param {Array<AveragedDoc>} docs
    * @param {function(Date): Date} resetDate
-   * @returns {Array.<GroupedDocs>}
+   * @returns {Array<GroupedDocs>}
    */
   function groupDocs(docs, resetDate)
   {
-    var results = [];
-    var lastTime = 0;
+    const results = [];
+    let lastTime = 0;
 
-    docs.forEach(function(doc)
+    _.forEach(docs, function(doc)
     {
-      var time = resetDate(new Date(doc.time)).getTime();
+      const time = resetDate(new Date(doc.time)).getTime();
 
       if (time > lastTime)
       {
         lastTime = time;
 
         results.push({
-          lastTime: lastTime,
+          time: lastTime,
           docs: []
         });
       }
@@ -383,27 +571,31 @@ module.exports = function setUpAggregator(app, collectorModule)
 
   /**
    * @private
-   * @param {Array.<object>} groupedDocs
+   * @param {Array<GroupedDocs>} groupedDocs
    * @param {string} tagName
-   * @returns {Array.<AveragedDoc>}
+   * @returns {Array<AveragedDoc>}
    */
   function averageGroupedDocs(groupedDocs, tagName)
   {
-    var results = [];
-
-    groupedDocs.forEach(function(group)
+    return _.map(groupedDocs, function(group)
     {
-      var result = {
+      const result = {
         tag: tagName,
-        time: group.lastTime,
+        time: group.time,
         min: +Infinity,
         max: -Infinity,
-        avg: 0
+        avg: null,
+        dMin: null,
+        dMax: null,
+        dAvg: null
       };
-      var sum = 0;
+      let sum = 0;
+      let cnt = 0;
 
-      group.docs.forEach(function(doc)
+      for (let i = 0, l = group.docs.length; i < l; ++i)
       {
+        const doc = group.docs[i];
+
         if (doc.min < result.min)
         {
           result.min = doc.min;
@@ -414,15 +606,27 @@ module.exports = function setUpAggregator(app, collectorModule)
           result.max = doc.max;
         }
 
-        sum += doc.avg;
-      });
+        if (doc.avg !== null)
+        {
+          sum += doc.avg;
+          cnt += 1;
+        }
+      }
 
-      result.avg = Math.round((sum / group.docs.length) * 100) / 100;
+      result.avg = cnt === 0 ? null : round(sum / cnt);
 
-      results.push(result);
+      if (!isFinite(result.min))
+      {
+        result.min = null;
+      }
+
+      if (!isFinite(result.max))
+      {
+        result.max = null;
+      }
+
+      return result;
     });
-
-    return results;
   }
 
   /**
@@ -430,26 +634,31 @@ module.exports = function setUpAggregator(app, collectorModule)
    * @param {string} collectionName
    * @param {string} timeProperty
    * @param {number} newTime
-   * @param {Array.<AveragedDoc>} averagedDocs
-   * @param {function(Error|null)} done
+   * @param {Array<AveragedDoc>} averagedDocs
+   * @param {function(?Error)} done
+   * @returns {undefined}
    */
-  function saveAveragedDocs(
-    collectionName, timeProperty, newTime, averagedDocs, done)
+  function saveAveragedDocs(collectionName, timeProperty, newTime, averagedDocs, done)
   {
-    collection(collectionName).insert(averagedDocs, function(err)
+    if (!averagedDocs.length)
     {
-      if (err)
+      return done();
+    }
+
+    collection(collectionName).insertMany(averagedDocs, {w: 'majority', j: true, ordered: false}, function(err)
+    {
+      if (err && err.code !== 11000)
       {
         return done(err);
       }
 
-      var tagName = averagedDocs[averagedDocs.length - 1].tag;
-      var tagInfo = lodash.find(collectorInfo, {_id: tagName});
-      var oldTime = tagInfo[timeProperty];
+      const tagName = averagedDocs[averagedDocs.length - 1].tag;
+      const tagInfo = _.find(collectorInfo, {_id: tagName});
+      const oldTime = tagInfo[timeProperty];
 
       tagInfo[timeProperty] = newTime;
 
-      collection('collectorInfo').save(tagInfo, function(err)
+      collection('collectorInfo').replaceOne({_id: tagInfo._id}, tagInfo, {upsert: true}, function(err)
       {
         if (err)
         {
@@ -466,18 +675,17 @@ module.exports = function setUpAggregator(app, collectorModule)
    */
   function scheduleNextAggregation()
   {
-    var nextAggregationTime =
-      +resetDate(new Date(), false, false) + 3660 * 1000;
-    var nextAggregationDelay = nextAggregationTime - Date.now();
-    var steps = [];
+    const nextAggregationTime = +resetDate(new Date(), false, false) + 3660 * 1000;
+    const nextAggregationDelay = nextAggregationTime - Date.now();
+    const steps = [];
 
-    collectorInfo.forEach(function(tagInfo)
+    _.forEach(collectorInfo, function(tagInfo)
     {
       steps.push(function(err)
       {
         if (err)
         {
-          collectorModule.error("Failed to aggregate data: %s", err.message);
+          module.error(`Failed to aggregate data: ${err.message}`);
         }
 
         aggregateMissingTagData(tagInfo, this.next());
@@ -488,13 +696,13 @@ module.exports = function setUpAggregator(app, collectorModule)
     {
       if (err)
       {
-        collectorModule.error("Failed to aggregate data: %s", err.message);
+        module.error(`Failed to aggregate data: ${err.message}`);
       }
     });
 
     steps.push(scheduleNextAggregation);
 
-    app.timeout(nextAggregationDelay, lodash.partial(step, steps));
+    setTimeout(_.partial(step, steps), nextAggregationDelay);
   }
 
   /**
@@ -524,7 +732,7 @@ module.exports = function setUpAggregator(app, collectorModule)
   }
 
   /**
-   * @typedef {object} TagInfo
+   * @typedef {Object} TagInfo
    * @property {string} _id
    * @property {number} lastHourly
    * @property {number} lastDaily
@@ -532,28 +740,33 @@ module.exports = function setUpAggregator(app, collectorModule)
    */
 
   /**
-   * @typedef {object} AveragedDoc
+   * @typedef {Object} AveragedDoc
    * @property {string} tag
    * @property {number} time
    * @property {number} min
    * @property {number} max
    * @property {number} avg
+   * @property {number} dMin
+   * @property {number} dMax
+   * @property {number} dAvg
    */
 
   /**
-   * @typedef {object} GroupedDocs
-   * @property {number} lastTime
-   * @property {Array.<AveragedDoc>} docs
+   * @typedef {Object} GroupedDocs
+   * @property {number} time
+   * @property {Array<AveragedDoc>} docs
    */
 
   /**
-   * @typedef {object} AggregateDataOptions
+   * @typedef {Object} AggregateDataOptions
    * @property {number} from
    * @property {number} to
    * @property {string} tag
    * @property {string} srcCollectionName
    * @property {string} dstCollectionName
    * @property {string} dstTimeProperty
+   * @property {number} timeDiff
+   * @property {string} interval
    * @property {function(Date): Date} resetDate
    */
 };

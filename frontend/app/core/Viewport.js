@@ -20,13 +20,13 @@ define([
   'use strict';
 
   var removeLayoutView = Layout.prototype.removeView;
-  var setLayoutView = Layout.prototype.setView;
+  var useLayoutView = Layout.prototype.setView;
 
   /**
    * @name app.core.Viewport
    * @constructor
    * @extends {Backbone.View}
-   * @param {object} options
+   * @param {Object} options
    * @param {h5.pubsub.Broker} options.broker
    */
   function Viewport(options)
@@ -63,6 +63,12 @@ define([
      * @type {Backbone.Layout|null}
      */
     this.currentLayout = null;
+
+    /**
+     * @private
+     * @type {string|null}
+     */
+    this.currentLayoutName = null;
 
     /**
      * @private
@@ -155,14 +161,7 @@ define([
    */
   Viewport.prototype.useLayout = function(layoutName)
   {
-    var newLayout = this.layouts[layoutName];
-
-    if (_.isUndefined(newLayout))
-    {
-      throw new Error("Unknown layout: " + layoutName);
-    }
-
-    if (newLayout === this.currentLayout)
+    if (layoutName === this.currentLayoutName)
     {
       if (_.isFunction(this.currentLayout.reset))
       {
@@ -170,6 +169,18 @@ define([
       }
 
       return this.currentLayout;
+    }
+
+    var newLayout = this.layouts[layoutName];
+
+    if (_.isUndefined(newLayout))
+    {
+      throw new Error("Unknown layout: " + layoutName);
+    }
+
+    if (_.isFunction(newLayout))
+    {
+      newLayout = newLayout();
     }
 
     var selector = this.options.selector || '';
@@ -180,8 +191,9 @@ define([
     }
 
     this.currentLayout = newLayout;
+    this.currentLayoutName = layoutName;
 
-    setLayoutView.call(this, selector, newLayout);
+    useLayoutView.call(this, selector, newLayout);
 
     if (!this.hasRendered)
     {
@@ -192,7 +204,7 @@ define([
   };
 
   /**
-   * @param {string|function|object} selector
+   * @param {string|function|Object} selector
    * @returns {Backbone.View}
    */
   Viewport.prototype.getView = function(selector)
@@ -206,7 +218,7 @@ define([
   };
 
   /**
-   * @param {string|function|object} selector
+   * @param {string|function|Object} selector
    * @returns {underscore}
    */
   Viewport.prototype.getViews = function(selector)
@@ -235,7 +247,7 @@ define([
   };
 
   /**
-   * @param {object.<string, Backbone.View>} views
+   * @param {Object.<string, Backbone.View>} views
    * @returns {Backbone.Layout}
    */
   Viewport.prototype.insertViews = function(views)
@@ -249,7 +261,7 @@ define([
   };
 
   /**
-   * @param {object.<string, Backbone.View>} views
+   * @param {Object.<string, Backbone.View>} views
    * @returns {Backbone.Layout}
    */
   Viewport.prototype.setViews = function(views)
@@ -278,7 +290,7 @@ define([
   };
 
   /**
-   * @param {string|function|object} selector
+   * @param {string|function|Object} selector
    * @returns {underscore}
    */
   Viewport.prototype.removeView = function(selector)

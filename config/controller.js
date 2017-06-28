@@ -22,7 +22,7 @@ exports.events = {
   insertDelay: 1000,
   topics: {
     debug: [
-      'app.started'
+
     ],
     info: [
       'events.**'
@@ -31,6 +31,7 @@ exports.events = {
       'program.filterSets.washingFinished'
     ],
     error: [
+      'app.started',
       'collector.saveFailed',
       'program.filterSets.washingFailed'
     ]
@@ -72,13 +73,15 @@ exports.modbus = {
       interval: 100,
       suppressTransactionErrors: true,
       transport: {
-        type: 'ip',
-        connection: {
-          type: 'tcp',
+        type: 'ip'
+      },
+      connection: {
+        type: 'tcp',
+        socketOptions: {
           host: '127.0.0.1',
-          port: 502,
-          noActivityTime: 2000
-        }
+          port: 502
+        },
+        noActivityTime: 2000
       }
     }
   },

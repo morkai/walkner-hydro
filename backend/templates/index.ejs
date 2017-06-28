@@ -1,24 +1,23 @@
 <!DOCTYPE html>
-<html>
+<html<% if (appCacheManifest) { %> manifest="<%- appCacheManifest %>"<% } %>>
 <head>
   <meta charset="utf-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
   <base href="/">
   <title>walkner-hydro</title>
-  <link rel="stylesheet" href="assets/main.css">
+  <link rel="stylesheet" href="<%- mainCssFile %>">
 </head>
 <body>
-<div class="loading">
-  <p><i class="icon-spinner icon-spin"></i> <span>Loading...</span></p>
-</div>
-<div class="viewport"></div>
+<div id="app-loading"><i class="fa fa-spinner fa-spin"></i></div>
+<div id="app-viewport"></div>
 <script>
-window.LOCALE = '<%- locale %>';
-window.USER = <%- JSON.stringify(user) %>;
-window.TAG_VALUES = <%- JSON.stringify(tagValues) %>;
+<% Object.keys(appData).forEach(function(key) { %>
+window.<%- key %> = <%- appData[key] %>;
+<% }) %>
 </script>
 <script src="config.js"></script>
-<script src="vendor/require/require.js" data-main="main"></script>
+<script src="vendor/require/require.js"></script>
+<script src="<%- mainJsFile %>"></script>
 </body>
 </html>

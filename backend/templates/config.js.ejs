@@ -1,10 +1,14 @@
+window.LOCALE = 'pl';
+localStorage.setItem('LOCALE', 'pl');
+appLocale = (localStorage.getItem('LOCALE') || (navigator.languages ? navigator.languages[0] : navigator.language) || window.LOCALE || 'pl').split('-')[0];
+appLocale = 'pl';//appLocale === 'pl' ? 'pl' : 'en';
 require = {
   baseUrl: '/',
   paths: <%- paths %>,
   shim: <%- shim %>,
   config: {
     i18n: {
-      locale: typeof window === 'object' && window.LOCALE ? window.LOCALE : 'pl'
+      locale: appLocale
     }
   }
 };

@@ -1,11 +1,9 @@
-// Copyright (c) 2014, Łukasz Walukiewicz <lukasz@walukiewicz.eu>. Some Rights Reserved.
-// Licensed under CC BY-NC-SA 4.0 <http://creativecommons.org/licenses/by-nc-sa/4.0/>.
-// Part of the walkner-hydro project <http://lukasz.walukiewicz.eu/p/walkner-hydro>
+// Part of <https://miracle.systems/p/walkner-furmon> licensed under <CC BY-NC-SA 4.0>
 
 'use strict';
 
 /**
- * @type {object.<string, number>}
+ * @type {Object<string, number>}
  */
 var DELTA_FUNCTIONS = {
   S: 0x02,
@@ -18,7 +16,7 @@ var DELTA_FUNCTIONS = {
 };
 
 /**
- * @type {object.<string, function(number): number>}
+ * @type {Object<string, function(number): number>}
  */
 var DELTA_ADDRESSES = {
   S: function(value)

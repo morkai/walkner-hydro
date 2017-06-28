@@ -4,7 +4,7 @@
 
 'use strict';
 
-var iconv = new (require('iconv').Iconv)('UTF-8', 'ASCII//TRANSLIT//IGNORE');
+var transliterate = require('transliteration').transliterate;
 var findUsers = require('./helpers').findUsers;
 
 exports.execute = function(app, alarmsModule, runningAlarm, action)
@@ -47,7 +47,7 @@ exports.execute = function(app, alarmsModule, runningAlarm, action)
 
     try
     {
-      text = iconv.convert(action.parameters.text).toString();
+      text = transliterate(action.parameters.text);
     }
     catch (err)
     {

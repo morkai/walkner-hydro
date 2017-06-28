@@ -111,6 +111,14 @@ OutputPumps.prototype.getMaxOutputPressure = function()
 /**
  * @returns {number|null}
  */
+OutputPumps.prototype.getOutputPressure = function()
+{
+  return this.getTagValue('outputPressure');
+};
+
+/**
+ * @returns {number|null}
+ */
 OutputPumps.prototype.getMinOutputPressure = function()
 {
   return this.getTagValue('.minOutputPressure');
@@ -258,7 +266,7 @@ OutputPumps.prototype.getPresetRefStepInterval = function()
  */
 OutputPumps.prototype.isOutputPressureSensorFailing = function()
 {
-  return this.getTagValue('outputPressure') === null;
+  return this.getOutputPressure() === null;
 };
 
 /**
@@ -387,21 +395,31 @@ OutputPumps.prototype.handleMaxOutputPressure = function(lock)
 {
   if (this.maxOutputPressureReachedAt === -1)
   {
-    this.debug("Max output pressure reached...");
+    this.debug(
+      "Max output pressure reached (max=%s current=%s)...",
+      this.getMaxOutputPressure(),
+      this.getOutputPressure()
+    );
 
     this.maxOutputPressureReachedAt = Date.now();
   }
 
   if (this.hasMaxOutputPressureStabilized())
   {
-    this.debug("...max output pressure stabilized.");
-
-    this.maxOutputPressureReachedAt = -1;
+    this.debug(
+      "...max output pressure stabilized (max=%s current=%s).",
+      this.getMaxOutputPressure(),
+      this.getOutputPressure()
+    );
 
     return this.stopSingleOutputPump(lock);
   }
 
-  //this.debug("...max output pressure not stabilized yet...");
+  this.debug(
+    "...max output pressure not stabilized yet (max=%s current=%s)...",
+    this.getMaxOutputPressure(),
+    this.getOutputPressure()
+  );
 
   lock.off();
 };
@@ -414,14 +432,22 @@ OutputPumps.prototype.handleMinOutputPressure = function(lock)
 {
   if (this.minOutputPressureReachedAt === -1)
   {
-    this.debug("Min output pressure reached...");
+    this.debug(
+      "Min output pressure reached (min=%s current=%s)...",
+      this.getMinOutputPressure(),
+      this.getOutputPressure()
+    );
 
     this.minOutputPressureReachedAt = Date.now();
   }
 
   if (this.hasMinOutputPressureStabilized())
   {
-    this.debug("...min output pressure stabilized.");
+    this.debug(
+      "...min output pressure stabilized (min=%s current=%s).",
+      this.getMinOutputPressure(),
+      this.getOutputPressure()
+    );
 
     if (this.shouldStartNextOutputPump())
     {
@@ -433,7 +459,11 @@ OutputPumps.prototype.handleMinOutputPressure = function(lock)
     return this.handlePresetRef(lock);
   }
 
-  //this.debug("...min output pressure not stabilized yet...");
+  this.debug(
+    "...min output pressure not stabilized yet (min=%s current=%s)...",
+    this.getMinOutputPressure(),
+    this.getOutputPressure()
+  );
 
   lock.off();
 };
@@ -446,7 +476,7 @@ OutputPumps.prototype.handlePresetRef = function(lock)
 {
   if (!this.shouldChangePresetRef())
   {
-    //this.debug("Not adjusting the preset reference.");
+    this.debug("Not adjusting the preset reference.");
 
     return lock.off();
   }
@@ -506,7 +536,7 @@ OutputPumps.prototype.stopRunningOutputPumps = function(reason, lock)
     return lock.off();
   }
 
-  this.debug("Stopping all pumps: %s...", reason);
+  this.debug("Stopping all %d pumps: %s...", outputPumps.length, reason);
 
   step(
     function stopRunningOutputPumpsStep()
@@ -784,7 +814,7 @@ OutputPumps.prototype.shouldStartNextOutputPump = function()
  */
 OutputPumps.prototype.isMaxOutputPressureReached = function()
 {
-  var outputPressure = this.getTagValue('outputPressure');
+  var outputPressure = this.getOutputPressure();
   var maxOutputPressure = this.getMaxOutputPressure();
 
   if (outputPressure === null || maxOutputPressure === null)
@@ -801,7 +831,7 @@ OutputPumps.prototype.isMaxOutputPressureReached = function()
  */
 OutputPumps.prototype.isMinOutputPressureReached = function()
 {
-  var outputPressure = this.getTagValue('outputPressure');
+  var outputPressure = this.getOutputPressure();
   var minOutputPressure = this.getMinOutputPressure();
 
   if (outputPressure === null || minOutputPressure === null)

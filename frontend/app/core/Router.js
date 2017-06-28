@@ -1,6 +1,4 @@
-// Copyright (c) 2014, Łukasz Walukiewicz <lukasz@walukiewicz.eu>. Some Rights Reserved.
-// Licensed under CC BY-NC-SA 4.0 <http://creativecommons.org/licenses/by-nc-sa/4.0/>.
-// Part of the walkner-hydro project <http://lukasz.walukiewicz.eu/p/walkner-hydro>
+// Part of <http://miracle.systems/p/walkner-wmes> licensed under <CC BY-NC-SA 4.0>
 
 define([
   'underscore',
@@ -17,11 +15,6 @@ define([
 
   var escapeRegExp = /[\-\[\]{}()+?.,\\\^$|#\s]/g;
 
-  /**
-   * @name app.core.Router
-   * @constructor
-   * @param {h5.pubsub.Broker} broker
-   */
   function Router(broker)
   {
     /**
@@ -50,10 +43,32 @@ define([
 
     /**
      * @private
+     * @type {Request|null}
+     */
+    this.currentRequest = null;
+
+    /**
+     * @private
      * @type {string|null}
      */
     this.previousUrl = null;
   }
+
+  /**
+   * @returns {Request|null}
+   */
+  Router.prototype.getCurrentRequest = function()
+  {
+    return this.currentRequest;
+  };
+
+  /**
+   * @param {string} url
+   */
+  Router.prototype.setCurrentRequest = function(url)
+  {
+    this.currentRequest = new Request(url);
+  };
 
   /**
    * @param {string|RegExp} pattern
@@ -188,6 +203,8 @@ define([
    */
   Router.prototype.execute = function(handlers, req)
   {
+    this.currentRequest = req;
+
     this.broker.publish('router.executing', {
       handlers: handlers,
       req: req
@@ -268,7 +285,6 @@ define([
   };
 
   /**
-   *
    * @param {RegExp} regExp
    * @param {Array.<string>} [params]
    * @returns {function(app.core.Request): boolean}

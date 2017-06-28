@@ -1,11 +1,9 @@
-// Copyright (c) 2014, Łukasz Walukiewicz <lukasz@walukiewicz.eu>. Some Rights Reserved.
-// Licensed under CC BY-NC-SA 4.0 <http://creativecommons.org/licenses/by-nc-sa/4.0/>.
-// Part of the walkner-hydro project <http://lukasz.walukiewicz.eu/p/walkner-hydro>
+// Part of <https://miracle.systems/p/walkner-furmon> licensed under <CC BY-NC-SA 4.0>
 
 'use strict';
 
-var lodash = require('lodash');
-var setUpControllerRoutes = require('./routes');
+const _ = require('lodash');
+const setUpControllerRoutes = require('./routes');
 
 exports.DEFAULT_CONFIG = {
   messengerClientId: 'messenger/client',
@@ -18,13 +16,7 @@ exports.DEFAULT_CONFIG = {
 
 exports.start = function startControllerModule(app, module)
 {
-  var messengerClient = app[module.config.messengerClientId];
-  var pubsub = app[module.config.pubsubId] || null;
-
-  if (!messengerClient)
-  {
-    throw new Error("controller module requires the messenger/client module!");
-  }
+  let messengerClient = app[module.config.messengerClientId];
 
   module.values = {};
   module.tags = [];
@@ -41,17 +33,26 @@ exports.start = function startControllerModule(app, module)
 
   setUpServerMessages();
 
-  if (messengerClient.isConnected())
+  if (messengerClient)
   {
-    process.nextTick(sync);
+    if (messengerClient.isConnected())
+    {
+      setImmediate(sync);
+    }
+  }
+  else
+  {
+    app.onModuleReady(
+      module.config.messengerClientId,
+      () => { messengerClient = app[module.config.messengerClientId]; }
+    );
   }
 
   app.broker
     .subscribe('messenger.client.connected', sync)
     .setFilter(function(message)
     {
-      return message.socketType === 'req'
-        && message.moduleName === module.config.messengerClientId;
+      return message.socketType === 'req' && message.moduleName === module.config.messengerClientId;
     });
 
   /**
@@ -61,21 +62,26 @@ exports.start = function startControllerModule(app, module)
   {
     messengerClient.request('modbus.sync', null, function(err, res)
     {
-      if (!lodash.isObject(res))
+      if (err)
+      {
+        module.error(`Failed to sync: ${err.message}`);
+      }
+
+      if (!_.isObject(res))
       {
         return;
       }
 
       if (res.tags)
       {
-        module.info("Synced tag definitions.");
+        module.info('Synced tag definitions.');
 
         handleTagsChangedMessage(res.tags);
       }
 
       if (res.values)
       {
-        module.info("Synced tag values.");
+        module.info('Synced tag values.');
 
         handleTagValuesChangedMessage(res.values);
       }
@@ -90,12 +96,6 @@ exports.start = function startControllerModule(app, module)
     app[module.config.sioId].sockets.on('connection', function(socket)
     {
       socket.on('controller.setTagValue', handleSetTagValueMessage.bind(null, socket));
-
-      socket.on('controller.readVfdParam', handleReadVfdParamMessage.bind(null, socket));
-
-      socket.on('controller.compareVfdParams', handleCompareVfdParamsMessage.bind(null, socket));
-
-      socket.on('controller.writeVfdParam', handleWriteVfdParamMessage.bind(null, socket));
     });
   }
 
@@ -105,250 +105,161 @@ exports.start = function startControllerModule(app, module)
   function setUpServerMessages()
   {
     app.broker.subscribe('modbus.tagsChanged', handleTagsChangedMessage);
-
     app.broker.subscribe('modbus.tagValuesChanged', handleTagValuesChangedMessage);
-
-    app.broker.subscribe('vfd.paramDiff', handleVfdParamDiffMessage);
-
-    app.broker.subscribe('vfd.comparingParams', handleComparingVfdParamsMessage);
   }
 
   /**
    * @private
-   * @param {object.<string, object>} tags
+   * @param {Object<string, Object>} tags
    */
   function handleTagsChangedMessage(tags)
   {
-    if (!lodash.isObject(tags))
+    if (!_.isObject(tags))
     {
       return;
     }
 
     module.tags = tags;
 
-    app.broker.publish('controller.tagsChanged', lodash.values(tags));
+    app.broker.publish('controller.tagsChanged', _.values(tags));
   }
 
   /**
    * @private
-   * @param {object.<string, number|null>} values
+   * @param {Object} values
    */
   function handleTagValuesChangedMessage(values)
   {
-    if (!lodash.isObject(values))
+    if (!_.isObject(values))
     {
       return;
     }
 
-    lodash.forEach(values, function(tagValue, tagName)
+    _.forEach(values, function(tagValue, tagName)
     {
       module.values[tagName] = tagValue;
+
+      const tag = module.tags[tagName];
+
+      if (tag)
+      {
+        tag.value = tagValue;
+      }
     });
+
+    values['@timestamp'] = Date.now();
 
     app.broker.publish('controller.tagValuesChanged', values);
   }
 
   /**
    * @private
-   * @param {object} paramDiffInfo
-   */
-  function handleVfdParamDiffMessage(paramDiffInfo)
-  {
-    if (lodash.isObject(paramDiffInfo) && pubsub !== null)
-    {
-      pubsub.publish('controller.vfdParamDiff', paramDiffInfo);
-    }
-  }
-
-  /**
-   * @private
-   * @param {boolean} state
-   */
-  function handleComparingVfdParamsMessage(state)
-  {
-    if (lodash.isBoolean(state) && pubsub !== null)
-    {
-      pubsub.publish('controller.comparingVfdParams', state);
-    }
-  }
-
-  /**
-   * @private
-   * @param {object} socket
+   * @param {Object} socket
    * @param {string} tagName
-   * @param {string|number} tagValue
+   * @param {(string|number)} tagValue
    * @param {function} reply
    */
   function handleSetTagValueMessage(socket, tagName, tagValue, reply)
   {
-    if (!lodash.isFunction(reply))
+    if (!_.isFunction(reply))
     {
       reply = function() {};
     }
 
-    var user = socket.handshake.user;
-
-    if (!lodash.isObject(user)
-      || !Array.isArray(user.privileges)
-      || user.privileges.indexOf('SETTINGS_MANAGE') === -1)
+    if (!canManageSettings(socket))
     {
-      return reply({
-        message: "Not allowed.",
+      reply({
+        message: 'Not allowed.',
         code: 'TAG_WRITE_NO_PERM'
       });
+
+      return;
     }
 
-    if (!lodash.isString(tagName))
+    const oldValue = module.values[tagName];
+
+    setTagValue(tagName, tagValue, function(err, tag)
     {
-      return reply({
-        message: "Tag name must be a string.",
+      reply(err);
+
+      if (err)
+      {
+        module.error(`Failed to set tag [${tagName}] to [${tagValue}]: ${err.message}`);
+
+        return;
+      }
+
+      module.info(`Tag [${tagName}] was set to [${tagValue}].`);
+
+      app.broker.publish(`controller.${tag.kind === 'setting' ? 'settingChanged' : 'tagValueSet'}`, {
+        severity: 'debug',
+        user: socket.handshake.user,
+        tag: tagName,
+        newValue: tagValue,
+        oldValue: oldValue
+      });
+    });
+  }
+
+  function setTagValue(tagName, tagValue, done)
+  {
+    if (!_.isString(tagName))
+    {
+      done({
+        message: 'Tag name must be a string.',
         code: 'TAG_WRITE_INVALID_NAME'
       });
-    }
-    else if (!lodash.isString(tagValue)
-      && !lodash.isNumber(tagValue)
-      && !lodash.isBoolean(tagValue))
-    {
-      return reply({
-        message: "Tag value must be a string, a number or a boolean.",
-        code: 'TAG_WRITE_INVALID_VALUE'
-      });
+
+      return;
     }
 
-    var tag = module.tags[tagName];
+    if (!_.isString(tagValue) && !_.isNumber(tagValue) && !_.isBoolean(tagValue))
+    {
+      done({
+        message: 'Tag value must be a string, a number or a boolean.',
+        code: 'TAG_WRITE_INVALID_VALUE'
+      });
+
+      return;
+    }
+
+    const tag = module.tags[tagName];
 
     if (!tag)
     {
-      return reply({
-        message: "Unknown tag.",
+      done({
+        message: 'Unknown tag.',
         code: 'TAG_WRITE_UNKNOWN'
       });
+
+      return;
     }
 
     if (!tag.writable)
     {
-      return reply({
-        message: "Tag's not writable.",
+      done({
+        message: 'Tag is not writable.',
         code: 'TAG_WRITE_NOT_WRITABLE'
       });
+
+      return;
     }
 
-    var oldValue = module.values[tagName];
-
-    messengerClient.request(
-      'modbus.setTagValue',
-      {name: tagName, value: tagValue},
-      function(err)
-      {
-        reply(err);
-
-        if (err)
-        {
-          module.error(
-            "Failed to set tag %s to %s: %s", tagName, tagValue, err.message
-          );
-        }
-        else
-        {
-          module.info("Tag %s was set to %s", tagName, tagValue);
-
-          var topic = 'controller.'
-            + (tag.kind === 'setting' ? 'settingChanged' : 'tagValueSet');
-
-          app.broker.publish(topic, {
-            severity: 'debug',
-            user: user,
-            tag: tagName,
-            newValue: tagValue,
-            oldValue: oldValue
-          });
-        }
-      }
-    );
+    messengerClient.request('modbus.setTagValue', {name: tagName, value: tagValue}, function(err)
+    {
+      done(err, tag);
+    });
   }
 
   /**
    * @private
-   * @param {object} socket
+   * @param {Object} socket
+   * @returns {boolean}
    */
   function canManageSettings(socket)
   {
-    var user = socket.handshake.user;
+    const user = socket.handshake.user;
 
-    return lodash.isObject(user)
-      && Array.isArray(user.privileges)
-      && user.privileges.indexOf('SETTINGS_MANAGE') !== -1;
-  }
-
-  /**
-   * @private
-   * @param {object} socket
-   * @param {object} req
-   * @param {function} reply
-   */
-  function handleReadVfdParamMessage(socket, req, reply)
-  {
-    if (!lodash.isFunction(reply))
-    {
-      reply = function() {};
-    }
-
-    if (!canManageSettings(socket))
-    {
-      return reply({
-        message: "Not allowed.",
-        code: 'VFD_NO_PERM'
-      });
-    }
-
-    messengerClient.request('vfd.readParam', req || {}, reply);
-  }
-
-  /**
-   * @private
-   * @param {object} socket
-   * @param {object} req
-   * @param {function} reply
-   */
-  function handleCompareVfdParamsMessage(socket, req, reply)
-  {
-    if (!lodash.isFunction(reply))
-    {
-      reply = function() {};
-    }
-
-    if (!canManageSettings(socket))
-    {
-      return reply({
-        message: "Not allowed.",
-        code: 'VFD_NO_PERM'
-      });
-    }
-
-    messengerClient.request('vfd.compareParams', req || {}, reply);
-  }
-
-  /**
-   * @private
-   * @param {object} socket
-   * @param {object} req
-   * @param {function} reply
-   */
-  function handleWriteVfdParamMessage(socket, req, reply)
-  {
-    if (!lodash.isFunction(reply))
-    {
-      reply = function() {};
-    }
-
-    if (!canManageSettings(socket))
-    {
-      return reply({
-        message: "Not allowed.",
-        code: 'VFD_NO_PERM'
-      });
-    }
-
-    messengerClient.request('vfd.writeParam', req || {}, reply);
+    return user && (user.super || _.includes(user.privileges, 'SETTINGS:MANAGE'));
   }
 };

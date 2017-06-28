@@ -2,14 +2,12 @@
 // Licensed under CC BY-NC-SA 4.0 <http://creativecommons.org/licenses/by-nc-sa/4.0/>.
 // Part of the walkner-hydro project <http://lukasz.walukiewicz.eu/p/walkner-hydro>
 
-/*global module:false*/
+'use strict';
 
 var requirejsConfig = require('./config/require');
 
 module.exports = function(grunt)
 {
-  'use strict';
-
   grunt.initConfig({
     pkg: grunt.file.readJSON('package.json'),
     clean: {

@@ -1,6 +1,4 @@
-// Copyright (c) 2014, Łukasz Walukiewicz <lukasz@walukiewicz.eu>. Some Rights Reserved.
-// Licensed under CC BY-NC-SA 4.0 <http://creativecommons.org/licenses/by-nc-sa/4.0/>.
-// Part of the walkner-hydro project <http://lukasz.walukiewicz.eu/p/walkner-hydro>
+// Part of <http://miracle.systems/p/walkner-wmes> licensed under <CC BY-NC-SA 4.0>
 
 define([
   'underscore'
@@ -9,11 +7,6 @@ define([
 ) {
   'use strict';
 
-  /**
-   * @name app.core.SocketSandbox
-   * @constructor
-   * @param {app.core.Socket|app.core.SocketSandbox} socket
-   */
   function SocketSandbox(socket)
   {
     /**
@@ -44,6 +37,12 @@ define([
   SocketSandbox.prototype.destroy = function()
   {
     var allListeners = this.listeners;
+
+    if (allListeners == null)
+    {
+      return;
+    }
+
     var destroyListeners = allListeners.destroy;
 
     if (_.isArray(destroyListeners))
@@ -73,27 +72,21 @@ define([
     this.socket = null;
   };
 
-  /**
-   * @returns {app.core.SocketSandbox}
-   */
   SocketSandbox.prototype.sandbox = function()
   {
     return new SocketSandbox(this);
   };
 
-  /**
-   * @returns {boolean}
-   */
+  SocketSandbox.prototype.getId = function()
+  {
+    return this.socket.getId();
+  };
+
   SocketSandbox.prototype.isConnected = function()
   {
     return this.socket.isConnected();
   };
 
-  /**
-   * @param {string} eventName
-   * @param {function} cb
-   * @returns {app.core.SocketSandbox}
-   */
   SocketSandbox.prototype.on = function(eventName, cb)
   {
     var listeners = this.listeners[eventName];
@@ -113,11 +106,6 @@ define([
     return this;
   };
 
-  /**
-   * @param {string} eventName
-   * @param {function} [cb]
-   * @returns {app.core.SocketSandbox}
-   */
   SocketSandbox.prototype.off = function(eventName, cb)
   {
     var listeners = this.listeners[eventName];
@@ -156,11 +144,6 @@ define([
     return this;
   };
 
-  /**
-   * @param {string} eventName
-   * @param {...*} argN
-   * @returns {app.core.SocketSandbox}
-   */
   SocketSandbox.prototype.emit = function()
   {
     var args = Array.prototype.slice.call(arguments);
@@ -173,11 +156,6 @@ define([
     return this;
   };
 
-  /**
-   * @param {*} data
-   * @param {function} [cb]
-   * @returns {app.core.SocketSandbox}
-   */
   SocketSandbox.prototype.send = function(data, cb)
   {
     this.socket.send(data, this.wrapCallback(cb));
@@ -185,11 +163,6 @@ define([
     return this;
   };
 
-  /**
-   * @private
-   * @param {*} cb
-   * @returns {*}
-   */
   SocketSandbox.prototype.wrapCallback = function(cb)
   {
     if (!_.isFunction(cb))

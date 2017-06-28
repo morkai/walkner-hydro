@@ -6,7 +6,7 @@
 
 module.exports = function setupUserModel(app, mongoose)
 {
-  var userSchema = mongoose.Schema({
+  var userSchema = new mongoose.Schema({
     login: {
       type: String,
       trim: true,
@@ -35,7 +35,7 @@ module.exports = function setupUserModel(app, mongoose)
   }, {
     toJSON: {
       virtuals: true,
-      transform: function(alarm, ret)
+      transform: function(user, ret)
       {
         ret._id = ret.id;
 
@@ -46,6 +46,13 @@ module.exports = function setupUserModel(app, mongoose)
       }
     }
   });
+
+  userSchema.statics.customizeLeanObject = function(leanModel)
+  {
+    delete leanModel.password;
+
+    return leanModel;
+  };
 
   mongoose.model('User', userSchema);
 };

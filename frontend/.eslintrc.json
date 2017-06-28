@@ -1,0 +1,19 @@
+{
+	"env": {
+		"node": false,
+    "es6": true,
+    "browser": true,
+    "amd": true
+	},
+	"rules": {
+    "strict": [2, "function"],
+    "indent": [0, 2, {
+      "SwitchCase": 1,
+      "FunctionExpression": {
+        "parameters": 0,
+        "body": 1
+      }
+    }],
+    "no-var": 0
+	}
+}

@@ -13,7 +13,7 @@ inputPumps.1.control,PG1: Załączenie,techPlc,output,1,Y24,1,1,bool,-,-,-,-,-,-
 inputPumps.1.status,PG1: Potwierdzenie załączenia,techPlc,input,1,X33,1,0,bool,-,-,-,-,-,-,-,all,-
 inputPumps.1.failure,PG1: Awaria,techPlc,input,1,X34,1,0,bool,-,-,-,flip,-,-,-,all,-
 inputPumps.1.current,PG1: Prąd falownika,vfd,register,1,16139,1,0,int32,0,3000,A,div(100),0,30,0,avg,-
-inputPumps.1.waterLevel,PG1: Poziom wody,techPlc,input register,1,D9901,1,0,int16,197,1024,m,"minMax;
+inputPumps.1.waterLevel,PG1: Poziom wody,techPlc,input register,1,D9903,1,0,int16,197,1024,m,"minMax;
 sub(inputPumps.1.depth.offset,inputPumps.1.depth.sensor);
 round(2)",0,25,0,avg,-
 inputPumps.1.dryRunWaterLevel,PG1: Poziom wody dla suchobieg,-,setting,-,-,0,1,float,0,100,m,-,-,-,0,all,-

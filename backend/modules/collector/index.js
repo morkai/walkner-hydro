@@ -1,14 +1,14 @@
-// Copyright (c) 2014, Łukasz Walukiewicz <lukasz@walukiewicz.eu>. Some Rights Reserved.
-// Licensed under CC BY-NC-SA 4.0 <http://creativecommons.org/licenses/by-nc-sa/4.0/>.
-// Part of the walkner-hydro project <http://lukasz.walukiewicz.eu/p/walkner-hydro>
+// Part of <https://miracle.systems/p/walkner-furmon> licensed under <CC BY-NC-SA 4.0>
 
 'use strict';
 
-var lodash = require('lodash');
-var ObjectID = require('mongodb').ObjectID;
-var averageFunctions = require('./averageFunctions');
-var setUpAggregator = require('./aggregator');
-var setUpCleaner = require('./cleaner');
+const _ = require('lodash');
+const moment = require('moment');
+const ObjectID = require('mongodb').ObjectID;
+const averageFunctions = require('./averageFunctions');
+const setUpAggregator = require('./aggregator');
+const setUpCleaner = require('./cleaner');
+const round = require('./round');
 
 exports.DEFAULT_CONFIG = {
   modbusId: 'modbus',
@@ -23,10 +23,10 @@ exports.start = function(app, module)
 {
   module.config.collection = module.config.collection.bind(null, app);
 
-  var allDataSaveTimer = null;
-  var avgDataSaveTimer = null;
-  var allData = [];
-  var avgData = {};
+  let allDataSaveTimer = null;
+  let avgDataSaveTimer = null;
+  let allData = [];
+  let avgData = {}; // eslint-disable-line prefer-const
 
   app.onModuleReady(module.config.modbusId, function()
   {
@@ -42,19 +42,17 @@ exports.start = function(app, module)
     {
       if (err)
       {
-        module.error("Failed to ensure index for tags.all: %s", err.message);
+        module.error(`Failed to ensure index for tags.all: ${err.message}`);
       }
     }
   );
 
   /**
    * @private
-   * @param {object} message
+   * @param {Object} message
    */
   function handleTagValueChange(message)
   {
-    /*jshint -W015*/
-
     var tag = message.tag;
 
     switch (tag.archive)
@@ -72,7 +70,7 @@ exports.start = function(app, module)
   /**
    * @private
    * @param {Tag} tag
-   * @param {object} data
+   * @param {Object} data
    */
   function handleAllTag(tag, data)
   {
@@ -99,7 +97,7 @@ exports.start = function(app, module)
 
   /**
    * @private
-   * @param {Array.<object>} allDataToSave
+   * @param {Array<Object>} allDataToSave
    */
   function saveAllData(allDataToSave)
   {
@@ -128,14 +126,14 @@ exports.start = function(app, module)
   /**
    * @private
    * @param {Tag} tag
-   * @param {object} data
+   * @param {Object} data
    */
   function handleAvgTag(tag, data)
   {
-    if (!lodash.isObject(avgData[tag.name]))
+    if (!_.isObject(avgData[tag.name]))
     {
       avgData[tag.name] = {
-        lastValue: 0,
+        lastMinuteData: createEmptyLastMinuteData(),
         values: []
       };
     }
@@ -145,12 +143,33 @@ exports.start = function(app, module)
 
   /**
    * @private
+   * @returns {AveragedDoc}
+   */
+  function createEmptyLastMinuteData()
+  {
+    return {
+      min: null,
+      max: null,
+      avg: null,
+      dMin: null,
+      dMax: null,
+      dAvg: null
+    };
+  }
+
+  /**
+   * @private
    */
   function scheduleAvgDataSave()
   {
     if (avgDataSaveTimer === null)
     {
-      avgDataSaveTimer = setTimeout(saveAvgData, 60000);
+      const now = Date.now();
+
+      avgDataSaveTimer = setTimeout(
+        saveAvgData,
+        moment(now).startOf('minute').add(1, 'minute').valueOf() - now + 333
+      );
     }
   }
 
@@ -161,42 +180,43 @@ exports.start = function(app, module)
   {
     avgDataSaveTimer = null;
 
-    var avgTags = Object.keys(avgData);
-    var saveData = [];
+    const tagValues = app[module.config.modbusId].values;
+    const saveData = [];
 
-    avgTags.forEach(function(tagName)
+    _.forEach(avgData, function(tagAvgData, tagName)
     {
-      var tagAvgData = avgData[tagName];
-      var currentValue = app[module.config.modbusId].values[tagName];
+      const currentValue = tagValues[tagName];
 
       tagAvgData.values.push(new Date(), currentValue);
 
-      var minuteData = averageFunctions.calculateMinuteData(
+      const minuteData = averageFunctions.calculateMinuteData(
         tagAvgData.values,
-        tagAvgData.lastValue,
+        tagAvgData.lastMinuteData,
         averageFunctions.arithmeticMean
       );
 
-      tagAvgData.lastValue = currentValue;
-
       if (minuteData.length === 0)
       {
+        tagAvgData.lastMinuteData = createEmptyLastMinuteData();
+
         return;
       }
 
+      tagAvgData.lastMinuteData = _.last(minuteData);
+
       saveData.push({
+        tagName: tagName,
         collection: module.config.collection('tags.' + tagName + '.avg'),
         minuteData: minuteData
       });
     });
 
-    saveData.forEach(function(tagSaveData)
+    _.forEach(saveData, function(tagSaveData)
     {
       setTimeout(
-        saveTagAvgData.bind(
-          null, tagSaveData.collection, tagSaveData.minuteData
-        ),
-        lodash.random(10, 10 + 10 * saveData.length)
+        saveTagAvgData,
+        _.random(10, 10 + 10 * saveData.length),
+        tagSaveData.tagName, tagSaveData.collection, tagSaveData.minuteData
       );
     });
 
@@ -205,18 +225,24 @@ exports.start = function(app, module)
 
   /**
    * @private
+   * @param {string} tagName
    * @param {Collection} collection
-   * @param {Array.<object>} minuteData
+   * @param {Array<Object>} minuteData
    */
-  function saveTagAvgData(collection, minuteData)
+  function saveTagAvgData(tagName, collection, minuteData)
   {
-    var documents = minuteData.map(function(data)
+    const documents = _.map(minuteData, function(data)
     {
       return {
         _id: new ObjectID(data.time / 1000),
+        c: data.count,
+        s: data.sum,
         n: round(data.min),
         x: round(data.max),
-        v: round(data.avg)
+        v: round(data.avg),
+        dn: round(data.dMin),
+        dx: round(data.dMax),
+        dv: round(data.dAvg)
       };
     });
 
@@ -227,19 +253,10 @@ exports.start = function(app, module)
         app.broker.publish('collector.saveFailed', {
           severity: 'debug',
           message: err.message,
-          code: err.code
+          code: err.code,
+          tagName: tagName
         });
       }
     });
-  }
-
-  /**
-   * @private
-   * @param number
-   * @returns {number}
-   */
-  function round(number)
-  {
-    return Math.round(number * 10000) / 10000;
   }
 };

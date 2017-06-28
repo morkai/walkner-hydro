@@ -1,29 +1,23 @@
-// Copyright (c) 2014, Łukasz Walukiewicz <lukasz@walukiewicz.eu>. Some Rights Reserved.
-// Licensed under CC BY-NC-SA 4.0 <http://creativecommons.org/licenses/by-nc-sa/4.0/>.
-// Part of the walkner-hydro project <http://lukasz.walukiewicz.eu/p/walkner-hydro>
+// Part of <http://miracle.systems/p/walkner-wmes> licensed under <CC BY-NC-SA 4.0>
 
 define([
-  'jquery',
   'underscore',
   'app/i18n',
   'app/user',
+  'app/time',
   '../View',
-  'app/core/templates/navbar',
-  'i18n!app/nls/core'
+  'app/core/templates/navbar'
 ], function(
-  $,
   _,
-  i18n,
+  t,
   user,
+  time,
   View,
   navbarTemplate
 ) {
   'use strict';
 
-  var STATUS_SELECTOR = '.navbar-account-status';
-
   /**
-   * @name app.core.views.NavbarView
    * @constructor
    * @extends {app.core.View}
    * @param {object} [options]
@@ -39,40 +33,87 @@ define([
       },
       'socket.connected': function onSocketConnected()
       {
-        this.setConnectionStatus(true);
+        this.setConnectionStatus('online');
       },
-      'socket.reconnected': function onSocketReconnected()
+      'socket.connecting': function onSocketConnecting()
       {
-        this.setConnectionStatus(true);
+        this.setConnectionStatus('connecting');
+      },
+      'socket.connectFailed': function onSocketConnectFailed()
+      {
+        this.setConnectionStatus('offline');
       },
       'socket.disconnected': function onSocketDisconnected()
       {
-        this.setConnectionStatus(false);
+        this.setConnectionStatus('offline');
       }
     },
 
     events: {
+      'click .disabled a': function onDisabledEntryClick(e)
+      {
+        e.preventDefault();
+      },
       'click .navbar-account-locale': function onLocaleClick(e)
       {
         e.preventDefault();
 
         this.changeLocale(e.currentTarget.getAttribute('data-locale'));
-      }/*,
-      'click .dropdown-submenu > a': function(e)
+      },
+      'click .navbar-account-logIn': function onLogInClick(e)
       {
-        this.$(e.target).parent().addClass('open');
+        e.preventDefault();
+
+        this.trigger('logIn');
+      },
+      'click .navbar-account-logOut': function onLogOutClick(e)
+      {
+        e.preventDefault();
+
+        this.trigger('logOut');
+      },
+      'click .navbar-feedback': function onFeedbackClick(e)
+      {
+        e.preventDefault();
+
+        e.target.disabled = true;
+
+        this.trigger('feedback', function()
+        {
+          e.target.disabled = false;
+        });
+      },
+      'mouseup .btn[data-href]': function(e)
+      {
+        if (e.button === 2)
+        {
+          return;
+        }
+
+        var href = e.currentTarget.dataset.href;
+
+        if (e.ctrlKey || e.button === 1)
+        {
+          window.open(href);
+        }
+        else
+        {
+          window.location.href = href;
+        }
+
+        document.body.click();
 
         return false;
-      },
-      'mouseleave .dropdown-submenu.open': function(e)
-      {
-        this.$(e.target).closest('.dropdown-submenu').removeClass('open');
-      }*/
+      }
     }
 
   });
 
   NavbarView.DEFAULT_OPTIONS = {
+    /**
+     * @type {string}
+     */
+    currentPath: '/',
     /**
      * @type {string}
      */
@@ -84,7 +125,15 @@ define([
     /**
      * @type {string}
      */
-    onlineStatusClassName: 'navbar-status-online'
+    onlineStatusClassName: 'navbar-status-online',
+    /**
+     * @type {string}
+     */
+    connectingStatusClassName: 'navbar-status-connecting',
+    /**
+     * @type {object.<string, boolean>}
+     */
+    loadedModules: {}
   };
 
   NavbarView.prototype.initialize = function()
@@ -108,6 +157,14 @@ define([
      * @type {jQuery|null}
      */
     this.$activeNavItem = null;
+
+    /**
+     * @private
+     * @type {string}
+     */
+    this.lastSearchPhrase = '';
+
+    this.activateNavItem(this.getModuleNameFromPath(this.options.currentPath));
   };
 
   NavbarView.prototype.beforeRender = function()
@@ -119,13 +176,17 @@ define([
   NavbarView.prototype.afterRender = function()
   {
     this.selectActiveNavItem();
-    this.setConnectionStatus(this.socket.isConnected());
+    this.setConnectionStatus(this.socket.isConnected() ? 'online' : 'offline');
     this.hideNotAllowedEntries();
+    this.hideEmptyEntries();
   };
 
   NavbarView.prototype.serialize = function()
   {
-    return {user: user};
+    return {
+      idPrefix: this.idPrefix,
+      user: user
+    };
   };
 
   /**
@@ -148,25 +209,64 @@ define([
    */
   NavbarView.prototype.changeLocale = function(newLocale)
   {
-    i18n.reload(newLocale);
+    t.reload(newLocale);
   };
 
   NavbarView.prototype.setConnectionStatus = function(status)
   {
-    var $status = this.$(STATUS_SELECTOR);
+    if (!this.isRendered())
+    {
+      return;
+    }
 
-    if (status)
+    var $status = this.$('.navbar-account-status');
+
+    $status
+      .removeClass(this.options.offlineStatusClassName)
+      .removeClass(this.options.onlineStatusClassName)
+      .removeClass(this.options.connectingStatusClassName);
+
+    $status.addClass(this.options[status + 'StatusClassName']);
+
+    this.toggleConnectionStatusEntries(status === 'online');
+  };
+
+  /**
+   * @private
+   * @param {HTMLLIElement} liEl
+   * @param {boolean} useAnchor
+   * @param {boolean} [clientModule]
+   * @returns {string|null}
+   */
+  NavbarView.prototype.getModuleNameFromLi = function(liEl, useAnchor, clientModule)
+  {
+    var module = liEl.dataset[clientModule ? 'clientModule' : 'module'];
+
+    if (module === undefined && !useAnchor)
     {
-      $status
-        .removeClass(this.options.offlineStatusClassName)
-        .addClass(this.options.onlineStatusClassName);
+      return null;
     }
-    else
+
+    if (module)
     {
-      $status
-        .removeClass(this.options.onlineStatusClassName)
-        .addClass(this.options.offlineStatusClassName);
+      return module;
     }
+
+    var aEl = liEl.querySelector('a');
+
+    if (!aEl)
+    {
+      return null;
+    }
+
+    var href = aEl.getAttribute('href');
+
+    if (!href)
+    {
+      return null;
+    }
+
+    return this.getModuleNameFromPath(href);
   };
 
   /**
@@ -176,7 +276,7 @@ define([
    */
   NavbarView.prototype.getModuleNameFromPath = function(path)
   {
-    if (path[0] === '/')
+    if (path[0] === '/' || path[0] === '#')
     {
       path = path.substr(1);
     }
@@ -186,7 +286,7 @@ define([
       return '';
     }
 
-    var matches = path.match(/^([a-z0-9][a-z0-9\-]*[a-z0-9]*)/);
+    var matches = path.match(/^([a-z0-9][a-z0-9\-]*[a-z0-9]*)/i);
 
     return matches ? matches[1] : null;
   };
@@ -253,14 +353,23 @@ define([
 
     var href = $navItem.find('a').attr('href');
 
-    if (!href || href[0] !== '#')
+    if (href && href[0] === '#')
     {
-      return;
+      var moduleName = this.getModuleNameFromLi($navItem[0], true, true);
+
+      this.navItems[moduleName] = $navItem;
     }
+    else if ($navItem.hasClass('dropdown'))
+    {
+      var view = this;
 
-    var moduleName = this.getModuleNameFromPath(href.substr(1));
+      $navItem.find('.dropdown-menu > li').each(function()
+      {
+        var moduleName = view.getModuleNameFromLi(this, true, true);
 
-    this.navItems[moduleName] = $navItem;
+        view.navItems[moduleName] = $navItem;
+      });
+    }
   };
 
   /**
@@ -269,15 +378,183 @@ define([
   NavbarView.prototype.hideNotAllowedEntries = function()
   {
     var navbarView = this;
+    var userLoggedIn = user.isLoggedIn();
+    var dropdownHeaders = [];
+    var dividers = [];
 
-    this.$('[data-privilege]').each(function()
+    this.$('.navbar-nav > li').each(function()
     {
       var $li = navbarView.$(this);
+
+      if (!checkSpecial($li))
+      {
+        $li.toggle(isEntryVisible($li) && hideChildEntries($li));
+      }
+    });
+
+    dropdownHeaders.forEach(function($li)
+    {
+      $li.toggle(navbarView.hasVisibleSiblings($li, 'next'));
+    });
+
+    dividers.forEach(function($li)
+    {
+      $li.toggle(navbarView.hasVisibleSiblings($li, 'prev') && navbarView.hasVisibleSiblings($li, 'next'));
+    });
+
+    this.$('.btn[data-privilege]').each(function()
+    {
+      this.style.display = user.isAllowedTo.apply(user, this.dataset.privilege.split(' ')) ? '' : 'none';
+    });
+
+    function hideChildEntries($parentLi)
+    {
+      if (!$parentLi.hasClass('dropdown'))
+      {
+        return true;
+      }
+
+      var anyVisible = true;
+
+      $parentLi.find('> .dropdown-menu > li').each(function()
+      {
+        var $li = $parentLi.find(this);
+
+        if (!checkSpecial($li))
+        {
+          var entryVisible = isEntryVisible($li) && hideChildEntries($li);
+
+          $li.toggle(entryVisible);
+
+          anyVisible = anyVisible || entryVisible;
+        }
+      });
+
+      return anyVisible;
+    }
+
+    function checkSpecial($li)
+    {
+      if ($li.hasClass('divider'))
+      {
+        dividers.push($li);
+
+        return true;
+      }
+
+      if ($li.hasClass('dropdown-header'))
+      {
+        dropdownHeaders.push($li);
+
+        return true;
+      }
+
+      return false;
+    }
+
+    function isEntryVisible($li)
+    {
+      var loggedIn = $li.attr('data-loggedin');
+
+      if (typeof loggedIn === 'string')
+      {
+        loggedIn = loggedIn !== '0';
+
+        if (loggedIn !== userLoggedIn)
+        {
+          return false;
+        }
+      }
+
+      var moduleName = navbarView.getModuleNameFromLi($li[0], false);
+
+      if (moduleName !== null
+        && $li.attr('data-no-module') === undefined
+        && !navbarView.options.loadedModules[moduleName])
+      {
+        return false;
+      }
+
       var privilege = $li.attr('data-privilege');
 
-      if (!user.isAllowedTo(privilege))
+      return privilege === undefined || user.isAllowedTo.apply(user, privilege.split(' '));
+    }
+  };
+
+  /**
+   * @private
+   * @param {jQuery} $li
+   * @param {string} dir
+   * @returns {boolean}
+   */
+  NavbarView.prototype.hasVisibleSiblings = function($li, dir)
+  {
+    var $siblings = $li[dir + 'All']().filter(function() { return this.style.display !== 'none'; });
+
+    if (!$siblings.length)
+    {
+      return false;
+    }
+
+    var $sibling = $siblings.first();
+
+    return !$sibling.hasClass('divider');
+  };
+
+  /**
+   * @private
+   */
+  NavbarView.prototype.hideEmptyEntries = function()
+  {
+    var navbarView = this;
+
+    this.$('.dropdown > .dropdown-menu').each(function()
+    {
+      var $dropdownMenu = navbarView.$(this);
+      var visible = false;
+
+      $dropdownMenu.children().each(function()
       {
-        $li.remove();
+        visible = visible || this.style.display !== 'none';
+      });
+
+      if (!visible)
+      {
+        $dropdownMenu.parent().hide();
+      }
+    });
+  };
+
+  /**
+   * @private
+   * @param {boolean} online
+   */
+  NavbarView.prototype.toggleConnectionStatusEntries = function(online)
+  {
+    var navbarView = this;
+
+    this.$('li[data-online]').each(function()
+    {
+      var $li = navbarView.$(this);
+
+      if (typeof $li.attr('data-disabled') !== 'undefined')
+      {
+        return $li.addClass('disabled');
+      }
+
+      switch ($li.attr('data-online'))
+      {
+        case 'show':
+          $li[online ? 'show' : 'hide']();
+          break;
+
+        case 'hide':
+          $li[online ? 'hide' : 'show']();
+          break;
+
+        default:
+          $li[online ? 'removeClass' : 'addClass']('disabled');
+          break;
       }
     });
   };

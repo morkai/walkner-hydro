@@ -4,7 +4,7 @@
 
 'use strict';
 
-var lodash = require('lodash');
+var _ = require('lodash');
 
 module.exports = function setupAlarmModel(app, mongoose)
 {
@@ -37,7 +37,7 @@ module.exports = function setupAlarmModel(app, mongoose)
     ERROR: 'error'
   };
 
-  var actionSchema = mongoose.Schema({
+  var actionSchema = new mongoose.Schema({
     type: {
       type: String,
       enum: ['sms', 'email', 'severity'],
@@ -54,12 +54,12 @@ module.exports = function setupAlarmModel(app, mongoose)
     },
     severity: {
       type: String,
-      enum: lodash.values(AlarmSeverity),
+      enum: _.values(AlarmSeverity),
       default: AlarmSeverity.WARNING
     }
   });
 
-  var alarmSchema = mongoose.Schema({
+  var alarmSchema = new mongoose.Schema({
     name: {
       type: String,
       trim: true,
@@ -87,7 +87,7 @@ module.exports = function setupAlarmModel(app, mongoose)
     startActions: [actionSchema],
     stopConditionMode: {
       type: String,
-      enum: lodash.values(AlarmStopConditionMode)
+      enum: _.values(AlarmStopConditionMode)
     },
     stopCondition: {
       type: String
@@ -129,22 +129,22 @@ module.exports = function setupAlarmModel(app, mongoose)
   alarmSchema.statics.StopConditionMode = AlarmStopConditionMode;
 
   /**
-   * @param {object.<string, *>} leanAlarm
-   * @param {object.<string, boolean>} fields
-   * @returns {object}
+   * @param {Object.<string, *>} leanAlarm
+   * @param {Object.<string, boolean>} fields
+   * @returns {Object}
    */
   alarmSchema.statics.customizeLeanObject = function(leanAlarm, fields)
   {
-    if (fields.actionIndex || fields.severity)
+    if (!fields || fields.actionIndex || fields.severity)
     {
       var actionIndex = getCurrentActionIndex(leanAlarm);
 
-      if (fields.actionIndex)
+      if (!fields || fields.actionIndex)
       {
         leanAlarm.actionIndex = actionIndex;
       }
 
-      if (fields.severity)
+      if (!fields || fields.severity)
       {
         leanAlarm.severity = getCurrentSeverity(leanAlarm, actionIndex);
       }
@@ -194,8 +194,7 @@ module.exports = function setupAlarmModel(app, mongoose)
    * @param {number} startConditionMetAt
    * @returns {number}
    */
-  alarmSchema.methods.getStartActionExecutionTime =
-    function(actionIndex, startConditionMetAt)
+  alarmSchema.methods.getStartActionExecutionTime = function(actionIndex, startConditionMetAt)
   {
     if (actionIndex < 0 || actionIndex >= this.startActions.length)
     {
@@ -264,7 +263,7 @@ module.exports = function setupAlarmModel(app, mongoose)
 
   /**
    * @private
-   * @param {object} alarm
+   * @param {Object} alarm
    * @returns {number}
    */
   function getCurrentActionIndex(alarm)
@@ -300,7 +299,7 @@ module.exports = function setupAlarmModel(app, mongoose)
 
   /**
    * @private
-   * @param {object} alarm
+   * @param {Object} alarm
    * @param {number} actionIndex
    * @returns {string|null}
    */

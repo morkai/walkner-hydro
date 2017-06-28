@@ -1,10 +1,8 @@
-// Copyright (c) 2014, Łukasz Walukiewicz <lukasz@walukiewicz.eu>. Some Rights Reserved.
-// Licensed under CC BY-NC-SA 4.0 <http://creativecommons.org/licenses/by-nc-sa/4.0/>.
-// Part of the walkner-hydro project <http://lukasz.walukiewicz.eu/p/walkner-hydro>
+// Part of <http://miracle.systems/p/walkner-wmes> licensed under <CC BY-NC-SA 4.0>
 
 'use strict';
 
-var lodash = require('lodash');
+var _ = require('lodash');
 var setUpEventsRoutes = require('./routes');
 
 exports.DEFAULT_CONFIG = {
@@ -14,6 +12,7 @@ exports.DEFAULT_CONFIG = {
   collection: function(app) { return app.mongodb.db.collection('events'); },
   insertDelay: 1000,
   topics: ['events.**'],
+  blacklist: [],
   print: []
 };
 
@@ -31,7 +30,32 @@ exports.start = function startEventsModule(app, module)
    */
   var pendingEvents = null;
 
+  /**
+   * @private
+   * @type {number}
+   */
+  var lastFetchAllTypesTime = 0;
+
+  /**
+   * @private
+   * @type {object|null}
+   */
+  var nextFetchAllTypesTimer = null;
+
+  /**
+   * @private
+   * @type {number}
+   */
+  var lastInsertDelayTime = 0;
+
   module.types = {};
+
+  module.getPendingEvents = function()
+  {
+    return pendingEvents || [];
+  };
+
+  module.insertEvents = insertEvents;
 
   app.onModuleReady(
     [
@@ -42,11 +66,29 @@ exports.start = function startEventsModule(app, module)
     setUpEventsRoutes.bind(null, app, module)
   );
 
-  fetchAllTypes();
   subscribe();
+
+  app.broker.subscribe('app.started').setLimit(1).on('message', function()
+  {
+    fetchAllTypes();
+    setInterval(checkBlockedInsert, 5000);
+  });
 
   function fetchAllTypes()
   {
+    var now = Date.now();
+    var diff = now - lastFetchAllTypesTime;
+
+    if (diff < 60000)
+    {
+      if (nextFetchAllTypesTimer === null)
+      {
+        nextFetchAllTypesTimer = setTimeout(fetchAllTypes, diff);
+      }
+
+      return;
+    }
+
     eventsCollection.distinct('type', null, null, function(err, types)
     {
       if (err)
@@ -55,11 +97,14 @@ exports.start = function startEventsModule(app, module)
       }
       else
       {
-        types.forEach(function(type)
+        _.forEach(types, function(type)
         {
           module.types[type] = 1;
         });
       }
+
+      lastFetchAllTypesTime = Date.now();
+      nextFetchAllTypesTimer = null;
     });
   }
 
@@ -69,35 +114,27 @@ exports.start = function startEventsModule(app, module)
     {
       var queueInfoEvent = queueEvent.bind(null, 'info');
 
-      module.config.topics.forEach(function(topic)
+      _.forEach(module.config.topics, function(topic)
       {
         app.broker.subscribe(topic, queueInfoEvent);
       });
     }
     else
     {
-      lodash.each(module.config.topics, function(topics, severity)
+      _.forEach(module.config.topics, function(topics, severity)
       {
         var queueCustomSeverityEvent = queueEvent.bind(null, severity);
 
-        topics.forEach(function(topic)
+        _.forEach(topics, function(topic)
         {
           app.broker.subscribe(topic, queueCustomSeverityEvent);
         });
       });
     }
 
-    module.config.print.forEach(function(topic)
+    _.forEach(module.config.print, function(topic)
     {
       app.broker.subscribe(topic, printMessage);
-    });
-
-    app.broker.subscribe('events.saved', function(events)
-    {
-      if (Array.isArray(events))
-      {
-        events.forEach(function(event) { module.types[event.type] = 1; });
-      }
     });
   }
 
@@ -110,36 +147,49 @@ exports.start = function startEventsModule(app, module)
   {
     if (topic === 'events.saved')
     {
+      return fetchAllTypes();
+    }
+
+    if (module.config.blacklist.indexOf(topic) !== -1)
+    {
       return;
     }
 
-    if (!lodash.isObject(data))
+    var user = null;
+    var userData = data.user;
+
+    if (_.isObject(userData))
+    {
+      user = {
+        _id: String(userData._id || userData.id),
+        name: userData.lastName && userData.firstName
+          ? (userData.lastName + ' ' + userData.firstName)
+          : (userData.login || userData.label),
+        login: userData.login || userData.label,
+        ipAddress: userData.ipAddress || userData.ip
+      };
+    }
+
+    if (!_.isObject(data))
     {
       data = {};
     }
     else
     {
-      data = lodash.cloneDeep(data);
+      data = JSON.parse(JSON.stringify(data));
     }
 
     var type = topic.replace(/^events\./, '');
-    var user = null;
 
-    if (lodash.isString(data.severity))
+    if (_.isString(data.severity))
     {
       severity = data.severity;
 
       delete data.severity;
     }
 
-    if (lodash.isObject(data.user))
+    if (user !== null)
     {
-      user = {
-        _id: data.user._id,
-        login: data.user.login,
-        ipAddress: data.user.ipAddress
-      };
-
       delete data.user;
     }
 
@@ -156,13 +206,22 @@ exports.start = function startEventsModule(app, module)
       pendingEvents = [];
 
       setTimeout(insertEvents, module.config.insertDelay);
+
+      lastInsertDelayTime = event.time;
     }
 
     pendingEvents.push(event);
+
+    module.types[type] = 1;
   }
 
   function insertEvents()
   {
+    if (pendingEvents === null)
+    {
+      return;
+    }
+
     var eventsToSave = pendingEvents;
 
     pendingEvents = null;
@@ -180,5 +239,20 @@ exports.start = function startEventsModule(app, module)
         app.broker.publish('events.saved', eventsToSave);
       }
     });
+  }
+
+  function checkBlockedInsert()
+  {
+    if (pendingEvents === null)
+    {
+      return;
+    }
+
+    if (Date.now() - lastInsertDelayTime > 3333)
+    {
+      module.warn("Blocked! Forcing insert of %d pending events!", pendingEvents.length);
+
+      insertEvents();
+    }
   }
 };

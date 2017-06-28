@@ -41,7 +41,7 @@ exports.start = function startHydroHmiModule(app, module)
 
   /**
    * @private
-   * @param {object} def
+   * @param {Object} def
    * @param {number} register
    */
   function mirrorTagValue(def, register)
@@ -52,12 +52,11 @@ exports.start = function startHydroHmiModule(app, module)
     }
 
     var mul = def.mul || 1;
-    var hydroHmi =
-      app[module.config.modbusId].masters[module.config.hydroHmiMaster];
+    var hydroHmi = app[module.config.modbusId].masters[module.config.hydroHmiMaster];
 
     app.broker.subscribe('tagValueChanged.' + def.tag, function(message)
     {
-      if (!hydroHmi.isConnected())
+      if (!hydroHmi.isOpen())
       {
         return;
       }
@@ -80,7 +79,7 @@ exports.start = function startHydroHmiModule(app, module)
 
     app.broker.subscribe(topic, function(message)
     {
-      if (!hydroHmi.isConnected())
+      if (!hydroHmi.isOpen())
       {
         return;
       }

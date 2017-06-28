@@ -4,12 +4,12 @@
 
 'use strict';
 
-var lodash = require('lodash');
+const _ = require('lodash');
 
 module.exports = function setUpTagSafeGuards(app, modbus)
 {
-  var lastValveOpenedAt = 0;
-  var openingValves = [];
+  const openingValves = [];
+  let lastValveOpenedAt = 0;
 
   app.onModuleReady(modbus.config.programId, function()
   {
@@ -24,18 +24,15 @@ module.exports = function setUpTagSafeGuards(app, modbus)
    */
   function safeGuardInputPump2()
   {
-    app.broker.subscribe(
-      'beforeWriteTagValue.inputPumps.2.control',
-      function(state)
+    app.broker.subscribe('beforeWriteTagValue.inputPumps.2.control', function(state)
+    {
+      if (!state.allowWrite || !state.newValue)
       {
-        if (!state.allowWrite || !state.newValue)
-        {
-          return;
-        }
-
-        state.allowWrite = !modbus.values['washingPump.status'];
+        return;
       }
-    );
+
+      state.allowWrite = !modbus.values['washingPump.status'];
+    });
   }
 
   /**
@@ -43,18 +40,15 @@ module.exports = function setUpTagSafeGuards(app, modbus)
    */
   function safeGuardWashingPump()
   {
-    app.broker.subscribe(
-      'beforeWriteTagValue.washingPump.control',
-      function(state)
+    app.broker.subscribe('beforeWriteTagValue.washingPump.control', function(state)
+    {
+      if (!state.allowWrite || !state.newValue)
       {
-        if (!state.allowWrite || !state.newValue)
-        {
-          return;
-        }
-
-        state.allowWrite = !modbus.values['inputPumps.2.status'];
+        return;
       }
-    );
+
+      state.allowWrite = !modbus.values['inputPumps.2.status'];
+    });
   }
 
   /**
@@ -62,9 +56,9 @@ module.exports = function setUpTagSafeGuards(app, modbus)
    */
   function safeGuardOutputPumps()
   {
-    var outputPumpCount = app[modbus.config.programId].config.outputPumpCount;
+    const outputPumpCount = app[modbus.config.programId].config.outputPumpCount;
 
-    for (var i = 1; i <= outputPumpCount; ++i)
+    for (let i = 1; i <= outputPumpCount; ++i)
     {
       safeGuardOutputPumpControlTag('outputPumps.' + i);
     }
@@ -76,8 +70,8 @@ module.exports = function setUpTagSafeGuards(app, modbus)
    */
   function safeGuardOutputPumpControlTag(tagPrefix)
   {
-    var vfdControlTag = tagPrefix + '.control.vfd';
-    var gridControlTag = tagPrefix + '.control.grid';
+    const vfdControlTag = tagPrefix + '.control.vfd';
+    const gridControlTag = tagPrefix + '.control.grid';
 
     app.broker.subscribe(
       'beforeWriteTagValue.' + vfdControlTag,
@@ -94,7 +88,7 @@ module.exports = function setUpTagSafeGuards(app, modbus)
    * @private
    * @param {string} tagPrefix
    * @param {boolean} vfd
-   * @param {object} state
+   * @param {Object} state
    */
   function checkOutputPumpControl(tagPrefix, vfd, state)
   {
@@ -103,17 +97,17 @@ module.exports = function setUpTagSafeGuards(app, modbus)
       return;
     }
 
-    var outputPumpCount = app[modbus.config.programId].config.outputPumpCount;
-    var vfdStatusTag = tagPrefix + '.status.vfd';
-    var gridStatusTag = tagPrefix + '.status.grid';
+    const outputPumpCount = app[modbus.config.programId].config.outputPumpCount;
+    const vfdStatusTag = tagPrefix + '.status.vfd';
+    const gridStatusTag = tagPrefix + '.status.grid';
 
     if (vfd)
     {
       state.allowWrite = !modbus.values[gridStatusTag];
 
-      for (var i = 1; i <= outputPumpCount; ++i)
+      for (let i = 1; i <= outputPumpCount; ++i)
       {
-        var vfdStatusTagN = 'outputPumps.' + i + '.status.vfd';
+        const vfdStatusTagN = 'outputPumps.' + i + '.status.vfd';
 
         if (state.allowWrite && vfdStatusTagN !== vfdStatusTag)
         {
@@ -133,20 +127,20 @@ module.exports = function setUpTagSafeGuards(app, modbus)
       .subscribe('beforeWriteTagValue.filterSets.*.valves.*.control')
       .on('message', function beforeFilterSetValveControlWrite(state, topic)
       {
-        var valveOpenDelay = modbus.values['filterSets.valveOpenDelay'];
+        const valveOpenDelay = modbus.values['filterSets.valveOpenDelay'];
 
         if (!state.allowWrite
           || !state.newValue
-          || !lodash.isNumber(valveOpenDelay)
+          || !_.isNumber(valveOpenDelay)
           || valveOpenDelay <= 0)
         {
           return;
         }
 
-        var matches = topic.match(/\.([0-9]+)\.valves\.([0-9]+)\./);
-        var valve = matches[1] + matches[2];
-        var valveIndex = openingValves.indexOf(valve);
-        var diff = Date.now() - lastValveOpenedAt;
+        const matches = topic.match(/\.([0-9]+)\.valves\.([0-9]+)\./);
+        const valve = matches[1] + matches[2];
+        const valveIndex = openingValves.indexOf(valve);
+        const diff = Date.now() - lastValveOpenedAt;
 
         if (diff >= valveOpenDelay)
         {

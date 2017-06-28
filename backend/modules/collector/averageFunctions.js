@@ -1,8 +1,8 @@
-// Copyright (c) 2014, Łukasz Walukiewicz <lukasz@walukiewicz.eu>. Some Rights Reserved.
-// Licensed under CC BY-NC-SA 4.0 <http://creativecommons.org/licenses/by-nc-sa/4.0/>.
-// Part of the walkner-hydro project <http://lukasz.walukiewicz.eu/p/walkner-hydro>
+// Part of <https://miracle.systems/p/walkner-furmon> licensed under <CC BY-NC-SA 4.0>
 
 'use strict';
+
+const round = require('./round');
 
 module.exports = {
   calculateMinuteData: calculateMinuteData,
@@ -10,37 +10,38 @@ module.exports = {
 };
 
 /**
- * @param {Array.<number>} input
- * @param {number} currentValue
- * @param {function(number, Array.<number|Array.<number>>): object} aggregate
- * @returns {Array.<object>}
+ * @param {Array<number>} input
+ * @param {{min: ?number, max: ?number, avg: ?number}} prevMinuteData
+ * @param {function(number, Array.<(number|Array.<number>)>): object} aggregate
+ * @returns {Array<Object>}
  */
-function calculateMinuteData(input, currentValue, aggregate)
+function calculateMinuteData(input, prevMinuteData, aggregate)
 {
-  var results = [];
+  const results = [];
 
   if (input.length === 0 || input.length % 2 !== 0)
   {
     return results;
   }
 
-  var newestEntryTime = Date.now();
-  var fromTime = resetMinute(input[0]);
-  var toTime = fromTime + 59999;
+  const newestEntryTime = Date.now();
+  let fromTime = resetMinute(input[0]);
+  let toTime = fromTime + 59999;
 
   if (toTime >= newestEntryTime)
   {
     return results;
   }
 
-  var minuteData = [];
-  var i;
-  var l;
-  var ii;
+  let currentValue = prevMinuteData.avg;
+  let minuteData = [];
+  let i;
+  let l;
+  let ii;
 
   for (i = 0, l = input.length; i < l; i += 2)
   {
-    var entryDate = input[i];
+    const entryDate = input[i];
 
     if (entryDate > toTime)
     {
@@ -59,18 +60,26 @@ function calculateMinuteData(input, currentValue, aggregate)
 
       results.push(aggregate(fromTime, minuteData));
 
-      var newFromTime = resetMinute(entryDate);
-      var minutesWithoutChange = Math.floor((newFromTime - toTime) / 60000);
+      const newFromTime = resetMinute(entryDate);
+      const minutesWithoutChange = Math.floor((newFromTime - toTime) / 60000);
 
       for (ii = 0; ii < minutesWithoutChange; ++ii)
       {
+        if (currentValue === null)
+        {
+          continue;
+        }
+
         results.push({
           time: (toTime + 1000) + ii * 60000,
           count: 60,
           sum: currentValue * 60,
           max: currentValue,
           min: currentValue,
-          avg: currentValue
+          avg: currentValue,
+          dMax: 0,
+          dMin: 0,
+          dAvg: 0
         });
       }
 
@@ -87,9 +96,9 @@ function calculateMinuteData(input, currentValue, aggregate)
       continue;
     }
 
-    var entryValue = input[i + 1];
-    var entrySeconds = entryDate.getUTCSeconds();
-    var lastValueIndex = minuteData.length - 1;
+    const entryValue = input[i + 1];
+    const entrySeconds = entryDate.getUTCSeconds();
+    const lastValueIndex = minuteData.length - 1;
 
     if (entrySeconds === lastValueIndex)
     {
@@ -128,39 +137,97 @@ function calculateMinuteData(input, currentValue, aggregate)
 
   input.splice(0, i);
 
+  calculateDeltas(prevMinuteData, results);
+
   return results;
 }
 
 /**
+ * @param {Object} prevMinuteData
+ * @param {Array<Object>} minuteDataList
+ */
+function calculateDeltas(prevMinuteData, minuteDataList)
+{
+  for (let i = 0; i < minuteDataList.length; ++i)
+  {
+    const minuteData = minuteDataList[i];
+
+    calculateDelta(prevMinuteData, minuteData, 'min', 'dMin');
+    calculateDelta(prevMinuteData, minuteData, 'max', 'dMax');
+    calculateDelta(prevMinuteData, minuteData, 'avg', 'dAvg');
+
+    prevMinuteData = minuteData;
+  }
+}
+
+/**
+ * @param {Object} prevMinuteData
+ * @param {Object} minuteData
+ * @param {string} prop
+ * @param {string} dProp
+ */
+function calculateDelta(prevMinuteData, minuteData, prop, dProp)
+{
+  const oldValue = prevMinuteData[prop];
+  const newValue = minuteData[prop];
+
+  minuteData[dProp] = oldValue === null || newValue === null ? null : round(newValue - oldValue);
+}
+
+/**
  * @param {number} fromTime
- * @param {Array.<number|Array.<number>>} minuteData
- * @returns {object}
+ * @param {Array<(number|Array<number>)>} minuteData
+ * @returns {Object}
  */
 function arithmeticMean(fromTime, minuteData)
 {
-  var result = {
+  const result = {
     time: fromTime,
     count: minuteData.length,
     sum: 0,
     max: -Infinity,
     min: +Infinity,
-    avg: 0
+    avg: 0,
+    dMax: 0,
+    dMin: 0,
+    dAvg: 0
   };
 
-  for (var i = 0, l = result.count; i < l; ++i)
+  for (let i = 0, l = result.count; i < l; ++i)
   {
-    var value = minuteData[i];
+    let value = minuteData[i];
+
+    if (value === null)
+    {
+      result.count -= 1;
+
+      continue;
+    }
 
     if (Array.isArray(value))
     {
-      var secondSum = 0;
+      let secondSum = 0;
+      let secondCnt = 0;
 
       for (var ii = 0, ll = value.length; ii < ll; ++ii)
       {
-        secondSum += value[ii];
+        const secondVal = value[ii];
+
+        if (secondVal !== null)
+        {
+          secondSum += secondVal;
+          secondCnt += 1;
+        }
       }
 
-      value = secondSum / value.length;
+      if (secondCnt === 0)
+      {
+        result.count -= 1;
+
+        continue;
+      }
+
+      value = round(secondSum / secondCnt);
     }
 
     result.sum += value;
@@ -176,7 +243,22 @@ function arithmeticMean(fromTime, minuteData)
     }
   }
 
-  result.avg = result.sum / result.count;
+  result.avg = round(result.sum / result.count);
+
+  if (isNaN(result.avg))
+  {
+    result.avg = null;
+  }
+
+  if (!isFinite(result.max))
+  {
+    result.max = null;
+  }
+
+  if (!isFinite(result.min))
+  {
+    result.min = null;
+  }
 
   return result;
 }

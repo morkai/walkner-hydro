@@ -31,8 +31,8 @@ define([
    * @name app.views.MonitoringView
    * @constructor
    * @extends {app.views.View}
-   * @param {object} options
-   * @param {object} options.model
+   * @param {Object} options
+   * @param {Object} options.model
    */
   var MonitoringView = View.extend({
 
@@ -82,25 +82,25 @@ define([
 
     /**
      * @private
-     * @type {object.<string, object>}
+     * @type {Object.<string, object>}
      */
     this.charts = {};
 
     /**
      * @private
-     * @type {object|null}
+     * @type {Object|null}
      */
     this.currentChart = null;
 
     /**
      * @private
-     * @type {object|null}
+     * @type {Object|null}
      */
     this.cubismContext = null;
 
     /**
      * @private
-     * @type {object|null}
+     * @type {Object|null}
      */
     this.cubismRule = null;
   };
@@ -331,8 +331,7 @@ define([
         break;
 
       default:
-        var elName =
-          tagName.replace(/\./g, '-').replace(/-(status|state)$/, '');
+        var elName = tagName.replace(/\./g, '-').replace(/-(status|state)$/, '');
         var elSelector = '#' + this.idPrefix + '-' + elName;
 
         if (/\.status$/.test(tagName))
@@ -384,8 +383,7 @@ define([
   MonitoringView.prototype.setSettlerExtremes = function(type)
   {
     var el = this.el.querySelector('#' + this.idPrefix + '-settler-' + type);
-    var innerContainerEl =
-      el.parentNode.querySelector('.el-settler-innerContainer');
+    var innerContainerEl = el.parentNode.querySelector('.el-settler-innerContainer');
     var positionTag = 'settler.' + type + '.height';
     var capacityTag = 'settler.height';
 
@@ -420,8 +418,7 @@ define([
     var el = this.el.querySelector(
       '#' + this.idPrefix + '-reservoirs-' + index + '-' + type
     );
-    var innerContainerEl =
-      el.parentNode.querySelector('.el-reservoir-innerContainer');
+    var innerContainerEl = el.parentNode.querySelector('.el-reservoir-innerContainer');
     var positionTag = 'reservoirs.' + index + '.waterLevel.' + type;
     var capacityTag = 'reservoirs.' + index + '.height';
 
@@ -513,8 +510,6 @@ define([
    */
   MonitoringView.prototype.getMaxValueForTag = function(tagName)
   {
-    /*jshint -W015*/
-
     switch (tagName)
     {
       case 'inputPumps.1.waterLevel':
@@ -637,7 +632,7 @@ define([
 
   /**
    * @private
-   * @param {object} chart
+   * @param {Object} chart
    * @returns {cubismContext.metric}
    */
   MonitoringView.prototype.createMetric = function(chart)
@@ -656,20 +651,21 @@ define([
         + '&stop=' + stop
         + '&step=' + step;
 
-      $.ajax({url: url, dataType: 'json'}).then(function(values)
+      $.ajax({url: url, dataType: 'json'}).then(function(res)
       {
-        if (!Array.isArray(values))
+        if (!res || !Array.isArray(res.values))
         {
           return callback(new Error("Failed to load data :("));
         }
+
+        var values = res.values;
 
         if (first)
         {
           first = false;
 
           var maxValueCount = (stop - start) / step;
-          var missingValues =
-            new Array(Math.max(0, maxValueCount - values.length));
+          var missingValues = new Array(Math.max(0, maxValueCount - values.length));
 
           values.unshift.apply(values, missingValues);
         }
@@ -714,10 +710,7 @@ define([
     var format = tagName !== 'inputPumps.1.waterLevel'
       && tagName !== 'inputPumps.2.waterLevel'
         ? formatValue
-        : function(value)
-          {
-            return formatValue(view.getMaxValueForTag(tagName) - value);
-          };
+        : function(value) { return formatValue(view.getMaxValueForTag(tagName) - value); };
 
     var title = tagEl.getAttribute('data-original-title') || '?';
     var color = tagEl.getAttribute('data-color') || '#999';
@@ -761,7 +754,7 @@ define([
 
   /**
    * @private
-   * @param {object} chart
+   * @param {Object} chart
    * @param {boolean} [transition] Defaults to `true`.
    */
   MonitoringView.prototype.bringChartToFront = function(chart, transition)
@@ -799,7 +792,7 @@ define([
 
   /**
    * @private
-   * @param {object} chart
+   * @param {Object} chart
    * @param {boolean} [transition] Defaults to `true`.
    * @param {boolean} [bg] Defaults to `false`.
    */
@@ -872,24 +865,21 @@ define([
         });
       }
     }
+    else if (transition === false)
+    {
+      destroyChart();
+      destroyCubism();
+    }
     else
     {
-      if (transition === false)
-      {
-        destroyChart();
-        destroyCubism();
-      }
-      else
-      {
-        $horizon
-          .closest('.monitoring-charts-container')
-          .transitionStop()
-          .transition({opacity: 0}, function()
-          {
-            destroyChart();
-            destroyCubism();
-          });
-      }
+      $horizon
+        .closest('.monitoring-charts-container')
+        .transitionStop()
+        .transition({opacity: 0}, function()
+        {
+          destroyChart();
+          destroyCubism();
+        });
     }
   };
 
@@ -924,8 +914,7 @@ define([
       return;
     }
 
-    var $currentHorizon =
-      $allHorizons.filter('[data-tag="' + this.currentChart + '"]');
+    var $currentHorizon = $allHorizons.filter('[data-tag="' + this.currentChart + '"]');
     var $nextHorizon = $currentHorizon.next('.horizon');
 
     if ($nextHorizon.length === 0)
@@ -962,8 +951,9 @@ define([
     basePosition = basePosition.split(',').map(Number);
 
     var vfdRunning = -1;
+    var i = 1;
 
-    for (var i = 1; i <= 3; ++i)
+    for (; i <= 3; ++i)
     {
       if (controller.getValue('outputPumps.' + i + '.status.vfd'))
       {

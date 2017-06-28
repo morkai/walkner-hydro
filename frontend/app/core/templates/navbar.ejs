@@ -7,7 +7,6 @@
   <span class="brand">&nbsp;</span>
   <div class="nav-collapse collapse">
     <ul class="nav">
-      <!-- <li><a href="#"><%- t('core', 'NAVBAR_DASHBOARD') %></a> //-->
       <li data-privilege="MONITORING_VIEW"><a href="#monitoring"><%- t('core', 'NAVBAR_MONITORING') %></a>
       <li data-privilege="EVENTS_VIEW"><a href="#events"><%- t('core', 'NAVBAR_EVENTS') %></a>
       <li data-privilege="ALARMS_VIEW"><a href="#alarms"><%- t('core', 'NAVBAR_ALARMS') %></a>
@@ -62,15 +61,11 @@
       <li class="dropdown navbar-account-dropdown">
         <a href="#account" class="dropdown-toggle" data-toggle="dropdown">
           <i class="icon-user icon-large navbar-account-status"></i>
-          <%- user.login %>
+          <%= user.getLabel() %>
           <b class="caret"></b>
         </a>
         <ul class="dropdown-menu">
-          <li><a href="#users/<%- user._id %>"><%- t('core', 'NAVBAR_MY_ACCOUNT') %></a>
-          <li class="divider">
-          <li class="nav-header"><%- t('core', 'NAVBAR_UI_LOCALE') %>
-          <li><a class="navbar-account-locale" href="#" data-locale="pl"><%- t('core', 'NAVBAR_LOCALE_PL') %></a>
-          <li><a class="navbar-account-locale" href="#" data-locale="en"><%- t('core', 'NAVBAR_LOCALE_US') %></a>
+          <li><a href="#users/<%- user.data._id %>"><%- t('core', 'NAVBAR_MY_ACCOUNT') %></a>
           <li class="divider">
           <li><a href="/logout"><%- t('core', 'NAVBAR_LOG_OUT') %></a>
         </ul>

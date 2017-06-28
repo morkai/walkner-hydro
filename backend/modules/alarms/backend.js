@@ -10,7 +10,7 @@ exports.DEFAULT_CONFIG = {
   controllerId: 'controller',
   messengerServerId: 'messenger/server',
   mongooseId: 'mongoose',
-  mailerId: 'mailer',
+  mailSenderId: 'mail/sender',
   gammuId: 'gammu'
 };
 

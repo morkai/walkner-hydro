@@ -1,53 +1,49 @@
-// Copyright (c) 2014, Łukasz Walukiewicz <lukasz@walukiewicz.eu>. Some Rights Reserved.
-// Licensed under CC BY-NC-SA 4.0 <http://creativecommons.org/licenses/by-nc-sa/4.0/>.
-// Part of the walkner-hydro project <http://lukasz.walukiewicz.eu/p/walkner-hydro>
-
-/*jshint maxparams:5*/
+// Part of <https://miracle.systems/p/walkner-furmon> licensed under <CC BY-NC-SA 4.0>
 
 'use strict';
 
-var deltaUtils = require('./deltaUtils');
-var scaleFunctions = require('./scaleFunctions');
+const _ = require('lodash');
+const deltaUtils = require('./deltaUtils');
+const scaleFunctions = require('./scaleFunctions');
 
 /**
  * @constructor
- * @param {h5.pubsub.Broker} broker
- * @param {object} modbus
+ * @param {Broker} broker
+ * @param {Object} modbus
  * @param {string} name
- * @param {object} config
+ * @param {Object} config
  */
 function Tag(broker, modbus, name, config)
 {
   /**
-   * @type {h5.pubsub.Broker}
+   * @type {Broker}
    */
   this.broker = broker;
 
   /**
-   * @type {object}
+   * @type {Object}
    */
   this.modbus = modbus;
 
   /**
    * @type {boolean}
    */
-  this.broadcastable =
-    modbus.config.broadcastFilter.indexOf(name.split('.')[0]) === -1;
+  this.broadcastable = !_.includes(modbus.config.broadcastFilter, name.split('.')[0]);
 
   /**
    * @private
-   * @type {Array.<number>|null}
+   * @type {?Array<number>}
    */
   this.bits = null;
 
   /**
    * @private
-   * @type {number|null}
+   * @type {?number}
    */
   this.bitMask = null;
 
   /**
-   * @type {string|null}
+   * @type {?string}
    */
   this.master = config.master;
 
@@ -57,7 +53,7 @@ function Tag(broker, modbus, name, config)
   this.address = config.address;
 
   /**
-   * @type {string|null}
+   * @type {?string}
    */
   this.deltaAddress = null;
 
@@ -115,35 +111,32 @@ function Tag(broker, modbus, name, config)
   this.writable = !!config.writable;
 
   /**
-   * @type {number|null}
+   * @type {?number}
    */
   this.rawMin = numberOrNull(config.rawMin);
 
   /**
-   * @type {number|null}
+   * @type {?number}
    */
   this.rawMax = numberOrNull(config.rawMax);
 
   /**
-   * @type {string|null}
+   * @type {?string}
    */
-  this.scaleUnit
-    = typeof config.scaleUnit === 'string' ? config.scaleUnit : null;
+  this.scaleUnit = typeof config.scaleUnit === 'string' ? config.scaleUnit : null;
 
   /**
-   * @type {string|null}
+   * @type {?string}
    */
-  this.scaleFunction = typeof config.scaleFunction === 'string'
-    ? config.scaleFunction
-    : null;
+  this.scaleFunction = typeof config.scaleFunction === 'string' ? config.scaleFunction : null;
 
   /**
-   * @type {number|null}
+   * @type {?number}
    */
   this.scaleMin = numberOrNull(config.scaleMin);
 
   /**
-   * @type {number|null}
+   * @type {?number}
    */
   this.scaleMax = numberOrNull(config.scaleMax);
 
@@ -154,7 +147,7 @@ function Tag(broker, modbus, name, config)
   this.scale = scaleFunctions.create(this);
 
   /**
-   * @type {string|null}
+   * @type {?string}
    */
   this.archive = typeof config.archive === 'string' ? config.archive : null;
 
@@ -170,7 +163,7 @@ function Tag(broker, modbus, name, config)
 }
 
 /**
- * @returns {object}
+ * @returns {Object}
  */
 Tag.prototype.toJSON = function()
 {
@@ -190,7 +183,9 @@ Tag.prototype.toJSON = function()
     scaleFunction: this.scaleFunction,
     scaleMin: this.scaleMin,
     scaleMax: this.scaleMax,
-    archive: this.archive
+    archive: this.archive,
+    lastChangeTime: this.lastChangeTime,
+    value: this.getValue()
   };
 };
 
@@ -237,7 +232,7 @@ Tag.prototype.setValue = function(newValue, lastChangeTime)
 {
   newValue = this.rawValueToValue(newValue);
 
-  var oldValue = this.modbus.values[this.name];
+  const oldValue = this.modbus.values[this.name];
 
   if (newValue === oldValue)
   {
@@ -249,7 +244,7 @@ Tag.prototype.setValue = function(newValue, lastChangeTime)
 
   this.modbus.values[this.name] = newValue;
 
-  this.broker.publish('tagValueChanged.' + this.name, {
+  this.broker.publish(`tagValueChanged.${this.name}`, {
     tag: this,
     time: this.lastChangeTime,
     oldValue: this.oldValue,
@@ -262,18 +257,16 @@ Tag.prototype.setValue = function(newValue, lastChangeTime)
 /**
  * @param {*} value
  * @param {function(Error)} done
- * @returns {object}
+ * @returns {Object}
  */
 Tag.prototype.writeValue = function(value, done)
 {
-  /*jshint -W015*/
-
   if (!this.isWritable())
   {
     return done(new Error('TAG_WRITE_NOT_WRITABLE'));
   }
 
-  var delay = this.checkBeforeWrite(value);
+  const delay = this.checkBeforeWrite(value);
 
   if (delay === -1)
   {
@@ -311,13 +304,14 @@ Tag.prototype.writeValue = function(value, done)
  */
 Tag.prototype.checkBeforeWrite = function(value)
 {
-  var state = {
+  const state = {
+    tag: this,
     allowWrite: true,
     writeDelay: 0,
     newValue: value
   };
 
-  this.broker.publish('beforeWriteTagValue.' + this.name, state);
+  this.broker.publish(`beforeWriteTagValue.${this.name}`, state);
 
   return state.allowWrite ? state.writeDelay : -1;
 };
@@ -329,18 +323,10 @@ Tag.prototype.checkBeforeWrite = function(value)
  */
 Tag.prototype.writeOutputValue = function(state, done)
 {
-  var master = this.modbus.masters[this.master];
-  var tag = this;
+  const master = this.modbus.masters[this.master];
+  const transaction = master.writeSingleCoil(this.address, !!state, {unit: this.unit});
 
-  master.writeSingleCoil(
-    this.address, !!state, {
-      unit: this.unit,
-      onComplete: function onWriteRegisterValueComplete(err, res)
-      {
-        tag.handleWriteResponse(this, err, res, !!state, done);
-      }
-    }
-  );
+  transaction.once('complete', (err, res) => this.handleWriteResponse(transaction, err, res, !!state, done));
 };
 
 /**
@@ -350,8 +336,8 @@ Tag.prototype.writeOutputValue = function(state, done)
  */
 Tag.prototype.writeRegisterValue = function(value, done)
 {
-  var master = this.modbus.masters[this.master];
-  var valueBuffer;
+  const master = this.modbus.masters[this.master];
+  let valueBuffer;
 
   try
   {
@@ -359,20 +345,14 @@ Tag.prototype.writeRegisterValue = function(value, done)
   }
   catch (err)
   {
-    return done(err);
+    done(err);
+
+    return;
   }
 
-  var tag = this;
+  const transaction = master.writeMultipleRegisters(this.address, valueBuffer, {unit: this.unit});
 
-  master.writeMultipleRegisters(
-    this.address, valueBuffer, {
-      unit: this.unit,
-      onComplete: function onWriteRegisterValueComplete(err, res)
-      {
-        tag.handleWriteResponse(this, err, res, value, done);
-      }
-    }
-  );
+  transaction.once('complete', (err, res) => this.handleWriteResponse(transaction, err, res, value, done));
 };
 
 /**
@@ -384,23 +364,29 @@ Tag.prototype.writeVirtualValue = function(value, done)
 {
   if (this.bitMask === null)
   {
-    return done(new Error('TAG_WRITE_NO_BIT_MASK'));
+    done(new Error('TAG_WRITE_NO_BIT_MASK'));
+
+    return;
   }
 
   if (typeof this.address !== 'string')
   {
-    return done(new Error('TAG_WRITE_NO_REFERENCE_TAG'));
+    done(new Error('TAG_WRITE_NO_REFERENCE_TAG'));
+
+    return;
   }
 
-  var referenceTag = this.modbus.tags[this.address.split('&')[0]];
+  const referenceTag = this.modbus.tags[this.address.split('&')[0]];
 
   if (!referenceTag)
   {
-    return done(new Error('TAG_WRITE_UNKNOWN_REFERENCE_TAG'));
+    done(new Error('TAG_WRITE_UNKNOWN_REFERENCE_TAG'));
+
+    return;
   }
 
-  var rawValue = this.valueToRawValue(value) << this.bits[0];
-  var referenceValue = (referenceTag.getValue() & (~this.bitMask)) | rawValue;
+  const rawValue = this.valueToRawValue(value) << this.bits[0];
+  const referenceValue = (referenceTag.getValue() & (~this.bitMask)) | rawValue;
 
   referenceTag.writeValue(referenceValue, done);
 };
@@ -412,28 +398,27 @@ Tag.prototype.writeVirtualValue = function(value, done)
  */
 Tag.prototype.writeSettingValue = function(value, done)
 {
-  var selector = {_id: this.name};
-  var doc = {$set: {value: value, time: Date.now()}};
-  var options = {upsert: true, w: 1};
-  var settingsCollection = this.modbus.config.settingsCollection();
-  var tag = this;
+  const selector = {_id: this.name};
+  const doc = {$set: {value: this.valueToRawValue(value), time: Date.now()}};
+  const options = {upsert: true, w: 1};
+  const settingsCollection = this.modbus.config.settingsCollection();
 
-  settingsCollection.update(selector, doc, options, function(err)
+  settingsCollection.update(selector, doc, options, (err) =>
   {
     done(err);
 
     if (!err)
     {
-      tag.setValue(value);
+      this.setValue(doc.$set.value);
     }
   });
 };
 
 /**
  * @private
- * @param {h5.modbus.Transaction} transaction
+ * @param {Transaction} transaction
  * @param {Error|null} err
- * @param {h5.modbus.Response} res
+ * @param {Response} res
  * @param {*} value
  * @param {function} done
  */
@@ -441,22 +426,16 @@ Tag.prototype.handleWriteResponse = function(transaction, err, res, value, done)
 {
   if (err)
   {
-    if (transaction.shouldRetry())
-    {
-      return;
-    }
+    done(err);
 
-    return done(err);
+    return;
   }
 
   if (res.isException())
   {
-    if (transaction.shouldRetry())
-    {
-      return;
-    }
+    done(new Error(res.toString()));
 
-    return done(new Error(res.toString()));
+    return;
   }
 
   done();
@@ -474,9 +453,7 @@ Tag.prototype.handleWriteResponse = function(transaction, err, res, value, done)
  */
 Tag.prototype.createValueBuffer = function(value)
 {
-  /*jshint -W015*/
-
-  var valueBuffer;
+  let valueBuffer;
 
   switch (this.type)
   {
@@ -560,8 +537,6 @@ Tag.prototype.rawValueToValue = function(rawValue)
  */
 Tag.prototype.valueToRawValue = function(value)
 {
-  /*jshint -W015,-W065*/
-
   switch (this.type)
   {
     case 'double':
@@ -570,7 +545,7 @@ Tag.prototype.valueToRawValue = function(value)
       break;
 
     case 'bool':
-      value = value ? true : false;
+      value = !!value;
       break;
 
     case 'string':
@@ -582,7 +557,7 @@ Tag.prototype.valueToRawValue = function(value)
       break;
   }
 
-  var rawValue = this.scale.valueToRawValue(value);
+  const rawValue = this.scale.valueToRawValue(value);
 
   if (this.rawMin !== null && rawValue < this.rawMin)
   {
@@ -607,41 +582,38 @@ Tag.prototype.setUpVirtualization = function()
     return;
   }
 
-  var address = this.address.split('.');
-  var referenceTag = address[0];
+  const address = this.address.split('&');
+  const referenceTag = address[0];
 
   if (typeof this.modbus.tags[referenceTag] === 'undefined')
   {
-    throw new Error(
-      "Invalid address for " + this.name + ". "
-        + "Reference tag " + referenceTag + " does not exist."
-    );
+    throw new Error(`Invalid address for [${this.name}]. Reference tag [${referenceTag}] does not exist.`);
   }
 
-  var bits = address[1]
+  const bits = address[1]
     .split('-')
-    .map(Number)
-    .filter(function(value) { return !isNaN(value); });
+    .map(v => +v)
+    .filter(v => !isNaN(v));
 
   if (bits.length > 1 && bits[0] >= bits[1])
   {
-    throw new Error(
-      "Invalid address for " + this.name + ". "
-        + "Start bit should be lower than the end bit."
-    );
+    throw new Error(`Invalid address for [${this.name}]. Start bit should be lower than the end bit.`);
   }
 
   this.bits = bits.length === 1 ? [bits[0], bits[0]] : bits;
   this.bitMask = createBitMask(this.bits[0], this.bits[1]);
 
-  var tag = this;
-  var topic = 'tagValueChanged.' + referenceTag;
+  const topic = `tagValueChanged.${referenceTag}`;
 
-  this.broker.subscribe(topic, function(message)
+  this.broker.subscribe(topic, (message) =>
   {
-    if (typeof message.newValue === 'number')
+    if (message.newValue === null)
     {
-      tag.setValue((message.newValue & tag.bitMask) >> tag.bits[0]);
+      this.setValue(null);
+    }
+    else if (typeof message.newValue === 'number')
+    {
+      this.setValue((message.newValue & this.bitMask) >> this.bits[0]);
     }
   });
 };
@@ -654,7 +626,7 @@ Tag.prototype.setUpVirtualization = function()
  */
 function createBitMask(a, b)
 {
-  var mask = 0;
+  let mask = 0;
 
   for (var i = a; i <= b; ++i)
   {
@@ -666,7 +638,7 @@ function createBitMask(a, b)
 
 /**
  * @param {*} value
- * @returns {number|null}
+ * @returns {?number}
  */
 function numberOrNull(value)
 {

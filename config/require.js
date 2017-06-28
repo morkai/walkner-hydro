@@ -1,3 +1,5 @@
+/* eslint-disable quote-props */
+
 'use strict';
 
 exports.paths = {
@@ -12,6 +14,7 @@ exports.paths = {
   'backbone.layout': 'vendor/backbone.layoutmanager/backbone.layoutmanager',
   'moment': 'vendor/moment/moment',
   'moment-lang': 'vendor/moment/lang',
+  'moment-timezone': 'vendor/moment/moment-timezone',
   'bootstrap': 'vendor/bootstrap/js/bootstrap',
   'bootstrap-switch': 'vendor/bootstrap-switch/bootstrap-switch',
   'socket.io': 'vendor/socket.io/socket.io',
@@ -23,7 +26,8 @@ exports.paths = {
   'js2form': 'vendor/form2js/js2form',
   'flot': 'vendor/flot/jquery.flot',
   'flot.time': 'vendor/flot/jquery.flot.time',
-  'flot.crosshair': 'vendor/flot/jquery.flot.crosshair'
+  'flot.crosshair': 'vendor/flot/jquery.flot.crosshair',
+  'pathseg': 'vendor/pathseg'
 };
 
 exports.shim = {
@@ -47,7 +51,10 @@ exports.shim = {
   },
   'flot': ['jquery'],
   'flot.time': ['flot'],
-  'flot.crosshair': ['flot']
+  'flot.crosshair': ['flot'],
+  'pathseg': {
+    exports: 'SVGPathSeg'
+  }
 };
 
 exports.buildPaths = exports.paths;

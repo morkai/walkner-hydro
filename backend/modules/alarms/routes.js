@@ -41,9 +41,7 @@ module.exports = function setUpAlarmsRoutes(app, alarmsModule)
 
   express.post('/alarms/:id', canManage, updateAlarmRoute);
 
-  express.del(
-    '/alarms/:id', canManage, crud.deleteRoute.bind(null, app, Alarm)
-  );
+  express.delete('/alarms/:id', canManage, crud.deleteRoute.bind(null, app, Alarm));
 
   /**
    * @prvate

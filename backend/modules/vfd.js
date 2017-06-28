@@ -44,8 +44,9 @@ exports.start = function startVfdModule(app, module)
 
   /**
    * @private
-   * @param {object} req
+   * @param {Object} req
    * @param {function} reply
+   * @returns {undefined}
    */
   function handleReadParamMessage(req, reply)
   {
@@ -81,8 +82,9 @@ exports.start = function startVfdModule(app, module)
 
   /**
    * @private
-   * @param {object} req
+   * @param {Object} req
    * @param {function} reply
+   * @returns {undefined}
    */
   function handleWriteParamMessage(req, reply)
   {
@@ -119,7 +121,8 @@ exports.start = function startVfdModule(app, module)
   /**
    * @private
    * @param {string} paramNo
-   * @param {function(Error|null)} done
+   * @param {function((Error|null))} done
+   * @returns {undefined}
    */
   function getParamInfo(paramNo, done)
   {
@@ -163,7 +166,8 @@ exports.start = function startVfdModule(app, module)
 
   /**
    * @private
-   * @param {function(Error|null)} done
+   * @param {function((Error|null))} done
+   * @returns {undefined}
    */
   function loadParamInfo(done)
   {
@@ -250,8 +254,6 @@ exports.start = function startVfdModule(app, module)
    */
   function getParamSize(paramType)
   {
-    /*jshint -W015*/
-
     switch (paramType)
     {
       case 'uint32':
@@ -273,9 +275,10 @@ exports.start = function startVfdModule(app, module)
 
   /**
    * @private
-   * @param {object} req
-   * @param {object} paramInfo
-   * @param {function(Error|null), object} reply
+   * @param {Object} req
+   * @param {Object} paramInfo
+   * @param {function((Error|null), object)} reply
+   * @returns {undefined}
    */
   function readParam(req, paramInfo, reply)
   {
@@ -317,8 +320,6 @@ exports.start = function startVfdModule(app, module)
    */
   function readParamValue(paramType, buffer)
   {
-    /*jshint -W015*/
-
     switch (paramType)
     {
       case 'uint32':
@@ -365,9 +366,10 @@ exports.start = function startVfdModule(app, module)
 
   /**
    * @private
-   * @param {object} req
-   * @param {object} paramInfo
-   * @param {function(Error|null, object)} reply
+   * @param {Object} req
+   * @param {Object} paramInfo
+   * @param {function((Error|null), object)} reply
+   * @returns {undefined}
    */
   function writeParam(req, paramInfo, reply)
   {
@@ -407,8 +409,8 @@ exports.start = function startVfdModule(app, module)
 
   /**
    * @private
-   * @param {object} req
-   * @param {function(Error|null)} reply
+   * @param {Object} req
+   * @param {function((Error|null))} reply
    */
   function handleCompareParamMessage(req, reply)
   {

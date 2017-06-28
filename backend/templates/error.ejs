@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title><%= statusCode %> - <%= title %></title>
+  <style>
+    body {
+      margin: 20px;
+      font-family: Arial, sans-serif;
+      font-size: 1.2em;
+      background: #000;
+      color: #fff;
+      line-height: 1;
+    }
+    h2 {
+      font-family: Consolas, "Lucida Console", Monaco, monospace;
+      white-space: pre;
+      font-size: 16px;
+      font-weight: normal;
+    }
+    a {
+      text-decoration: none;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+    tbody > tr:hover {
+      background: #555;
+      color: #fff;
+    }
+    th, td {
+      border: 1px solid #333;
+      padding: 6px;
+    }
+    th {
+      background: #333;
+      color: #fff;
+    }
+    td {
+      font-family: Consolas, Menlo, Monaco, monospace;
+    }
+    td:first-child {
+      width: 1%;
+      text-align: right;
+    }
+    td:nth-child(4),
+    td:nth-child(5) {
+      width: 1%;
+      text-align: center;
+    }
+  </style>
+</head>
+<body>
+<h1>Error <%= statusCode %></h1>
+<h2><%= error %></h2>
+<table>
+  <thead>
+    <tr>
+      <th>#</th>
+      <th>Function</th>
+      <th>File</th>
+      <th>Line</th>
+      <th>Column</th>
+    </tr>
+  </thead>
+  <tbody>
+    <% stack.forEach(function(stack) { %>
+    <tr>
+    <% if (stack.unknown) { %>
+      <td colspan="5"><%- stack.unknown %></td>
+    <% } else { %>
+      <td><%- stack.no %></td>
+      <td><%- stack.func %></td>
+      <td title="<%- stack.path %>"><%- stack.file %></td>
+      <td><%- stack.line %></td>
+      <td><%- stack.column %></td>
+    <% } %>
+    </tr>
+    <% }) %>
+  </tbody>
+</table>
+</body>
+</html>

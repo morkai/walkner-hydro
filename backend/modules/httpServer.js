@@ -1,6 +1,4 @@
-// Copyright (c) 2014, Łukasz Walukiewicz <lukasz@walukiewicz.eu>. Some Rights Reserved.
-// Licensed under CC BY-NC-SA 4.0 <http://creativecommons.org/licenses/by-nc-sa/4.0/>.
-// Part of the walkner-hydro project <http://lukasz.walukiewicz.eu/p/walkner-hydro>
+// Part of <http://miracle.systems/p/walkner-wmes> licensed under <CC BY-NC-SA 4.0>
 
 'use strict';
 
@@ -9,6 +7,7 @@ var http = require('http');
 var domain = require('domain');
 
 exports.DEFAULT_CONFIG = {
+  expressId: 'express',
   host: '0.0.0.0',
   port: 80
 };
@@ -33,7 +32,7 @@ exports.start = function startHttpServerModule(app, module, done)
 
   serverDomain.run(function()
   {
-    app.httpServer = http.createServer(function onRequest(req, res)
+    module.server = http.createServer(function onRequest(req, res)
     {
       var reqDomain = domain.create();
 
@@ -44,20 +43,40 @@ exports.start = function startHttpServerModule(app, module, done)
       {
         if (err.code !== 'ECONNRESET')
         {
-          module.error(err.message);
+          module.error(err.stack || err.message || err);
         }
 
         reqDomain.dispose();
+
+        try
+        {
+          res.statusCode = 500;
+          res.end();
+        }
+        catch (err)
+        {
+          module.error(err.stack);
+        }
       });
 
-      app.express(req, res);
+      var expressApp = app[module.config.expressId].app;
+
+      if (expressApp)
+      {
+        expressApp(req, res);
+      }
+      else
+      {
+        res.writeHead(503);
+        res.end();
+      }
     });
 
-    app.httpServer.once('error', onFirstServerError);
+    module.server.once('error', onFirstServerError);
 
-    app.httpServer.listen(module.config.port, module.config.host, function()
+    module.server.listen(module.config.port, module.config.host, function()
     {
-      app.httpServer.removeListener('error', onFirstServerError);
+      module.server.removeListener('error', onFirstServerError);
 
       module.debug("Listening on port %d...", module.config.port);
 

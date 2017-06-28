@@ -1,34 +1,32 @@
-// Copyright (c) 2014, Łukasz Walukiewicz <lukasz@walukiewicz.eu>. Some Rights Reserved.
-// Licensed under CC BY-NC-SA 4.0 <http://creativecommons.org/licenses/by-nc-sa/4.0/>.
-// Part of the walkner-hydro project <http://lukasz.walukiewicz.eu/p/walkner-hydro>
-
-/*jshint maxparams:6*/
+// Part of <https://miracle.systems/p/walkner-furmon> licensed under <CC BY-NC-SA 4.0>
 
 'use strict';
+
+const _ = require('lodash');
 
 /**
  * @private
  * @type {RegExp}
  */
-var SCALE_FUNCTIONS_RE = /([a-zA-Z0-9]+)(?:\((.*?)\))?/g;
+const SCALE_FUNCTIONS_RE = /([a-zA-Z0-9]+)(?:\((.*?)\))?/g;
 
 /**
  * @private
- * @type {{rawValueToValue: Function, valueToRawValue: Function}}
+ * @type {{rawValueToValue: function, valueToRawValue: function}}
  */
-var NOOP_SCALE_FUNCTIONS = {
+const NOOP_SCALE_FUNCTIONS = {
   rawValueToValue: function(rawValue) { return rawValue; },
   valueToRawValue: function(value) { return value; }
 };
 
 /**
- * @type {object.<string, function>}
+ * @type {Object<string, function>}
  */
 var SCALE_FUNCTIONS = {
 
-  'round': function(tag, args)
+  round: function(tag, args)
   {
-    var decimals = Math.pow(10, (typeof args[0] === 'number' ? args[0] : 0));
+    const decimals = Math.pow(10, (typeof args[0] === 'number' ? args[0] : 0));
 
     return {
       rawValueToValue: round.bind(null, decimals),
@@ -36,9 +34,9 @@ var SCALE_FUNCTIONS = {
     };
   },
 
-  'div': function(tag, args)
+  div: function(tag, args)
   {
-    var divisor = typeof args[0] === 'number' ? args[0] : 1;
+    const divisor = typeof args[0] === 'number' ? args[0] : 1;
 
     return {
       rawValueToValue: div.bind(null, divisor),
@@ -46,12 +44,12 @@ var SCALE_FUNCTIONS = {
     };
   },
 
-  'minMax': function(tag, args)
+  minMax: function(tag, args)
   {
-    var rawMin = typeof args[0] === 'number' ? args[0] : tag.rawMin;
-    var rawMax = typeof args[1] === 'number' ? args[1] : tag.rawMax;
-    var scaleMin = typeof args[2] === 'number' ? args[2] : tag.scaleMin;
-    var scaleMax = typeof args[3] === 'number' ? args[3] : tag.scaleMax;
+    const rawMin = typeof args[0] === 'number' ? args[0] : tag.rawMin;
+    const rawMax = typeof args[1] === 'number' ? args[1] : tag.rawMax;
+    const scaleMin = typeof args[2] === 'number' ? args[2] : tag.scaleMin;
+    const scaleMax = typeof args[3] === 'number' ? args[3] : tag.scaleMax;
 
     if (rawMax === null || scaleMax === null)
     {
@@ -64,7 +62,7 @@ var SCALE_FUNCTIONS = {
     };
   },
 
-  'flip': function()
+  flip: function()
   {
     return {
       rawValueToValue: flip,
@@ -72,9 +70,9 @@ var SCALE_FUNCTIONS = {
     };
   },
 
-  'cast': function(tag, args)
+  cast: function(tag, args)
   {
-    var castType = typeof args[0] === 'string' ? args[0] : 'number';
+    const castType = typeof args[0] === 'string' ? args[0] : 'number';
 
     return {
       rawValueToValue: cast.bind(null, castType),
@@ -82,15 +80,15 @@ var SCALE_FUNCTIONS = {
     };
   },
 
-  'sub': function(subtrahendTag, args)
+  sub: function(subtrahendTag, args)
   {
-    var minuendTags = [];
+    const minuendTags = [];
 
-    args.forEach(function(tagName)
+    _.forEach(args, function(tagName)
     {
-      var minuendTag = subtrahendTag.modbus.tags[tagName];
+      const minuendTag = subtrahendTag.modbus.tags[tagName];
 
-      if (typeof minuendTag !== 'undefined')
+      if (minuendTag)
       {
         minuendTags.push(minuendTag);
       }
@@ -101,7 +99,7 @@ var SCALE_FUNCTIONS = {
       return NOOP_SCALE_FUNCTIONS;
     }
 
-    var doSub = sub.bind(null, minuendTags);
+    const doSub = sub.bind(null, minuendTags);
 
     return {
       rawValueToValue: doSub,
@@ -109,9 +107,9 @@ var SCALE_FUNCTIONS = {
     };
   },
 
-  'offset': function(tag, args)
+  offset: function(tag, args)
   {
-    var offsetValue = typeof args[0] === 'number' ? args[0] : 0;
+    const offsetValue = typeof args[0] === 'number' ? args[0] : 0;
 
     if (offsetValue === 0)
     {
@@ -121,6 +119,44 @@ var SCALE_FUNCTIONS = {
     return {
       rawValueToValue: offset.bind(null, offsetValue),
       valueToRawValue: offset.bind(null, -offsetValue)
+    };
+  },
+
+  nil: function(tag, nullValues)
+  {
+    if (nullValues.length === 0)
+    {
+      return NOOP_SCALE_FUNCTIONS;
+    }
+
+    if (nullValues.length === 1)
+    {
+      const nullValue = nullValues[0];
+
+      return {
+        rawValueToValue: rawValue => rawValue === nullValue ? null : rawValue,
+        valueToRawValue: value => value === null ? nullValue : value
+      };
+    }
+
+    return {
+      rawValueToValue: rawValue => nullValues.includes(rawValue) ? null : rawValue,
+      valueToRawValue: value => value === null ? nullValues[0] : value
+    }
+  },
+
+  const: function(tag, args)
+  {
+    if (args.length === 0)
+    {
+      return NOOP_SCALE_FUNCTIONS;
+    }
+
+    const constValue = args[0];
+
+    return {
+      rawValueToValue: () => constValue,
+      valueToRawValue: () => constValue
     };
   }
 
@@ -143,8 +179,7 @@ function mul(multiplier, value)
 
 function scale(rawMin, rawMax, scaleMin, scaleMax, value)
 {
-  return (scaleMax - scaleMin) * (value - rawMin) / (rawMax - rawMin)
-    + scaleMin;
+  return (scaleMax - scaleMin) * (value - rawMin) / (rawMax - rawMin) + scaleMin;
 }
 
 function flip(value)
@@ -154,8 +189,6 @@ function flip(value)
 
 function cast(type, value)
 {
-  /*jshint -W015*/
-
   switch (type)
   {
     case 'number':
@@ -167,7 +200,7 @@ function cast(type, value)
       break;
 
     case 'bool':
-      return value ? true : false;
+      return !!value;
   }
 
   return value;
@@ -175,12 +208,7 @@ function cast(type, value)
 
 function sub(minuendTags, value)
 {
-  var minuend = minuendTags.reduce(function(sum, tag)
-  {
-    return sum + tag.getValue();
-  }, 0);
-
-  return minuend - value;
+  return minuendTags.reduce((sum, tag) => sum + tag.getValue(), 0) - value;
 }
 
 function offset(offsetValue, value)
@@ -192,14 +220,14 @@ function offset(offsetValue, value)
  * @private
  * @param {Tag} tag
  * @param {string} scaleFunctions
- * @returns {Array.<object.<string, object>>}
+ * @returns {Array<Object<string, Object>>}
  */
 function parseScaleFunctions(tag, scaleFunctions)
 {
   var result = [];
   var matches;
 
-  while ((matches = SCALE_FUNCTIONS_RE.exec(scaleFunctions)) !== null)
+  while ((matches = SCALE_FUNCTIONS_RE.exec(scaleFunctions)) !== null) // eslint-disable-line no-cond-assign
   {
     var name = matches[1];
     var args = typeof matches[2] !== 'string' || matches[2].length === 0
@@ -222,11 +250,9 @@ function parseScaleFunctions(tag, scaleFunctions)
  */
 function parseArgValue(argValue)
 {
-  /*jshint -W015*/
-
   argValue = argValue.trim();
 
-  var numValue = parseFloat(argValue);
+  const numValue = parseFloat(argValue);
 
   if (!isNaN(numValue))
   {
@@ -260,8 +286,8 @@ exports.create = function(tag)
     return NOOP_SCALE_FUNCTIONS;
   }
 
-  var scaleFunctions = parseScaleFunctions(tag, tag.scaleFunction);
-  var scaleFunctionsCount = scaleFunctions.length;
+  const scaleFunctions = parseScaleFunctions(tag, tag.scaleFunction);
+  const scaleFunctionsCount = scaleFunctions.length;
 
   if (scaleFunctionsCount === 0)
   {
@@ -273,9 +299,14 @@ exports.create = function(tag)
     {
       var value = rawValue;
 
-      for (var i = 0; i < scaleFunctionsCount; ++i)
+      for (let i = 0; i < scaleFunctionsCount; ++i)
       {
         value = scaleFunctions[i].rawValueToValue(value);
+
+        if (value === null)
+        {
+          return null;
+        }
       }
 
       return value;
@@ -284,7 +315,7 @@ exports.create = function(tag)
     {
       var rawValue = value;
 
-      for (var i = scaleFunctionsCount - 1; i >= 0; --i)
+      for (let i = scaleFunctionsCount - 1; i >= 0; --i)
       {
         rawValue = scaleFunctions[i].valueToRawValue(rawValue);
       }

@@ -1,9 +1,9 @@
 <div class="well">
   <dl>
-    <% lodash.each(data, function(value, name) { %>
+    <% _.each(data, function(value, name) { %>
     <dt><%= name %>
-    <% if (lodash.isArray(value)) { %>
-    <% lodash.each(value, function(entry) { %>
+    <% if (_.isArray(value)) { %>
+    <% _.each(value, function(entry) { %>
     <dd><%- entry %>
     <% }) %>
     <% } else { %>

@@ -68,7 +68,7 @@ define([
 
     var abortSub = this.broker
       .subscribe('router.executing', function()
-      {
+      {console.log('3');
         page.events.off();
         page.eventTypes.off();
         page.users.off();

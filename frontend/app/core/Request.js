@@ -1,13 +1,9 @@
-// Copyright (c) 2014, Łukasz Walukiewicz <lukasz@walukiewicz.eu>. Some Rights Reserved.
-// Licensed under CC BY-NC-SA 4.0 <http://creativecommons.org/licenses/by-nc-sa/4.0/>.
-// Part of the walkner-hydro project <http://lukasz.walukiewicz.eu/p/walkner-hydro>
+// Part of <http://miracle.systems/p/walkner-wmes> licensed under <CC BY-NC-SA 4.0>
 
 define([
-  'underscore',
   'h5.rql/index',
   './util'
 ], function(
-  _,
   rql,
   util
 ) {
@@ -15,11 +11,6 @@ define([
 
   var urlPartsRegExp = /^\/(.*?)(?:\?(.*?))?(?:#(.*?))?$/;
 
-  /**
-   * @name app.core.Request
-   * @constructor
-   * @param {string} url
-   */
   function Request(url)
   {
     if (url[0] !== '/')
@@ -70,9 +61,6 @@ define([
     }
   }
 
-  /**
-   * @private
-   */
   Request.prototype.defineGetters = function()
   {
     Object.defineProperty(this, 'query', {
@@ -102,9 +90,6 @@ define([
     });
   };
 
-  /**
-   * @private
-   */
   Request.prototype.parseQueryString = function()
   {
     delete this.query;
@@ -115,7 +100,7 @@ define([
     for (var i = 0, l = queryParts.length; i < l; ++i)
     {
       var queryPart = queryParts[i];
-      var eqPos = _.indexOf(queryPart, '=');
+      var eqPos = queryPart.indexOf('=');
 
       if (eqPos === -1)
       {
@@ -133,9 +118,6 @@ define([
     return query;
   };
 
-  /**
-   * @private
-   */
   Request.prototype.parseRqlString = function()
   {
     delete this.rql;

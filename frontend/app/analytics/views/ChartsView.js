@@ -126,8 +126,8 @@ define([
       xaxis: {
         mode: 'time',
         timezone: 'browser',
-        monthNames: moment().lang()._monthsShort,
-        dayNames: moment().lang()._weekdaysMin
+        monthNames: moment().localeData()._monthsShort, // eslint-disable-line no-underscore-dangle
+        dayNames: moment().localeData()._weekdaysMin // eslint-disable-line no-underscore-dangle
       },
       legend: {
         show: true,
@@ -167,7 +167,7 @@ define([
   {
     return {
       idPrefix: this.idPrefix,
-      from: moment().subtract('days', 1).format(DATETIME_FORMAT),
+      from: moment().subtract(1, 'days').format(DATETIME_FORMAT),
       to: moment().format(DATETIME_FORMAT)
     };
   };
@@ -286,8 +286,7 @@ define([
       return;
     }
 
-    var $plot =
-      this.$('#' + this.idPrefix + '-controls-plot').attr('disabled', true);
+    var $plot = this.$('#' + this.idPrefix + '-controls-plot').attr('disabled', true);
 
     $from.val(from.format(DATETIME_FORMAT));
     $to.val(to.format(DATETIME_FORMAT));
@@ -305,8 +304,9 @@ define([
       }
     });
 
-    this.req.then(function(values)
+    this.req.done(function(res)
     {
+      var values = res.values;
       var maxValueCount = (stop - start) / step;
       var missingValues = maxValueCount - values.length;
 
@@ -320,9 +320,7 @@ define([
 
       start += missingValues * 60000;
 
-      var mul =
-        tag === 'inputPumps.1.waterLevel' || tag === 'inputPumps.2.waterLevel'
-          ? -1 : 1;
+      var mul = tag === 'inputPumps.1.waterLevel' || tag === 'inputPumps.2.waterLevel' ? -1 : 1;
 
       var series = {
         label: $tag[0].selectedOptions[0].label + ' = <code>?</code>',

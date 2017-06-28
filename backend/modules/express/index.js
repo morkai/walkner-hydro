@@ -1,81 +1,208 @@
-// Copyright (c) 2014, Łukasz Walukiewicz <lukasz@walukiewicz.eu>. Some Rights Reserved.
-// Licensed under CC BY-NC-SA 4.0 <http://creativecommons.org/licenses/by-nc-sa/4.0/>.
-// Part of the walkner-hydro project <http://lukasz.walukiewicz.eu/p/walkner-hydro>
+// Part of <http://miracle.systems/p/walkner-wmes> licensed under <CC BY-NC-SA 4.0>
 
 'use strict';
 
-var path = require('path');
-var lodash = require('lodash');
-var express = require('express');
-var ejsAmd = require('ejs-amd');
-var messageFormatAmd = require('messageformat-amd');
-var MongoStore = require('./MongoStore')(express.session.Store);
-var wrapAmd = require('./wrapAmd');
-var rqlMiddleware = require('./rqlMiddleware');
+const path = require('path');
+const _ = require('lodash');
+const step = require('h5.step');
+const express = require('express');
+const ExpressView = require('express/lib/view');
+const methods = require('methods');
+const ejsAmd = require('ejs-amd');
+const messageFormatAmd = require('messageformat-amd');
+const wrapAmd = require('./wrapAmd');
+const rqlMiddleware = require('./rqlMiddleware');
+const errorHandlerMiddleware = require('./errorHandlerMiddleware');
+const crud = require('./crud');
+const monkeyPatch = require('./monkeyPatch');
+let cookieParser = null;
+let bodyParser = null;
+let session = null;
+let pmx = null;
+let MongoStore = null;
+
+try { cookieParser = require('cookie-parser'); }
+catch (err) { console.log('Failed to load cookie-parser: %s', err.message); }
+
+try { bodyParser = require('body-parser'); }
+catch (err) { console.log('Failed to load body-parser: %s', err.message); }
+
+try { require('iconv-lite').encodingExists('UTF-8'); }
+catch (err) { console.log('Failed to load iconv-lite: %s', err.message); }
+
+try { session = require('express-session'); }
+catch (err) { console.log('Failed to load express-session: %s', err.message); }
+
+try { pmx = require('pmx'); }
+catch (err) { console.log('Failed to load pmx: %s', err.message); }
+
+try { MongoStore = require('./MongoStore'); }
+catch (err) { console.log('Failed to load MongoStore %s', err.message); }
 
 exports.DEFAULT_CONFIG = {
   mongooseId: 'mongoose',
   staticPath: 'public',
   staticBuildPath: 'public-build',
-  sessionCookieKey: 'walkner.sid',
-  cookieSecret: 'sec~1ee7~ret',
-  ejsAmdHelpers: {}
+  sessionCookieKey: 'express.sid',
+  sessionCookie: {
+    maxAge: null,
+    path: '/',
+    httpOnly: true
+  },
+  sessionStore: {},
+  cookieSecret: null,
+  ejsAmdHelpers: {},
+  title: 'express',
+  jsonBody: {},
+  textBody: {},
+  urlencodedBody: {},
+  ignoredErrorCodes: ['ECONNRESET', 'ECONNABORTED'],
+  routes: (app, expressModule) => { /* jshint unused:false */ }
 };
 
-exports.start = function startExpressModule(app, module, done)
+exports.start = function startExpressModule(app, expressModule, done)
 {
-  var mongoose = app[module.config.mongooseId];
+  const config = expressModule.config;
+  const mongoose = app[config.mongooseId];
+  const development = app.options.env === 'development';
+  const staticPath = config[development ? 'staticPath' : 'staticBuildPath'];
+  const expressApp = express();
 
-  if (!mongoose)
+  expressModule.staticPath = staticPath;
+
+  expressModule.app = expressApp;
+
+  expressModule.crud = crud;
+
+  expressModule.sessionStore = mongoose
+    ? new MongoStore(mongoose.connection.db, config.sessionStore)
+    : session ? new session.MemoryStore() : null;
+
+  expressModule.router = express.Router();
+
+  expressModule.createHttpError = function(message, statusCode)
   {
-    return done(new Error("express module requires the mongoose module!"));
+    var httpError = new Error(message);
+    httpError.status = statusCode || 400;
+
+    return httpError;
+  };
+
+  _.forEach(methods, function(method)
+  {
+    expressModule[method] = function()
+    {
+      return expressModule.router[method].apply(expressModule.router, arguments);
+    };
+  });
+
+  expressApp.set('trust proxy', true);
+  expressApp.set('view engine', 'ejs');
+  expressApp.set('views', app.pathTo('templates'));
+
+  if (development)
+  {
+    expressApp.set('json spaces', 2);
   }
 
-  module = app[module.name] = lodash.merge(express(), module);
+  expressApp.use(function(req, res, next)
+  {
+    req.isFrontendRequest = /^\/(app|assets|vendor)/.test(req.url) || /\.(js|css|png|ico)$/.test(req.url);
 
-  var production = app.options.env === 'production';
-  var staticPath = module.config[production ? 'staticBuildPath' : 'staticPath'];
+    next();
+  });
 
-  module.set('views', app.pathTo('templates'));
-  module.set('view engine', 'ejs');
-  module.set('static path', staticPath);
+  app.broker.publish('express.beforeMiddleware', {
+    module: expressModule
+  });
 
-  if (!production)
+  if (development)
   {
     setUpDevMiddleware(staticPath);
   }
 
-  module.sessionStore = new MongoStore(mongoose.connection.db);
-
-  module.use(express.cookieParser(module.config.cookieSecret));
-  module.use(express.session({
-    store: module.sessionStore,
-    key: module.config.sessionCookieKey,
-    cookie: {
-      maxAge: 3600 * 24 * 30 * 1000,
-      path: '/',
-      httpOnly: true
-    }
-  }));
-  module.use(express.bodyParser());
-  module.use(express.methodOverride());
-  module.use(rqlMiddleware());
-  module.use(module.router);
-  module.use(express.static(staticPath));
-
-  if (production)
+  if (config.cookieSecret && cookieParser)
   {
-    module.use(express.errorHandler());
-  }
-  else
-  {
-    module.use(express.errorHandler({
-      dumpExceptions: true,
-      showStack: true
-    }));
+    expressApp.use(cookieParser(config.cookieSecret));
   }
 
-  app.loadDir(app.pathTo('routes'), [app, module], done);
+  if (bodyParser)
+  {
+    expressApp.use(bodyParser.json(config.jsonBody));
+    expressApp.use(bodyParser.urlencoded(_.assign({extended: false}, config.urlencodedBody)));
+    expressApp.use(bodyParser.text(_.defaults({type: 'text/*'}, config.textBody)));
+  }
+
+  expressApp.use(rqlMiddleware());
+
+  if (expressModule.sessionStore)
+  {
+    const sessionMiddleware = session({
+      store: expressModule.sessionStore,
+      key: config.sessionCookieKey,
+      cookie: config.sessionCookie,
+      secret: config.cookieSecret,
+      saveUninitialized: true,
+      resave: false,
+      rolling: true
+    });
+
+    expressApp.use(function checkSessionMiddleware(req, res, next)
+    {
+      if (req.isFrontendRequest)
+      {
+        next();
+      }
+      else
+      {
+        sessionMiddleware(req, res, next);
+      }
+    });
+  }
+
+  app.broker.publish('express.beforeRouter', {
+    module: expressModule
+  });
+
+  expressApp.use('/', expressModule.router);
+
+  if (typeof expressModule.config.routes === 'function')
+  {
+    expressModule.config.routes(app, expressModule);
+  }
+
+  step(
+    function()
+    {
+      app.loadDir(app.pathTo('routes'), [app, expressModule], this.next());
+    },
+    function(err)
+    {
+      if (err)
+      {
+        return this.skip(err);
+      }
+
+      expressApp.use(express.static(staticPath));
+
+      if (pmx !== null)
+      {
+        expressApp.use(pmx.expressErrorHandler());
+      }
+
+      var errorHandlerOptions = {
+        title: config.title,
+        basePath: path.resolve(__dirname, '../../../')
+      };
+
+      expressApp.use(errorHandlerMiddleware(expressModule, errorHandlerOptions));
+
+      monkeyPatch(app, expressModule, {
+        View: ExpressView
+      });
+    },
+    done
+  );
 
   /**
    * @private
@@ -83,16 +210,16 @@ exports.start = function startExpressModule(app, module, done)
    */
   function setUpDevMiddleware(staticPath)
   {
-    ejsAmd.wrapAmd = wrapEjsAmd.bind(null, module.config.ejsAmdHelpers);
+    ejsAmd.wrapAmd = wrapEjsAmd.bind(null, config.ejsAmdHelpers);
 
-    var templateUrlRe = /^\/app\/([a-z0-9\-]+)\/templates\/(.*?)\.js$/;
-    var ejsAmdMiddleware = ejsAmd.middleware({
+    const templateUrlRe = /^\/app\/([a-zA-Z0-9\-]+)\/templates\/(.*?)\.js$/;
+    const ejsAmdMiddleware = ejsAmd.middleware({
       views: staticPath
     });
 
-    module.use(function(req, res, next)
+    expressApp.use(function runEjsAmdMiddleware(req, res, next)
     {
-      var matches = req.url.match(templateUrlRe);
+      const matches = req.url.match(templateUrlRe);
 
       if (matches === null)
       {
@@ -102,13 +229,13 @@ exports.start = function startExpressModule(app, module, done)
       ejsAmdMiddleware(req, res, next);
     });
 
-    module.use('/app/nls/locale/', messageFormatAmd.localeMiddleware());
+    expressApp.use('/app/nls/locale/', messageFormatAmd.localeMiddleware());
 
-    module.use('/app/nls/', messageFormatAmd.nlsMiddleware({
+    expressApp.use('/app/nls/', messageFormatAmd.nlsMiddleware({
       localeModulePrefix: 'app/nls/locale/',
       jsonPath: function(locale, nlsName)
       {
-        var jsonFile = (locale === null ? 'root' : locale) + '.json';
+        const jsonFile = (locale === null ? 'root' : locale) + '.json';
 
         return path.join(staticPath, 'app', nlsName, 'nls', jsonFile);
       }

@@ -1,12 +1,10 @@
-// Copyright (c) 2014, Łukasz Walukiewicz <lukasz@walukiewicz.eu>. Some Rights Reserved.
-// Licensed under CC BY-NC-SA 4.0 <http://creativecommons.org/licenses/by-nc-sa/4.0/>.
-// Part of the walkner-hydro project <http://lukasz.walukiewicz.eu/p/walkner-hydro>
+// Part of <http://miracle.systems/p/walkner-wmes> licensed under <CC BY-NC-SA 4.0>
 
 define([
   'underscore',
   'socket.io',
-  './broker',
-  './core/Socket'
+  'app/broker',
+  'app/core/Socket'
 ],
 function(
   _,
@@ -16,20 +14,29 @@ function(
 ) {
   'use strict';
 
-  var socket = new Socket(sio.connect('', {
-    'resource': 'socket.io',
-    'transports': [
-      'websocket',
-      'xhr-polling'
-    ],
-    'connect timeout': 5000,
-    'reconnect': true,
-    'reconnection delay': _.random(100, 200),
-    'reconnection limit': _.random(2000, 3000),
-    'max reconnection attempts': Infinity
+  var query = {};
+
+  if (window.COMPUTERNAME)
+  {
+    query.COMPUTERNAME = window.COMPUTERNAME;
+  }
+
+  var socket = new Socket(sio({
+    path: '/sio',
+    transports: ['websocket'],
+    timeout: 10000,
+    reconnectionDelay: 500,
+    autoConnect: false,
+    query: query
   }));
 
   var wasConnected = false;
+  var wasReconnecting = false;
+
+  socket.on('connecting', function()
+  {
+    broker.publish('socket.connecting', false);
+  });
 
   socket.on('connect', function()
   {
@@ -37,13 +44,16 @@ function(
     {
       wasConnected = true;
 
-      broker.publish('socket.connected');
+      broker.publish('socket.connected', false);
     }
   });
 
-  socket.on('connect_failed', function()
+  socket.on('connect_error', function()
   {
-    broker.publish('socket.connectFailed');
+    if (!wasConnected)
+    {
+      broker.publish('socket.connectFailed', false);
+    }
   });
 
   socket.on('message', function(message)
@@ -56,30 +66,39 @@ function(
     broker.publish('socket.disconnected');
   });
 
+  socket.on('reconnecting', function()
+  {
+    wasReconnecting = true;
+
+    broker.publish('socket.connecting', true);
+  });
+
   socket.on('reconnect', function()
   {
-    broker.publish('socket.reconnected');
+    wasReconnecting = false;
+
+    broker.publish('socket.connected', true);
   });
 
-  socket.on('reconnect_failed', function()
+  socket.on('reconnect_error', function()
   {
-    broker.publish('socket.reconnectFailed');
-  });
-
-  socket.on('error', forceReconnectOnFirstConnectFailure);
-
-  /**
-   * @private
-   * @param {*} err
-   */
-  function forceReconnectOnFirstConnectFailure(err)
-  {
-    if (err === '' && !wasConnected)
+    if (wasReconnecting)
     {
-      socket.off('error', forceReconnectOnFirstConnectFailure);
-      socket.reconnect();
+      wasReconnecting = false;
+
+      broker.publish('socket.connectFailed', true);
     }
-  }
+  });
+
+  socket.on('error', function()
+  {
+    if (wasReconnecting)
+    {
+      broker.publish('socket.connectFailed', true);
+    }
+  });
+
+  window.socket = socket;
 
   return socket;
 });

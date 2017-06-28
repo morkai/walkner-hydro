@@ -4,7 +4,7 @@
 
 'use strict';
 
-var lodash = require('lodash');
+const _ = require('lodash');
 
 module.exports = function setUpVirtualTags(app, modbus)
 {
@@ -13,44 +13,42 @@ module.exports = function setUpVirtualTags(app, modbus)
 
   function setUpMasterStatusTag()
   {
-    var controlProcessTag = modbus.tags['masters.controlProcess'];
+    const controlProcessTag = modbus.tags['masters.controlProcess'];
 
-    if (lodash.isUndefined(controlProcessTag))
+    if (_.isUndefined(controlProcessTag))
     {
       modbus.warn("masters.controlProcess tag is not defined!");
 
       return;
     }
 
-    var statusTags = [];
+    const statusTags = [];
 
-    lodash.each(modbus.config.controlMasters, function(controlMaster)
+    _.each(modbus.config.controlMasters, function(controlMaster)
     {
-      var master = modbus.masters[controlMaster];
+      const master = modbus.masters[controlMaster];
 
-      if (lodash.isObject(master))
+      if (_.isObject(master))
       {
         statusTags.push('masters.' + controlMaster);
       }
     });
 
-    var doCheckMasterControlStatus = checkControlProcessMastersStatus.bind(
+    const doCheckMasterControlStatus = checkControlProcessMastersStatus.bind(
       null, statusTags, controlProcessTag
     );
 
-    lodash.each(statusTags, function(masterStatusTag)
+    _.each(statusTags, function(masterStatusTag)
     {
-      app.broker.subscribe(
-        'tagValueChanged.' + masterStatusTag, doCheckMasterControlStatus
-      );
+      app.broker.subscribe('tagValueChanged.' + masterStatusTag, doCheckMasterControlStatus);
     });
   }
 
   function checkControlProcessMastersStatus(statusTags, controlProcessTag)
   {
-    var newState = true;
+    let newState = true;
 
-    for (var i = 0, l = statusTags.length; i < l; ++i)
+    for (let i = 0, l = statusTags.length; i < l; ++i)
     {
       if (!modbus.values[statusTags[i]])
       {
@@ -65,16 +63,14 @@ module.exports = function setUpVirtualTags(app, modbus)
 
   function setUpOutputPumpsTags()
   {
-    app.broker.subscribe(
-      'tagValueChanged.outputPumps.*.status.*', checkOutputPumpStatus
-    );
+    app.broker.subscribe('tagValueChanged.outputPumps.*.status.*', checkOutputPumpStatus);
   }
 
   function checkOutputPumpStatus(message)
   {
-    var statusTag = message.tag.name.replace(/\.(vfd|grid)$/, '');
-    var vfdStatusTag = statusTag + '.vfd';
-    var gridStatusTag = statusTag + '.grid';
+    const statusTag = message.tag.name.replace(/\.(vfd|grid)$/, '');
+    const vfdStatusTag = statusTag + '.vfd';
+    const gridStatusTag = statusTag + '.grid';
 
     modbus.tags[statusTag].setValue(
       modbus.values[vfdStatusTag] || modbus.values[gridStatusTag]
