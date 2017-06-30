@@ -68,6 +68,7 @@ outputPumps.current,PH: Prąd,vfd,register,3,8452,1,0,int16,0,150,A,div(10),0,15
 outputPumps.outputFrequency,PH: Częstotliwość wyjściowa,vfd,register,3,8451,1,0,int16,0,10000,Hz,div(100),0,100,0,avg,-
 outputPumps.presetRef,PH: Programowana wartość zadana,vfd,register,3,8193,1,1,int16,0,5000,%,minMax,0,100,0,avg,-
 outputPumps.presetRef.startingValue,PH: Prog. wartość zadana przy dołączaniu pompy,-,setting,-,-,0,1,int16,0,100,%,-,-,-,0,all,-
+outputPumps.presetRef.maxValue,PH: Maksymalna prog. wartość zadana,-,setting,-,-,0,1,int16,0,100,%,-,-,-,0,all,-
 outputPumps.presetRef.adjustDelay,PH: Opóźnienie zmiany prog. wartości zadanej po załączeniu,-,setting,-,-,0,1,float,0,120,s,-,-,-,0,all,-
 outputPumps.presetRef.stepInterval,PH: Odstęp między zmianami prog. wartości zadanej,-,setting,-,-,0,1,float,0,120,s,-,-,-,0,all,-
 outputPumps.presetRef.stepValue,PH: Wielkość zmiany prog. wartości zadanej,-,setting,-,-,0,1,float,0,100,%,-,-,-,0,all,-

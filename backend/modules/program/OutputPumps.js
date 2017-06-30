@@ -216,11 +216,19 @@ OutputPumps.prototype.getPresetRef = function()
 };
 
 /**
+ * @returns {number}
+ */
+OutputPumps.prototype.getMaxPresetRef = function()
+{
+  return this.getTagValue('.presetRef.maxValue') || 100;
+};
+
+/**
  * @returns {boolean}
  */
 OutputPumps.prototype.isMaxPresetRef = function()
 {
-  return this.getPresetRef() >= 100;
+  return this.getPresetRef() >= this.getMaxPresetRef();
 };
 
 /**
@@ -482,10 +490,11 @@ OutputPumps.prototype.handlePresetRef = function(lock)
   }
 
   var newPresetRef = this.getPresetRef() + this.getPresetRefStepValue();
+  var maxPresetRef = this.getMaxPresetRef();
 
-  if (newPresetRef > 100)
+  if (newPresetRef > maxPresetRef)
   {
-    newPresetRef = 100;
+    newPresetRef = maxPresetRef;
   }
   else
   {
@@ -509,7 +518,7 @@ OutputPumps.prototype.handlePresetRef = function(lock)
       controlUnit.debug("Adjusted the preset reference to %d.", newPresetRef);
     }
 
-    if (newPresetRef === 100)
+    if (newPresetRef === maxPresetRef)
     {
       controlUnit.minOutputPressureReachedAt = -1;
     }

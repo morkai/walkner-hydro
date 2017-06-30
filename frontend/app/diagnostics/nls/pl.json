@@ -237,7 +237,7 @@
   "SETTINGS:outputPumps.stabilizationTimes.firstPump": "Załączenie pierwszej pompy",
   "SETTINGS:outputPumps.stabilizationTimes.firstPump:HELP": "Pierwsza pompa załączy się, jeżeli wartość ciśnienia w sieci utrzyma się poniżej minimalnego poziomu przez daną ilość sekund.",
   "SETTINGS:outputPumps.stabilizationTimes.nextPump": "Załączenie następnej pompy",
-  "SETTINGS:outputPumps.stabilizationTimes.nextPump:HELP": "Następna pompa załączy się, jeżeli wartość ciśnienia w sieci (nadal) utrzyma się poniżej minimalnego poziomu przez daną ilość sekund i programowana wartość zadana falownika wzrosła do 100%.",
+  "SETTINGS:outputPumps.stabilizationTimes.nextPump:HELP": "Następna pompa załączy się, jeżeli wartość ciśnienia w sieci (nadal) utrzyma się poniżej minimalnego poziomu przez daną ilość sekund i programowana wartość zadana falownika wzrosła do maksymalnej programowalnej wartości zadanej.",
   "SETTINGS:outputPumps.stabilizationTimes.stopPump": "Wyłączenie pompy",
   "SETTINGS:outputPumps.stabilizationTimes.stopPump:HELP": "Jedna z aktualnie uruchomionych pomp zostanie wyłączona, jeżeli wartość ciśnienia w sieci utrzyma się powyżej maksymalnego poziomu przez daną ilość sekund. Najpierw wybierana jest ta pompa, która została uruchomiona przez sieć i ma najwięcej przepracowanych godzin, a na samym końcu - pompa uruchomiona przez falownik.",
   "SETTINGS:outputPumps.presetRef.startingValue": "Wartość po dołączeniu pompy",
@@ -247,5 +247,7 @@
   "SETTINGS:outputPumps.presetRef.stepInterval": "Odstęp między zmianami",
   "SETTINGS:outputPumps.presetRef.stepInterval:HELP": "Odczekaj podaną ilość sekund między zmianą programowanej wartości zadanej o wartość <em>Wielkość zmiany</em>.",
   "SETTINGS:outputPumps.presetRef.stepValue": "Wielkość zmiany",
-  "SETTINGS:outputPumps.presetRef.stepValue:HELP": "Co <em>Odstęp między zmianami</em> sekund zwiększ programowaną wartość zadaną o daną wartość."
+  "SETTINGS:outputPumps.presetRef.stepValue:HELP": "Co <em>Odstęp między zmianami</em> sekund zwiększ programowaną wartość zadaną o daną wartość.",
+  "SETTINGS:outputPumps.presetRef.maxValue": "Maksymalna wartość",
+  "SETTINGS:outputPumps.presetRef.maxValue:HELP": "Maksymalna programowana wartość zadana."
 }
