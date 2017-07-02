@@ -1,8 +1,7 @@
-<div class="analytics analytics-charts">
-  <form class="well analytics-controls analytics-charts-controls form-inline">
+<div class="analytics-tables">
+  <form class="well analytics-controls analytics-tables-controls form-inline">
     <label for="<%- idPrefix %>-controls-tag"><%- t('analytics', 'CHART_CONTROLS_TAG') %></label>
-    <select id="<%- idPrefix %>-controls-tag">
-      <option value=""></option>
+    <select id="<%- idPrefix %>-controls-tag" class="is-expandable" multiple size="1" data-expanded-length="22" required>
       <optgroup label="<%- t('tags', 'GROUP:inputPumps') %>">
         <option value="inputPumps.1.current"><%- t('tags', 'TAG:inputPumps.1.current') %></option>
         <option value="inputPumps.1.waterLevel"><%- t('tags', 'TAG:inputPumps.1.waterLevel') %></option>
@@ -30,34 +29,21 @@
         <option value="outputFlow"><%- t('tags', 'TAG:outputFlow') %></option>
         <option value="outputFlow.total.forwards" data-value-field="max"><%- t('tags', 'TAG:outputFlow.total.forwards') %></option>
       </optgroup>
-      <optgroup label="<%- t('tags', 'GROUP:health') %>">
-        <option value="health.os.cpu"><%- t('tags', 'TAG:health.os.cpu') %></option>
-        <option value="health.os.memory"><%- t('tags', 'TAG:health.os.memory') %></option>
-        <option value="health.controller.memory"><%- t('tags', 'TAG:health.controller.memory') %></option>
-        <option value="health.alarms.memory"><%- t('tags', 'TAG:health.alarms.memory') %></option>
-        <option value="health.frontend.memory"><%- t('tags', 'TAG:health.frontend.memory') %></option>
-        <option value="health.frontend.websockets" data-value-field="max"><%- t('tags', 'TAG:health.frontend.websockets') %></option>
-      </optgroup>
     </select>
     <label for="<%- idPrefix %>-controls-from"><%- t('analytics', 'CHART_CONTROLS_FROM') %></label>
-    <input id="<%- idPrefix %>-controls-from" name="from" type="date" placeholder="YYYY-MM-DD" value="<%- from %>">
+    <input id="<%- idPrefix %>-controls-from" name="from" type="date" placeholder="YYYY-MM-DD" value="<%- from %>" required>
     <label for="<%- idPrefix %>-controls-to"><%- t('analytics', 'CHART_CONTROLS_TO') %></label>
-    <input id="<%- idPrefix %>-controls-to" name="to" type="date" placeholder="YYYY-MM-DD" value="<%- to %>">
+    <input id="<%- idPrefix %>-controls-to" name="to" type="date" placeholder="YYYY-MM-DD" value="<%- to %>" required>
     <label for="<%- idPrefix %>-controls-interval"><%- t('analytics', 'CHART_CONTROLS_INTERVAL') %></label>
     <div class="btn-group" data-toggle="buttons-radio">
       <button class="btn" type="button" name="interval" value="monthly">mc</button>
-      <button class="btn" type="button" name="interval" value="daily">dzień</button>
+      <button class="btn active" type="button" name="interval" value="daily">dzień</button>
       <button class="btn" type="button" name="interval" value="hourly">godz</button>
-      <button class="btn active" type="button" name="interval" value="minutely">min</button>
     </div>
-    <button id="<%- idPrefix %>-controls-plot" class="btn btn-primary" type="submit">
-      <i class="icon-bar-chart"></i>
-      <%- t('analytics', 'CHART_CONTROLS_PLOT') %>
-    </button>
-    <button id="<%- idPrefix %>-controls-reset" class="btn btn-danger" type="button">
-      <i class="icon-remove"></i>
-      <%- t('analytics', 'CHART_CONTROLS_RESET') %>
+    <button id="<%- idPrefix %>-controls-submit" class="btn btn-primary" type="submit">
+      <i class="icon-table"></i>
+      <%- t('analytics', 'TABLE_CONTROLS_SUBMIT') %>
     </button>
   </form>
-  <div class="analytics-charts-plot"></div>
+  <div class="analytics-tables-table"></div>
 </div>

@@ -90,6 +90,7 @@
   "TAG:outputPumps.outputFrequency": "PH: Częstotliwość wyjściowa",
   "TAG:outputPumps.presetRef": "PH: Programowana wartość zadana",
   "TAG:outputPumps.presetRef.startingValue": "PH: Prog. wartość zadana przy dołączaniu pompy",
+  "TAG:outputPumps.presetRef.maxValue": "PH: Maksymalna prog. wartość zadana",
   "TAG:outputPumps.presetRef.adjustDelay": "PH: Opóźnienie zmiany prog. wartości zadanej po załączeniu",
   "TAG:outputPumps.presetRef.stepInterval": "PH: Odstęp między zmianami prog. wartości zadanej",
   "TAG:outputPumps.presetRef.stepValue": "PH: Wielkość zmiany prog. wartości zadanej",

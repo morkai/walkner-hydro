@@ -59,6 +59,8 @@ module.exports = function startControllerRoutes(app, module)
 
   express.get('/tags', canView, browseRoute);
 
+  express.get('/tags/avg', canView, getAvgMetricsRoute);
+
   express.get('/tags/:tag/metric', canView, getTagMetricRoute);
 
   express.get('/tags/:tag/changes', canView, getTagChangesRoute);
@@ -118,9 +120,14 @@ module.exports = function startControllerRoutes(app, module)
       stop = moment(now).startOf('minute').valueOf();
     }
 
-    if (start >= stop)
+    if (start > stop)
     {
-      stop = start + 60000;
+      [start, stop] = [stop, start];
+    }
+
+    if (stop > now)
+    {
+      stop = moment(now).startOf('minute').valueOf();
     }
 
     start = Math.floor(start / 1000) * 1000;
@@ -142,6 +149,45 @@ module.exports = function startControllerRoutes(app, module)
       }
     }
 
+    let startOf = null;
+
+    switch (req.query.interval)
+    {
+      case 'hourly':
+        step = hour;
+        interval = 'hourly';
+        startOf = 'hour';
+        break;
+
+      case 'daily':
+        step = day;
+        interval = 'daily';
+        startOf = 'day';
+        break;
+
+      case 'monthly':
+        step = month;
+        interval = 'monthly';
+        startOf = 'month';
+        break;
+
+      default:
+        step = minute;
+        interval = 'minutely';
+        startOf = 'minute';
+        break;
+    }
+
+    start = moment(start).startOf(startOf);
+    stop = moment(stop).startOf(startOf);
+
+    if (start.diff(stop) === 0)
+    {
+      stop.add(1, startOf);
+    }
+
+    start = start.valueOf();
+    stop = stop.valueOf();
     step *= 1000;
 
     const minutely = interval === 'minutely';
@@ -265,6 +311,65 @@ module.exports = function startControllerRoutes(app, module)
         });
       }
     );
+  }
+
+  /**
+   * @private
+   * @param {Object} req
+   * @param {Object} res
+   * @param {function(?Error)} next
+   * @returns {undefined}
+   */
+  function getAvgMetricsRoute(req, res, next)
+  {
+    const tags = String(req.query.tags)
+      .split(',')
+      .filter(t => module.tags[t] && module.tags[t].archive === 'avg');
+
+    if (_.isEmpty(tags))
+    {
+      return next(app.createError('INVALID_TAGS', 400));
+    }
+
+    const start = moment(parseInt(req.query.start, 10)).startOf('minute').valueOf();
+    const stop = moment(parseInt(req.query.stop, 10) || Date.now()).startOf('minute').valueOf();
+
+    if (!start || !stop || start === stop || start > stop)
+    {
+      return next(app.createError('INVALID_TIME', 400));
+    }
+
+    const interval = req.query.interval === 'hourly' || req.query.interval === 'monthly'
+      ? req.query.interval
+      : 'daily';
+
+    const collection = mongoose.connection.db.collection(`tags.avg.${interval}`);
+    const query = {
+      tag: {$in: tags},
+      time: {
+        $gte: start,
+        $lt: stop
+      }
+    };
+    const fields = {
+      _id: 0
+    };
+
+    String(req.query.fields)
+      .split(',')
+      .map(f => fieldMaps.value[f] || fieldMaps.delta[f])
+      .filter(f => !!f)
+      .forEach(f => fields[f] = 1);
+
+    collection.find(query).project(fields).toArray(function(err, results)
+    {
+      if (err)
+      {
+        return next(err);
+      }
+
+      res.json(results);
+    });
   }
 
   /**

@@ -1,0 +1,37 @@
+<table class="table table-bordered table-condensed table-hover">
+  <thead>
+  <tr>
+    <th rowspan="2">Czas</th>
+    <% columns.forEach(function(column) { %>
+    <th colspan="6"><%- t('tags', 'TAG:' + column.tag) %></th>
+    <% }) %>
+    <th rowspan="2"></th>
+  </tr>
+  <tr>
+    <% columns.forEach(function(column) { %>
+    <th class="is-<%- column.evenOdd %>">avg</th>
+    <th class="is-<%- column.evenOdd %>">min</th>
+    <th class="is-<%- column.evenOdd %>">max</th>
+    <th class="is-<%- column.evenOdd %>">davg</th>
+    <th class="is-<%- column.evenOdd %>">dmin</th>
+    <th class="is-<%- column.evenOdd %>">dmax</th>
+    <% }) %>
+  </tr>
+  </thead>
+  <tbody>
+  <% rows.forEach(function(row) { %>
+  <tr>
+    <td class="is-min"><%- row.time.format('DD.MM.YYYY HH:mm') %></td>
+    <% columns.forEach(function(column) { %>
+    <td class="is-min is-num is-<%- column.evenOdd %>"><%- num(row.tags[column.tag].avg) %></td>
+    <td class="is-min is-num is-<%- column.evenOdd %>"><%- num(row.tags[column.tag].min) %></td>
+    <td class="is-min is-num is-<%- column.evenOdd %>"><%- num(row.tags[column.tag].max) %></td>
+    <td class="is-min is-num is-<%- column.evenOdd %>"><%- num(row.tags[column.tag].dAvg) %></td>
+    <td class="is-min is-num is-<%- column.evenOdd %>"><%- num(row.tags[column.tag].dMin) %></td>
+    <td class="is-min is-num is-<%- column.evenOdd %>"><%- num(row.tags[column.tag].dMax) %></td>
+    <% }) %>
+    <td></td>
+  </tr>
+  <% }) %>
+  </tbody>
+</table>

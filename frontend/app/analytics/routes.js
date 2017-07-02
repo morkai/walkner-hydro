@@ -8,6 +8,7 @@ define([
   'app/viewport',
   'app/i18n',
   './views/ChartsView',
+  './pages/TablesPage',
   './pages/ChangesPage',
   './pages/TagChangesPage',
   'i18n!app/nls/analytics'
@@ -17,6 +18,7 @@ define([
   viewport,
   t,
   ChartsView,
+  TablesPage,
   ChangesPage,
   TagChangesPage
 ) {
@@ -35,6 +37,11 @@ define([
       ])
       .setView('.bd', new ChartsView())
       .render();
+  });
+
+  router.map('/analytics/tables', canView, function showTables()
+  {
+    new TablesPage().render();
   });
 
   router.map('/analytics/changes', canView, function showChanges(req)

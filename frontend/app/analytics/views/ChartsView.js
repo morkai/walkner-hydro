@@ -21,7 +21,13 @@ define([
 ) {
   'use strict';
 
-  var DATETIME_FORMAT = 'YYYY-MM-DD HH:mm';
+  var DATETIME_FORMAT = 'YYYY-MM-DD';
+  var LEGEND_FORMAT = {
+    minutely: 'LLLL',
+    hourly: 'LLLL',
+    daily: 'LL',
+    monthly: 'MMMM YYYY'
+  };
 
   /**
    * @name app.analytics.views.ChartsView
@@ -114,6 +120,12 @@ define([
 
     /**
      * @private
+     * @type {number}
+     */
+    this.interval = 'minutely';
+
+    /**
+     * @private
      * @type {Array}
      */
     this.plotSeries = [];
@@ -126,6 +138,7 @@ define([
       xaxis: {
         mode: 'time',
         timezone: 'browser',
+        autoscaleMargin: 0.002,
         monthNames: moment().localeData()._monthsShort, // eslint-disable-line no-underscore-dangle
         dayNames: moment().localeData()._weekdaysMin // eslint-disable-line no-underscore-dangle
       },
@@ -144,7 +157,8 @@ define([
       },
       grid: {
         hoverable: true,
-        autoHighlight: false
+        autoHighlight: false,
+        margin: 0
       }
     };
 
@@ -229,7 +243,7 @@ define([
       this.plot.setupGrid();
       this.plot.draw();
 
-      this.$legendLabels = this.$('.legendLabel');
+      this.prepareLegendLabels();
     }
   };
 
@@ -239,7 +253,20 @@ define([
   ChartsView.prototype.renderPlot = function()
   {
     this.plot = $.plot(this.$plot, this.plotSeries, this.plotOptions);
+
+    this.prepareLegendLabels();
+  };
+
+  /**
+   * @private
+   */
+  ChartsView.prototype.prepareLegendLabels = function()
+  {
     this.$legendLabels = this.$('.legendLabel');
+    this.$legendTime = this.$('.legend table')
+      .prepend('<tbody><tr><td colspan="2">?</td></tr>')
+      .find('td')
+      .first();
   };
 
   /**
@@ -258,8 +285,8 @@ define([
     var $from = this.$('#' + this.idPrefix + '-controls-from');
     var $to = this.$('#' + this.idPrefix + '-controls-to');
 
-    var from = moment($from.val());
-    var to = moment($to.val());
+    var from = moment($from.val(), 'YYYY-MM-DD');
+    var to = moment($to.val(), 'YYYY-MM-DD');
 
     if (!from)
     {
@@ -278,10 +305,10 @@ define([
 
     var start = from.valueOf();
     var stop = to.valueOf();
-    var step = 60000;
-    var diffTimeRange = start !== this.start || stop !== this.stop;
+    var interval = this.$('button[name="interval"].active').val();
+    var diffFilter = start !== this.start || stop !== this.stop || interval !== this.interval;
 
-    if (!diffTimeRange && _.isObject(this.tags[tag]))
+    if (!diffFilter && _.isObject(this.tags[tag]))
     {
       return;
     }
@@ -299,34 +326,31 @@ define([
       data: {
         start: start,
         stop: stop,
-        step: step,
+        interval: interval,
         valueField: $tag[0].selectedOptions[0].getAttribute('data-value-field')
       }
     });
 
     this.req.done(function(res)
     {
-      var values = res.values;
-      var maxValueCount = (stop - start) / step;
-      var missingValues = maxValueCount - values.length;
-
-      if (diffTimeRange)
+      if (diffFilter)
       {
         chartsView.tags = {};
         chartsView.plotSeries = [];
         chartsView.start = start;
         chartsView.stop = stop;
+        chartsView.interval = interval;
       }
 
-      start += missingValues * 60000;
+      start = res.firstTime - res.step;
 
       var mul = tag === 'inputPumps.1.waterLevel' || tag === 'inputPumps.2.waterLevel' ? -1 : 1;
 
       var series = {
         label: $tag[0].selectedOptions[0].label + ' = <code>?</code>',
-        data: values.map(function(value)
+        data: res.values.map(function(value)
         {
-          start += 60000;
+          start += res.step;
 
           return [start, value === null ? null : (value * mul)];
         })
@@ -365,6 +389,7 @@ define([
     }
 
     var data = this.plot.getData();
+    var x = null;
 
     for (var i = 0; i < data.length; ++i)
     {
@@ -379,16 +404,19 @@ define([
         }
       }
 
+      var x = null;
       var y = null;
       var p1 = series.data[j - 1];
       var p2 = series.data[j];
 
       if (p1 != null)
       {
+        x = p1[0];
         y = p1[1];
       }
       else if (p2 != null)
       {
+        x = p2[0];
         y = p2[1];
       }
 
@@ -410,6 +438,11 @@ define([
       var value = y === null ? '?' : y.toFixed(2);
 
       this.$legendLabels.eq(i).find('code').text(value);
+    }
+
+    if (data.length)
+    {
+      this.$legendTime.text(moment(x).format(LEGEND_FORMAT[this.interval]));
     }
   };
 

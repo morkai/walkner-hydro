@@ -1,2 +1,21 @@
 @import url(./charts.css);
+@import url(./tables.css);
 @import url(./changes.css);
+
+.analytics-controls {
+  margin-bottom: 1em;
+}
+.analytics-controls label {
+  margin-left: 1em;
+  font-weight: bold;
+}
+.analytics-controls .btn-primary {
+  margin-left: 1em;
+}
+.analytics-controls label:first-child {
+  margin-left: 0;
+}
+.analytics-controls input[type="date"] {
+  width: auto;
+  text-align: left;
+}

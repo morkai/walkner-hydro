@@ -171,6 +171,16 @@ input[type="number"] {
 .form-actions .cancel {
   margin-left: 1em;
 }
+div.is-expandable {
+  display: inline-block;
+  line-height: 30px;
+}
+select.is-expandable.is-expanded {
+  width: auto!important;
+  height: auto;
+  position: absolute;
+  z-index: 110;
+}
 
 .pagination {
   line-height: 0;

@@ -393,6 +393,7 @@ define([
    */
   PageLayout.prototype.toggleBreakin = function(newState)
   {
+    /*
     if (newState)
     {
       this.$breakinModal = $(breakinTemplate({
@@ -422,6 +423,7 @@ define([
       });
       this.$breakinModal.modal('hide');
     }
+    */
   };
 
   /**

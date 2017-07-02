@@ -1,16 +1,24 @@
 {
   "BREADCRUMBS_ANALYTICS": "Analiza",
   "BREADCRUMBS_CHARTS": "Wykresy",
+  "BREADCRUMBS_TABLES": "Tabele",
   "BREADCRUMBS_CHANGES": "Historia zmian",
+
+  "PAGE_ACTION_CSV": "Eksportuj do CSV",
 
   "CHART_CONTROLS_TAG": "Tag:",
   "CHART_CONTROLS_FROM": "Od:",
   "CHART_CONTROLS_TO": "Do:",
+  "CHART_CONTROLS_INTERVAL": "Podział czasu:",
   "CHART_CONTROLS_PLOT": "Wykreśl",
   "CHART_CONTROLS_RESET": "Resetuj",
 
+  "TABLE_CONTROLS_SUBMIT": "Filtruj",
+
   "CHANGES_COLUMN_NAME": "Nazwa taga",
   "CHANGES_COLUMN_DESCRIPTION": "Opis taga",
+
+  "NO_DATA": "Brak danych.",
 
   "PROPERTY_TIME": "Czas zmiany",
   "PROPERTY_VALUE": "Wartość",

@@ -1,0 +1,21 @@
+.analytics-tables table thead th {
+  vertical-align: top;
+  text-align: center;
+}
+table .is-min {
+  white-space: nowrap;
+  width: 1%;
+}
+table .is-num {
+  text-align: right;
+  font-family: Consolas, "Lucida Console", Monaco, monospace;
+}
+.analytics-tables td.is-odd {
+  background: #f8f8f8;
+}
+.analytics-tables tbody tr:hover td {
+  background: #ffffd6;
+}
+.analytics-tables tbody tr:hover td.is-odd {
+  background: #ffffa6;
+}
