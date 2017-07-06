@@ -127,6 +127,14 @@ OutputPump.prototype.isFailure = function()
 };
 
 /**
+ * @returns {number}
+ */
+OutputPump.prototype.getRunTime = function()
+{
+  return this.startedAt === -1 ? 0 : ((Date.now() - this.startedAt) / 60000);
+};
+
+/**
  * @returns {number|null}
  */
 OutputPump.prototype.getWaterLevel = function()

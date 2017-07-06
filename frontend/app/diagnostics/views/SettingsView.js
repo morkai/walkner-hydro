@@ -43,7 +43,18 @@ define([
           return;
         }
 
-        var value = parseFloat(e.target.value);
+        var value = e.target.value;
+
+        switch (e.target.type)
+        {
+          case 'number':
+            value = parseFloat(e.target.value);
+            break;
+
+          case 'radio':
+            value = this.$('input[name="' + e.target.name + '"]:checked').val();
+            break;
+        }
 
         if (value === controller.values[tagName])
         {
@@ -106,7 +117,16 @@ define([
    */
   SettingsView.prototype.updateState = function(newValue, tagName)
   {
-    this.$('input[name="' + tagName + '"]').val(newValue);
+    var $input = this.$('input[name="' + tagName + '"]');
+
+    if ($input.attr('type') === 'radio')
+    {
+      $input.filter('[value="' + newValue + '"]').prop('checked', true);
+    }
+    else
+    {
+      $input.val(newValue);
+    }
   };
 
   /**

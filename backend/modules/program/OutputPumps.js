@@ -83,11 +83,45 @@ function OutputPumps(broker, modbus, program)
 util.inherits(OutputPumps, ControlUnit);
 
 /**
+ * @returns {string}
+ */
+OutputPumps.prototype.getWorkMode = function()
+{
+  return this.getTagValue('.workMode') || 'onoff';
+};
+
+/**
+ * @returns {string}
+ */
+OutputPumps.prototype.isConstantWorkMode = function()
+{
+  return this.getWorkMode() === 'constant';
+};
+
+/**
+ * @returns {string}
+ */
+OutputPumps.prototype.isOnOffWorkMode = function()
+{
+  return this.getWorkMode() === 'onoff';
+};
+
+/**
  * @returns {boolean}
  */
 OutputPumps.prototype.isDryRun = function()
 {
   return !!this.getTagValue('.dryRun');
+};
+
+/**
+ * @returns {number}
+ */
+OutputPumps.prototype.getMaxConstantRunTime = function()
+{
+  var maxConstantRunTime = this.getTagValue('.maxConstantRunTime') || 0;
+
+  return maxConstantRunTime < 1 ? -1 : maxConstantRunTime;
 };
 
 /**
@@ -114,6 +148,24 @@ OutputPumps.prototype.getMaxOutputPressure = function()
 OutputPumps.prototype.getOutputPressure = function()
 {
   return this.getTagValue('outputPressure');
+};
+
+/**
+ * @returns {number|null}
+ */
+OutputPumps.prototype.getDesiredOutputPressure = function()
+{
+  var desiredOutputPressure = this.getTagValue('.desiredOutputPressure');
+
+  if (desiredOutputPressure)
+  {
+    return desiredOutputPressure;
+  }
+
+  var minOutputPressure = this.getMinOutputPressure();
+  var maxOutputPressure = this.getMaxOutputPressure();
+
+  return (Math.round((minOutputPressure + maxOutputPressure) / 2 * 100) / 100) || null;
 };
 
 /**
@@ -156,7 +208,7 @@ OutputPumps.prototype.hasEnoughWater = function()
   var total = this.program.reservoirs.getTotalWaterLevel();
   var min = this.getMinTotalWaterLevel();
 
-  return total >= min;
+  return min !== -1 && total >= min;
 };
 
 /**
@@ -218,9 +270,37 @@ OutputPumps.prototype.getPresetRef = function()
 /**
  * @returns {number}
  */
+OutputPumps.prototype.getMinPresetRef = function()
+{
+  var minValue = this.getTagValue('.presetRef.minValue');
+  var maxValue = this.getMaxPresetRef();
+
+  if (!minValue || minValue < 0 || minValue >= maxValue)
+  {
+    return 0;
+  }
+
+  return minValue;
+};
+
+/**
+ * @returns {number}
+ */
 OutputPumps.prototype.getMaxPresetRef = function()
 {
-  return this.getTagValue('.presetRef.maxValue') || 100;
+  var maxValue = this.getTagValue('.presetRef.maxValue');
+
+  if (!maxValue)
+  {
+    return 100;
+  }
+
+  if (maxValue <= 0)
+  {
+    return 1;
+  }
+
+  return maxValue;
 };
 
 /**
@@ -229,6 +309,14 @@ OutputPumps.prototype.getMaxPresetRef = function()
 OutputPumps.prototype.isMaxPresetRef = function()
 {
   return this.getPresetRef() >= this.getMaxPresetRef();
+};
+
+/**
+ * @returns {boolean}
+ */
+OutputPumps.prototype.isMinPresetRef = function()
+{
+  return this.getPresetRef() <= this.getMinPresetRef();
 };
 
 /**
@@ -376,6 +464,20 @@ OutputPumps.prototype.manageOutputPumps = function()
     return this.stopRunningOutputPumps("not enough clean water", lock);
   }
 
+  if (this.isConstantWorkMode())
+  {
+    return this.handleConstantWorkMode(lock);
+  }
+
+  this.handleOnOffWorkMode(lock);
+};
+
+/**
+ * @private
+ * @param {Lock} lock
+ */
+OutputPumps.prototype.handleOnOffWorkMode = function(lock)
+{
   if (this.isMaxOutputPressureReached())
   {
     this.minOutputPressureReachedAt = -1;
@@ -392,7 +494,137 @@ OutputPumps.prototype.manageOutputPumps = function()
 
   this.minOutputPressureReachedAt = -1;
 
-  this.handlePresetRef(lock);
+  this.handlePresetRef(this.getPresetRefStepValue(), lock);
+};
+
+/**
+ * @private
+ * @param {Lock} lock
+ */
+OutputPumps.prototype.handleConstantWorkMode = function(lock)
+{
+  var actual = this.getOutputPressure();
+  var desired = this.getDesiredOutputPressure();
+  var minReached = this.isMinOutputPressureReached();
+
+  if (minReached)
+  {
+    if (this.minOutputPressureReachedAt === -1)
+    {
+      this.minOutputPressureReachedAt = Date.now();
+    }
+  }
+  else
+  {
+    this.minOutputPressureReachedAt = -1;
+  }
+
+  if (this.isMaxOutputPressureReached())
+  {
+    if (this.maxOutputPressureReachedAt === -1)
+    {
+      this.maxOutputPressureReachedAt = Date.now();
+    }
+  }
+  else
+  {
+    this.maxOutputPressureReachedAt = -1;
+  }
+
+  if (this.isAnyMaxConstantRunTimeReached())
+  {
+    return this.stopConstantlyRunningOutputPump(lock);
+  }
+
+  var diff = Math.round((actual - desired) * 100) / 100;
+
+  if (diff >= 1.5)
+  {
+    return this.stopRunningOutputPumps("output pressure greater than desired", lock);
+  }
+
+  var dir = diff > 0 ? -1 : 1;
+
+  if (this.isDesiredOutputPressureReached())
+  {
+    this.debug(
+      "Not adjusting the preset reference: desired output pressure of [%d] reached: %d.", desired, actual
+    );
+
+    return lock.off();
+  }
+
+  if (minReached && !this.isAnyRunning())
+  {
+    return this.handleMinOutputPressure(lock);
+  }
+
+  var absDiff = Math.abs(diff);
+  var stepValue = 0;
+
+  if (absDiff < 0.1)
+  {
+    stepValue = 0.25;
+  }
+  else if (absDiff < 0.2)
+  {
+    stepValue = 0.5;
+  }
+  else if (absDiff < 0.4)
+  {
+    stepValue = 0.75;
+  }
+  else if (absDiff < 0.8)
+  {
+    stepValue = 1;
+  }
+  else if (absDiff < 1)
+  {
+    stepValue = 2;
+  }
+  else
+  {
+    stepValue = 3;
+  }
+
+  this.handlePresetRef(stepValue * dir, lock);
+};
+
+/**
+ * @private
+ * @returns {Array.<OutputPump>}
+ */
+OutputPumps.prototype.getConstantlyRunningOutputPumps = function()
+{
+  var maxConstantRunTime = this.getMaxConstantRunTime();
+
+  if (maxConstantRunTime === -1)
+  {
+    return [];
+  }
+
+  return this.getRunning().filter(outputPump => outputPump.getRunTime() >= maxConstantRunTime);
+};
+
+/**
+ * @private
+ * @returns {boolean}
+ */
+OutputPumps.prototype.isAnyMaxConstantRunTimeReached = function()
+{
+  return this.getConstantlyRunningOutputPumps().length > 0;
+};
+
+/**
+ * @private
+ * @param {Lock} lock
+ */
+OutputPumps.prototype.stopConstantlyRunningOutputPump = function(lock)
+{
+  var outputPumps = this.getConstantlyRunningOutputPumps().sort((a, b) => b.getRunTime() - a.getRunTime());
+  var outputPumpToStop = outputPumps[0];
+
+  this.stopOutputPump(outputPumpToStop, lock);
 };
 
 /**
@@ -464,7 +696,7 @@ OutputPumps.prototype.handleMinOutputPressure = function(lock)
       return this.startNextOutputPump(lock);
     }
 
-    return this.handlePresetRef(lock);
+    return this.handlePresetRef(this.getPresetRefStepValue(), lock);
   }
 
   this.debug(
@@ -478,28 +710,30 @@ OutputPumps.prototype.handleMinOutputPressure = function(lock)
 
 /**
  * @private
+ * @param {number} stepValue
  * @param {Lock} lock
  */
-OutputPumps.prototype.handlePresetRef = function(lock)
+OutputPumps.prototype.handlePresetRef = function(stepValue, lock)
 {
-  if (!this.shouldChangePresetRef())
+  if (!this.shouldChangePresetRef(stepValue))
   {
-    this.debug("Not adjusting the preset reference.");
-
     return lock.off();
   }
 
-  var newPresetRef = this.getPresetRef() + this.getPresetRefStepValue();
+  var newPresetRef = this.getPresetRef() + stepValue;
+  var minPresetRef = this.getMinPresetRef();
   var maxPresetRef = this.getMaxPresetRef();
 
   if (newPresetRef > maxPresetRef)
   {
     newPresetRef = maxPresetRef;
   }
-  else
+  else if (newPresetRef < minPresetRef)
   {
-    newPresetRef = Math.round(newPresetRef * 100) / 100;
+    newPresetRef = minPresetRef;
   }
+
+  newPresetRef = Math.round(newPresetRef * 100) / 100;
 
   var controlUnit = this;
 
@@ -616,7 +850,16 @@ OutputPumps.prototype.stopSingleOutputPump = function(lock)
     }
   );
 
-  var outputPumpToStop = runningOutputPumps[0];
+  this.stopOutputPump(runningOutputPumps[0], lock);
+};
+
+/**
+ * @private
+ * @param {OutputPump} outputPumpToStop
+ * @param {Lock} lock
+ */
+OutputPumps.prototype.stopOutputPump = function(outputPumpToStop, lock)
+{
   var startedByGrid = outputPumpToStop.isStartedByGrid();
   var controlUnit = this;
 
@@ -677,8 +920,7 @@ OutputPumps.prototype.startNextOutputPump = function(lock)
  * @param {string} controlType
  * @param {Lock} lock
  */
-OutputPumps.prototype.startOutputPumpThrough =
-  function(freeOutputPump, controlType, lock)
+OutputPumps.prototype.startOutputPumpThrough = function(freeOutputPump, controlType, lock)
 {
   var controlUnit = this;
 
@@ -759,22 +1001,36 @@ OutputPumps.prototype.switchToVfdControl = function(lock)
 
 /**
  * @private
+ * @param {number} stepValue
  * @returns {boolean}
  */
-OutputPumps.prototype.shouldChangePresetRef = function()
+OutputPumps.prototype.shouldChangePresetRef = function(stepValue)
 {
-  if (this.isMaxPresetRef())
+  if (this.getRunningThroughVfd() === null)
   {
+    this.debug("Not adjusting the preset reference: no running VFD pump.");
+
     return false;
   }
 
   if (this.presetRefResetAt === -1)
   {
+    this.debug("Not adjusting the preset reference: preset ref not reset.");
+
     return false;
   }
 
-  if (this.getRunningThroughVfd() === null)
+  if (stepValue < 0 && this.isMinPresetRef())
   {
+    this.debug("Not adjusting the preset reference: min preset ref reached.");
+
+    return false;
+  }
+
+  if (stepValue > 0 && this.isMaxPresetRef())
+  {
+    this.debug("Not adjusting the preset reference: max preset ref reached.");
+
     return false;
   }
 
@@ -788,6 +1044,8 @@ OutputPumps.prototype.shouldChangePresetRef = function()
       'presetRefAdjustDelay', adjustDelay - timeSincePresetRefReset
     );
 
+    this.debug("Not adjusting the preset reference: preset ref adjust delay.");
+
     return false;
   }
 
@@ -799,6 +1057,8 @@ OutputPumps.prototype.shouldChangePresetRef = function()
     this.scheduleNextManageTimer(
       'presetRefStepInterval', stepInterval - timeSinceLastChange
     );
+
+    this.debug("Not adjusting the preset reference: preset ref step interval.");
 
     return false;
   }
@@ -815,6 +1075,26 @@ OutputPumps.prototype.shouldStartNextOutputPump = function()
   return !this.isAnyRunning()
     || this.isMaxPresetRef()
     || !this.isVfdRunning();
+};
+
+/**
+ * @private
+ * @returns {boolean}
+ */
+OutputPumps.prototype.isDesiredOutputPressureReached = function()
+{
+  var outputPressure = this.getOutputPressure();
+  var desiredOutputPressure = this.getDesiredOutputPressure();
+
+  if (outputPressure === null || desiredOutputPressure === null)
+  {
+    return false;
+  }
+
+  var minDesiredOutputPressure = desiredOutputPressure - 0.05;
+  var maxDesiredOutputPressure = desiredOutputPressure + 0.05;
+
+  return outputPressure <= maxDesiredOutputPressure && outputPressure >= minDesiredOutputPressure;
 };
 
 /**

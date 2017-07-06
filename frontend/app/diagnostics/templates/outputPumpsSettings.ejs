@@ -1,6 +1,28 @@
 <div class="form-horizontal diag-settings">
   <hr>
   <div class="control-group">
+    <label class="control-label"><%- t('diagnostics', 'SETTINGS:outputPumps.workMode') %></label>
+    <div class="controls">
+      <label class="radio-inline">
+        <input type="radio" name="outputPumps.workMode" value="onoff">
+        <%- t('diagnostics', 'SETTINGS:outputPumps.workMode:onoff') %>
+      </label>
+      <label class="radio-inline">
+        <input type="radio" name="outputPumps.workMode" value="constant">
+        <%- t('diagnostics', 'SETTINGS:outputPumps.workMode:constant') %>
+      </label>
+    </div>
+  </div>
+  <div class="control-group">
+    <label class="control-label" for="settings-outputPumps-maxConstantRunTime"><%- t('diagnostics', 'SETTINGS:outputPumps.maxConstantRunTime') %></label>
+    <div class="controls">
+      <div class="input-append">
+        <input id="settings-outputPumps-maxConstantRunTime" class="span2" type="number" name="outputPumps.maxConstantRunTime" required min="1" max="10080" step="1">
+        <span class="add-on">min</span>
+      </div>
+    </div>
+  </div>
+  <div class="control-group">
     <label class="control-label" for="settings-outputPumps-minTotalWaterLevel"><%- t('diagnostics', 'SETTINGS:outputPumps.minTotalWaterLevel') %></label>
     <div class="controls">
       <div class="input-append">
@@ -94,6 +116,15 @@
     <div class="controls">
       <div class="input-append">
         <input id="settings-outputPumps-presetRef-stepValue" class="span2" type="number" name="outputPumps.presetRef.stepValue" required min="0" max="100" step="1">
+        <span class="add-on">%</span>
+      </div>
+    </div>
+  </div>
+  <div class="control-group">
+    <label class="control-label" for="outputPumps-presetRef-minValue"><%- t('diagnostics', 'SETTINGS:outputPumps.presetRef.minValue') %></label>
+    <div class="controls">
+      <div class="input-append">
+        <input id="settings-outputPumps-presetRef-minValue" class="span2" type="number" name="outputPumps.presetRef.minValue" required min="0" max="100" step="1">
         <span class="add-on">%</span>
       </div>
     </div>

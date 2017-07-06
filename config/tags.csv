@@ -56,9 +56,12 @@ washingPump.control,PP: Załączenie,techPlc,output,1,Y23,1,1,bool,-,-,-,-,-,-,0
 washingPump.status,PP: Potwierdzenie załączenia,techPlc,input,1,X25,1,0,bool,-,-,-,-,-,-,0,all,-
 washingPump.failure,PP: Awaria,techPlc,input,1,X26,1,0,bool,-,-,-,flip,-,-,0,all,-
 ,PH: Pompy hydroforowe,,,,,,,,,,,,,,,,
+outputPumps.workMode,PH: Tryb pracy,-,setting,-,-,0,1,string,-,-,-,-,-,-,0,all,"[onoff, constant]"
+outputPumps.maxConstantRunTime,PH: Maksymalny ciągły czas pracy jednej pompy,-,setting,-,-,0,1,int16,1,10080,-,-,-,-,0,all,-
 outputPumps.minTotalWaterLevel,PH: Minimalny poziom wody w zbiornikach retencyjnych,-,setting,-,-,0,1,float,0,100,m,-,-,-,0,all,-
 outputPumps.minOutputPressure,PH: Minimalne ciśnienie w sieci,-,setting,-,-,0,1,float,0,100,bar,-,-,-,0,all,-
 outputPumps.maxOutputPressure,PH: Maksymalne ciśnienie w sieci,-,setting,-,-,0,1,float,0,100,bar,-,-,-,0,all,-
+outputPumps.desiredOutputPressure,PH: Pożądane ciśnienie w sieci,-,setting,-,-,0,1,float,0,100,bar,-,-,-,0,all,-
 outputPumps.stabilizationTimes.firstPump,PH: Czas stabilizacji minimalnego ciśnienia (pierwsza pompa),-,setting,-,-,0,1,float,0,100,s,-,-,-,0,all,-
 outputPumps.stabilizationTimes.nextPump,PH: Czas stabilizacji minimalnego ciśnienia (następna pompa),-,setting,-,-,0,1,float,0,100,s,-,-,-,0,all,-
 outputPumps.stabilizationTimes.stopPump,PH: Czas stabilizacji maksymalnego ciśnienia,-,setting,-,-,0,1,float,0,100,s,-,-,-,0,all,-
@@ -68,6 +71,7 @@ outputPumps.current,PH: Prąd,vfd,register,3,8452,1,0,int16,0,150,A,div(10),0,15
 outputPumps.outputFrequency,PH: Częstotliwość wyjściowa,vfd,register,3,8451,1,0,int16,0,10000,Hz,div(100),0,100,0,avg,-
 outputPumps.presetRef,PH: Programowana wartość zadana,vfd,register,3,8193,1,1,int16,0,5000,%,minMax,0,100,0,avg,-
 outputPumps.presetRef.startingValue,PH: Prog. wartość zadana przy dołączaniu pompy,-,setting,-,-,0,1,int16,0,100,%,-,-,-,0,all,-
+outputPumps.presetRef.minValue,PH: Minimalna prog. wartość zadana,-,setting,-,-,0,1,int16,0,100,%,-,-,-,0,all,-
 outputPumps.presetRef.maxValue,PH: Maksymalna prog. wartość zadana,-,setting,-,-,0,1,int16,0,100,%,-,-,-,0,all,-
 outputPumps.presetRef.adjustDelay,PH: Opóźnienie zmiany prog. wartości zadanej po załączeniu,-,setting,-,-,0,1,float,0,120,s,-,-,-,0,all,-
 outputPumps.presetRef.stepInterval,PH: Odstęp między zmianami prog. wartości zadanej,-,setting,-,-,0,1,float,0,120,s,-,-,-,0,all,-

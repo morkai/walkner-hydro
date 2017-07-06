@@ -228,6 +228,11 @@
 
   "SETTINGS_PRESET_REF_HEADER": "Programowana wartość zadana",
   "SETTINGS_STABILIZATION_TIMES_HEADER": "Czasy stabilizacji ciśnienia",
+  "SETTINGS:outputPumps.workMode": "Tryb pracy",
+  "SETTINGS:outputPumps.workMode:onoff": "Włącz/wyłącz",
+  "SETTINGS:outputPumps.workMode:constant": "Ciągły",
+  "SETTINGS:outputPumps.maxConstantRunTime": "Maksymalny ciągły czas pracy",
+  "SETTINGS:outputPumps.maxConstantRunTime:HELP": "Pompa najdłużej pracująca zostanie wyłączona, jeżeli jej aktualny czas pracy jest większy od danej wartości.",
   "SETTINGS:outputPumps.minTotalWaterLevel": "Minimalny poziom wody",
   "SETTINGS:outputPumps.minTotalWaterLevel:HELP": "Wszystkie pompy zostaną wyłączone, jeżeli suma poziomów wody w aktywnych zbiornikach retencyjnych spadnie poniżej danej wartości.",
   "SETTINGS:outputPumps.minOutputPressure": "Minimalne ciśnienie w sieci",
@@ -243,11 +248,13 @@
   "SETTINGS:outputPumps.presetRef.startingValue": "Wartość po dołączeniu pompy",
   "SETTINGS:outputPumps.presetRef.startingValue:HELP": "Po dołączeniu jakiejkolwiek pompy, programowana wartość zadana zostanie ustawiona na daną wartość.",
   "SETTINGS:outputPumps.presetRef.adjustDelay": "Opóźnienie zmiany po dołączeniu pompy",
-  "SETTINGS:outputPumps.presetRef.adjustDelay:HELP": "Po dołączeniu pompy, odczekaj podaną ilość sekund zanim rozpocznie się proces zwiększania programowanej wartości zadanej od <em>Wartości po dołączeniu pompy</em> do 100%.",
+  "SETTINGS:outputPumps.presetRef.adjustDelay:HELP": "Po dołączeniu pompy, odczekaj podaną ilość sekund zanim rozpocznie się proces zwiększania programowanej wartości zadanej od <em>Wartości po dołączeniu pompy</em> do <em>Maksymalnej wartości</em>.",
   "SETTINGS:outputPumps.presetRef.stepInterval": "Odstęp między zmianami",
   "SETTINGS:outputPumps.presetRef.stepInterval:HELP": "Odczekaj podaną ilość sekund między zmianą programowanej wartości zadanej o wartość <em>Wielkość zmiany</em>.",
   "SETTINGS:outputPumps.presetRef.stepValue": "Wielkość zmiany",
   "SETTINGS:outputPumps.presetRef.stepValue:HELP": "Co <em>Odstęp między zmianami</em> sekund zwiększ programowaną wartość zadaną o daną wartość.",
+  "SETTINGS:outputPumps.presetRef.minValue": "Minimalna wartość",
+  "SETTINGS:outputPumps.presetRef.minValue:HELP": "Minimalna programowana wartość zadana.",
   "SETTINGS:outputPumps.presetRef.maxValue": "Maksymalna wartość",
   "SETTINGS:outputPumps.presetRef.maxValue:HELP": "Maksymalna programowana wartość zadana."
 }
