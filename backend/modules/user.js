@@ -89,6 +89,11 @@ exports.start = function startUserModule(app, module)
    */
   function isLocalIpAddress(ipAddress)
   {
+    if (!ipAddress)
+    {
+      return false;
+    }
+
     if (ipAddress === '127.0.0.1')
     {
       return true;
