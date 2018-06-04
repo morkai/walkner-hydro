@@ -4,7 +4,7 @@
 
 'use strict';
 
-module.exports = function setupUserModel(app, mongoose)
+module.exports = function setUpUserModel(app, mongoose)
 {
   var userSchema = new mongoose.Schema({
     login: {

@@ -1,48 +1,59 @@
-// Part of <http://miracle.systems/p/walkner-wmes> licensed under <CC BY-NC-SA 4.0>
+// Part of <https://miracle.systems/p/walkner-wmes> licensed under <CC BY-NC-SA 4.0>
 
 'use strict';
 
-var util = require('util');
-var https = require('https');
-var domain = require('domain');
-var fs = require('fs');
+const util = require('util');
+const https = require('https');
+const domain = require('domain');
+const fs = require('fs');
 
 exports.DEFAULT_CONFIG = {
   expressId: 'express',
   host: '0.0.0.0',
   port: 443,
   key: 'privatekey.pem',
-  cert: 'certificate.pem'
+  cert: 'certificate.pem',
+  availabilityTopics: []
 };
 
 exports.start = function startHttpServerModule(app, module, done)
 {
+  let availabilityTopics = module.config.availabilityTopics.slice();
+
+  availabilityTopics.forEach(topic =>
+  {
+    app.broker.subscribe(topic).setLimit(1).on('message', () =>
+    {
+      availabilityTopics = availabilityTopics.filter(t => t !== topic);
+    });
+  });
+
+  module.isAvailable = () => availabilityTopics.length === 0;
+
   function onFirstServerError(err)
   {
     if (err.code === 'EADDRINUSE')
     {
       return done(new Error(util.format(
-        "port %d already in use?", module.config.port
+        'port %d already in use?', module.config.port
       )));
     }
-    else
-    {
-      return done(err);
-    }
+
+    return done(err);
   }
 
-  var serverDomain = domain.create();
+  const serverDomain = domain.create();
 
   serverDomain.run(function()
   {
-    var options = {
+    const options = {
       key: fs.readFileSync(module.config.key),
       cert: fs.readFileSync(module.config.cert)
     };
 
     module.server = https.createServer(options, function onRequest(req, res)
     {
-      var reqDomain = domain.create();
+      const reqDomain = domain.create();
 
       reqDomain.add(req);
       reqDomain.add(res);
@@ -67,11 +78,11 @@ exports.start = function startHttpServerModule(app, module, done)
         }
       });
 
-      var expressApp = app[module.config.expressId].app;
+      const expressModule = app[module.config.expressId];
 
-      if (expressApp)
+      if (module.isAvailable() && expressModule)
       {
-        expressApp(req, res);
+        expressModule.app(req, res);
       }
       else
       {
@@ -86,7 +97,7 @@ exports.start = function startHttpServerModule(app, module, done)
     {
       module.server.removeListener('error', onFirstServerError);
 
-      module.debug("Listening on port %d...", module.config.port);
+      module.debug('Listening on port %d...', module.config.port);
 
       return done();
     });

@@ -1,18 +1,20 @@
-// Part of <http://miracle.systems/p/walkner-wmes> licensed under <CC BY-NC-SA 4.0>
+// Part of <https://miracle.systems/p/walkner-wmes> licensed under <CC BY-NC-SA 4.0>
 
 'use strict';
 
-var _ = require('lodash');
-var socketIo = require('socket.io');
-var SocketIoMultiServer = require('./SocketIoMultiServer');
-var setUpRoutes = require('./routes');
-var pmx = null;
+const {exec} = require('child_process');
+const _ = require('lodash');
+const engineIo = require('engine.io');
+const socketIo = require('socket.io');
+const SocketIoMultiServer = require('./SocketIoMultiServer');
+const setUpRoutes = require('./routes');
+let pmx = null;
 
-try
-{
-  pmx = require('pmx');
-}
+try { pmx = require('pmx'); }
 catch (err) {} // eslint-disable-line no-empty
+
+engineIo.Server.errors.SERVER_UNAVAILABLE = 503;
+engineIo.Server.errorMessages[503] = 'Server unavailable';
 
 exports.DEFAULT_CONFIG = {
   httpServerIds: ['httpServer'],
@@ -21,21 +23,23 @@ exports.DEFAULT_CONFIG = {
   pingsId: 'pings',
   path: '/sio',
   socketIo: {
-    pathInterval: 30000,
+    pingInterval: 30000,
     pingTimeout: 10000
-  }
+  },
+  netstatCmd: ''
 };
 
-exports.start = function startSioModule(app, sioModule)
+exports.start = function startSioModule(app, sioModule, done)
 {
   sioModule.config.socketIo = _.assign({}, sioModule.config.socketIo, {
     path: sioModule.config.path,
     transports: ['websocket', 'xhr-polling'],
-    serveClient: true
+    serveClient: false,
+    allowRequest: checkRequest
   });
 
-  var socketCount = 0;
-  var probes = {
+  let socketCount = 0;
+  const probes = {
     currentUsersCounter: null,
     totalConnectionTime: null,
     totalConnectionCount: null
@@ -43,14 +47,14 @@ exports.start = function startSioModule(app, sioModule)
 
   if (pmx)
   {
-    var pmxProbe = pmx.probe();
+    const pmxProbe = pmx.probe();
 
     probes.currentUsersCounter = pmxProbe.counter({name: 'sio:currentUsers'});
     probes.totalConnectionTime = pmxProbe.histogram({name: 'sio:totalConnectionTime', measurement: 'sum'});
     probes.totalConnectionCount = pmxProbe.histogram({name: 'sio:totalConnectionCount', measurement: 'sum'});
   }
 
-  var multiServer = new SocketIoMultiServer();
+  const multiServer = new SocketIoMultiServer();
 
   app.onModuleReady(sioModule.config.httpServerIds, function()
   {
@@ -60,11 +64,25 @@ exports.start = function startSioModule(app, sioModule)
     });
 
     startSocketIo();
+
+    done();
   });
+
+  function checkRequest(req, done)
+  {
+    const allServersAvailable = sioModule.config.httpServerIds.every(httpServerId => app[httpServerId].isAvailable());
+
+    if (!allServersAvailable)
+    {
+      return done(engineIo.Server.errors.SERVER_UNAVAILABLE, false);
+    }
+
+    return sioModule.checkRequest(req, done);
+  }
 
   function startSocketIo()
   {
-    var sio = socketIo(multiServer, sioModule.config.socketIo);
+    const sio = socketIo(multiServer, sioModule.config.socketIo);
 
     sioModule = app[sioModule.name] = _.assign(sio, sioModule);
 
@@ -132,6 +150,70 @@ exports.start = function startSioModule(app, sioModule)
           reply(Date.now(), 'Europe/Warsaw');
         }
       });
+
+      socket.on('killZombies', function()
+      {
+        if (socket.handshake && socket.handshake.user && socket.handshake.user.super)
+        {
+          killZombies();
+        }
+      });
+    });
+  }
+
+  function killZombies()
+  {
+    netstat((err, established) => // eslint-disable-line handle-callback-err
+    {
+      const oldSocketIds = Object.keys(sioModule.sockets.connected);
+
+      oldSocketIds.forEach(socketId =>
+      {
+        const ioSocket = sioModule.sockets.connected[socketId];
+        const nodeSocket = ioSocket.request.socket;
+        const foreignAddress = `${nodeSocket.remoteAddress}:${nodeSocket.remotePort}`;
+
+        if (!established.has(foreignAddress)
+          || !nodeSocket.readable
+          || !nodeSocket.writable
+          || nodeSocket.destroyed)
+        {
+          ioSocket.disconnect(true);
+        }
+      });
+
+      const newSocketIds = Object.keys(sioModule.sockets.connected);
+
+      if (newSocketIds.length < oldSocketIds.length)
+      {
+        sioModule.debug(`Killed ${oldSocketIds.length - newSocketIds.length} zombies!`);
+      }
+    });
+  }
+
+  function netstat(done)
+  {
+    const win32 = process.platform === 'win32';
+    const cmd = sioModule.config.netstatCmd || (win32 ? 'netstat -p tcp -n' : 'netstat -ant | grep ESTABLISHED');
+
+    exec(cmd, (err, stdout) =>
+    {
+      const established = new Set();
+      const partIndex = win32 ? 2 : 4;
+
+      (stdout || '').trim().split('\n').forEach(line =>
+      {
+        const parts = line.replace(/\s+/g, ' ').trim().split(' ');
+        const foreignAddress = parts[partIndex];
+        const state = parts[partIndex + 1];
+
+        if (state === 'ESTABLISHED')
+        {
+          established.add(foreignAddress);
+        }
+      });
+
+      done(err, established);
     });
   }
 };

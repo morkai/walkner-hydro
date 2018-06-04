@@ -6,11 +6,11 @@ const helpers = require('./helpers');
 
 exports.execute = function(app, alarmsModule, runningAlarm, action)
 {
-  const smsSender = app[alarmsModule.config.smsSenderId];
+  const twilio = app[alarmsModule.config.twilioId];
 
-  if (!smsSender)
+  if (!twilio)
   {
-    return alarmsModule.warn('Cannot send SMS: sms module not available!');
+    return alarmsModule.warn('Cannot call: twilio module not available!');
   }
 
   helpers.findUsers(app, alarmsModule, runningAlarm, action, function(err, users)
@@ -24,7 +24,7 @@ exports.execute = function(app, alarmsModule, runningAlarm, action)
 
     if (err)
     {
-      return alarmsModule.error(`Failed to retrieve users for sms action of alarm [${alarmName}]: ${err.message}`);
+      return alarmsModule.error(`Failed to retrieve users for call action of alarm [${alarmName}]: ${err.message}`);
     }
 
     const currentDate = new Date();
@@ -35,38 +35,51 @@ exports.execute = function(app, alarmsModule, runningAlarm, action)
 
     if (recipients.length === 0)
     {
-      return alarmsModule.warn(`Not sending any SMS: no recipients for action [${action.no}] of alarm: ${alarmName}`);
+      return alarmsModule.warn(`Not calling: no recipients for action [${action.no}] of alarm: ${alarmName}`);
     }
 
-    smsSender.send(recipients, action.parameters.text, function(err)
+    recipients.forEach(recipient => sayToRecipient(recipient, action));
+  });
+
+  function sayToRecipient(recipient, action)
+  {
+    const alarmName = runningAlarm.model.name;
+    const sayOptions = {
+      to: recipient,
+      message: action.parameters.text,
+      voice: 'alice',
+      language: 'pl-PL'
+    };
+
+    twilio.say(sayOptions, function(err)
     {
       if (err)
       {
-        alarmsModule.error(`Failed to send SMS as part of alarm [${alarmName}]: ${err.message}`);
+        alarmsModule.error(`Failed to call to [${recipient}] as part of alarm [${alarmName}]: ${err.message}`);
 
-        app.broker.publish('alarms.actions.smsFailed', {
+        app.broker.publish('alarms.actions.callFailed', {
           model: runningAlarm.toJSON(),
           action: {
             no: action.no,
             type: action.type
           },
           error: err.toJSON(),
-          recipients: recipients
+          recipient: recipient
         });
       }
       else
       {
-        alarmsModule.debug(`Sent SMS as part of alarm [${alarmName}] to: ${recipients.join('; ')}`);
+        alarmsModule.debug(`Called as part of alarm [${alarmName}] to: ${recipient}`);
 
-        app.broker.publish('alarms.actions.smsSent', {
+        app.broker.publish('alarms.actions.called', {
           model: runningAlarm.toJSON(),
           action: {
             no: action.no,
             type: action.type
           },
-          recipients: recipients
+          recipient: recipient
         });
       }
     });
-  });
+  }
 };

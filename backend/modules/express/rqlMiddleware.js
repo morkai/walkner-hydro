@@ -1,15 +1,15 @@
-// Part of <http://miracle.systems/p/walkner-wmes> licensed under <CC BY-NC-SA 4.0>
+// Part of <https://miracle.systems/p/walkner-wmes> licensed under <CC BY-NC-SA 4.0>
 
 'use strict';
 
-var _ = require('lodash');
-var rql = require('h5.rql');
+const _ = require('lodash');
+const rql = require('h5.rql');
 
 module.exports = function createRqlMiddleware()
 {
   return function rqlMiddleware(req, res, next)
   {
-    var rqlQuery = null;
+    let rqlQuery = null;
 
     Object.defineProperty(req, 'rql', {
       configurable: false,
@@ -18,7 +18,14 @@ module.exports = function createRqlMiddleware()
       {
         if (rqlQuery === null)
         {
-          rqlQuery = rql.parse(getQueryString(req));
+          try
+          {
+            rqlQuery = rql.parse(getQueryString(req));
+          }
+          catch (err)
+          {
+            rqlQuery = rql.parse('');
+          }
         }
 
         return rqlQuery;
@@ -38,7 +45,7 @@ function getQueryString(req)
 
   if (_.isString(req.url))
   {
-    var queryPos = req.url.indexOf('?');
+    const queryPos = req.url.indexOf('?');
 
     if (queryPos !== -1)
     {

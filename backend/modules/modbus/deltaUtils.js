@@ -1,4 +1,4 @@
-// Part of <https://miracle.systems/p/walkner-furmon> licensed under <CC BY-NC-SA 4.0>
+// Part of <https://miracle.systems/p/walkner-maxos> licensed under <CC BY-NC-SA 4.0>
 
 'use strict';
 
@@ -12,7 +12,10 @@ var DELTA_FUNCTIONS = {
   M: 0x01,
   T: 0x03,
   C: 0x03,
-  D: 0x03
+  D: 0x03,
+  input: 0x02,
+  output: 0x01,
+  register: 0x03
 };
 
 /**
@@ -85,6 +88,11 @@ var DELTA_ADDRESSES = {
  */
 exports.getFunctionCode = function(deltaAddress)
 {
+  if (typeof DELTA_FUNCTIONS[deltaAddress] === 'number')
+  {
+    return DELTA_FUNCTIONS[deltaAddress];
+  }
+
   var device = deltaAddress.charAt(0);
 
   if (typeof DELTA_FUNCTIONS[device] !== 'number')

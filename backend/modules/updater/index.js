@@ -1,12 +1,12 @@
-// Part of <http://miracle.systems/p/walkner-wmes> licensed under <CC BY-NC-SA 4.0>
+// Part of <https://miracle.systems/p/walkner-wmes> licensed under <CC BY-NC-SA 4.0>
 
 'use strict';
 
-var fs = require('fs');
-var _ = require('lodash');
-var setUpRoutes = require('./routes');
-var setUpCommands = require('./commands');
-var expressMiddleware = require('./expressMiddleware');
+const fs = require('fs');
+const _ = require('lodash');
+const setUpRoutes = require('./routes');
+const setUpCommands = require('./commands');
+const expressMiddleware = require('./expressMiddleware');
 
 exports.DEFAULT_CONFIG = {
   expressId: 'express',
@@ -29,8 +29,8 @@ exports.DEFAULT_CONFIG = {
 
 exports.start = function startUpdaterModule(app, module)
 {
-  var reloadTimer = null;
-  var restartTimer = null;
+  let reloadTimer = null;
+  let restartTimer = null;
 
   module.config.packageJsonPath = require.resolve(module.config.packageJsonPath);
 
@@ -40,15 +40,30 @@ exports.start = function startUpdaterModule(app, module)
 
   module.manifest = module.config.manifestPath ? fs.readFileSync(module.config.manifestPath, 'utf8') : null;
 
-  module.getVersions = function(clone)
+  module.config.manifests.forEach(manifest => _.defaults(manifest, {
+    frontendVersionKey: module.config.frontendVersionKey,
+    template: module.manifest
+  }));
+
+  module.getManifest = function(requiredFrontendVersionKey)
+  {
+    return module.config.manifests.find(manifest =>
+    {
+      const actualFrontendVersionKey = manifest.frontendVersionKey || module.config.frontendVersionKey;
+
+      return actualFrontendVersionKey === requiredFrontendVersionKey;
+    });
+  };
+
+  module.getVersions = clone =>
   {
     if (!module.package.updater)
     {
       module.package.updater = {};
     }
 
-    var updater = module.package.updater;
-    var versionsKey = module.config.versionsKey;
+    const updater = module.package.updater;
+    const versionsKey = module.config.versionsKey;
 
     if (!updater[versionsKey])
     {
@@ -62,37 +77,41 @@ exports.start = function startUpdaterModule(app, module)
     return clone === false ? updater[versionsKey] : _.cloneDeep(updater[versionsKey]);
   };
 
-  module.getBackendVersion = function(backendVersionKey)
+  module.getBackendVersion = backendVersionKey =>
   {
     return module.getVersions(false)[backendVersionKey || module.config.backendVersionKey];
   };
 
-  module.getFrontendVersion = function(frontendVersionKey)
+  module.getFrontendVersion = frontendVersionKey =>
   {
     return module.getVersions(false)[frontendVersionKey || module.config.frontendVersionKey];
   };
 
-  module.updateFrontendVersion = function(frontendVersionKey)
+  module.updateFrontendVersion = frontendVersionKey =>
   {
-    module.getVersions(false)[frontendVersionKey || module.config.frontendVersionKey] = Date.now();
+    const versions = module.getVersions(false);
+
+    if (typeof versions[frontendVersionKey] === 'undefined')
+    {
+      frontendVersionKey = module.config.frontendVersionKey;
+    }
+
+    versions[frontendVersionKey] = Date.now();
   };
 
-  app.broker
-    .subscribe('express.beforeMiddleware')
-    .setLimit(1)
-    .on('message', function(message)
-    {
-      var expressModule = message.module;
-      var expressApp = expressModule.app;
+  app.broker.subscribe('express.beforeMiddleware').setLimit(1).on('message', message =>
+  {
+    const expressModule = message.module;
+    const expressApp = expressModule.app;
 
-      expressApp.use(expressMiddleware.bind(null, app, module));
-    });
+    expressApp.use(expressMiddleware.bind(null, app, module));
+  });
 
   app.onModuleReady(module.config.expressId, setUpRoutes.bind(null, app, module));
 
   app.onModuleReady(module.config.sioId, setUpCommands.bind(null, app, module));
 
-  fs.watch(module.config.packageJsonPath, function()
+  fs.watch(module.config.packageJsonPath, () =>
   {
     if (reloadTimer !== null)
     {
@@ -120,20 +139,20 @@ exports.start = function startUpdaterModule(app, module)
   {
     reloadTimer = null;
 
-    var oldVersions = module.getVersions(true);
-    var oldBackendVersion = module.getBackendVersion();
-    var oldFrontendVersion = module.getFrontendVersion();
+    const oldVersions = module.getVersions(true);
+    const oldBackendVersion = module.getBackendVersion();
+    const oldFrontendVersion = module.getFrontendVersion();
 
     reloadPackageJson();
 
-    var newVersions = module.getVersions(false);
-    var newBackendVersion = module.getBackendVersion();
-    var newFrontendVersion = module.getFrontendVersion();
+    const newVersions = module.getVersions(false);
+    const newBackendVersion = module.getBackendVersion();
+    const newFrontendVersion = module.getFrontendVersion();
 
     if (newBackendVersion !== oldBackendVersion)
     {
       module.info(
-        "Backend version changed from [%s] to [%s]...",
+        'Backend version changed from [%s] to [%s]...',
         oldBackendVersion,
         newBackendVersion
       );
@@ -143,7 +162,7 @@ exports.start = function startUpdaterModule(app, module)
     else if (newFrontendVersion !== oldFrontendVersion)
     {
       module.info(
-        "Frontend version changed from [%s] to [%s]...",
+        'Frontend version changed from [%s] to [%s]...',
         oldFrontendVersion,
         newFrontendVersion
       );
@@ -151,9 +170,9 @@ exports.start = function startUpdaterModule(app, module)
       handleFrontendUpdate(oldFrontendVersion, newFrontendVersion);
     }
 
-    _.forEach(newVersions, function(newVersion, service)
+    _.forEach(newVersions, (newVersion, service) =>
     {
-      var oldVersion = oldVersions[service] || 0;
+      const oldVersion = oldVersions[service] || 0;
 
       if (newVersion !== oldVersion)
       {
@@ -175,7 +194,7 @@ exports.start = function startUpdaterModule(app, module)
 
     module.restarting = Date.now();
 
-    module.info("Restarting in %d seconds...", module.config.restartDelay / 1000);
+    module.info('Restarting in %d seconds...', module.config.restartDelay / 1000);
 
     restartTimer = setTimeout(shutdown, module.config.restartDelay);
 
@@ -206,7 +225,7 @@ exports.start = function startUpdaterModule(app, module)
 
     if (!handleBackendUpdate(backendVersion, backendVersion))
     {
-      module.info("Forcing shutdown...");
+      module.info('Forcing shutdown...');
 
       shutdown();
     }
@@ -214,7 +233,7 @@ exports.start = function startUpdaterModule(app, module)
 
   function shutdown()
   {
-    module.info("Exiting the process...");
+    module.info('Exiting the process...');
 
     setImmediate(process.exit.bind(process));
   }

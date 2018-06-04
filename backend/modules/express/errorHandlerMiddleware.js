@@ -1,8 +1,8 @@
-// Part of <http://miracle.systems/p/walkner-wmes> licensed under <CC BY-NC-SA 4.0>
+// Part of <https://miracle.systems/p/walkner-wmes> licensed under <CC BY-NC-SA 4.0>
 
 'use strict';
 
-var _ = require('lodash');
+const _ = require('lodash');
 
 module.exports = function createErrorHandlerMiddleware(expressModule, options)
 {
@@ -12,10 +12,8 @@ module.exports = function createErrorHandlerMiddleware(expressModule, options)
   }
 
   // Based on https://github.com/expressjs/errorhandler
-  return function errorHandlerMiddleware(err, req, res, next)
+  return function errorHandlerMiddleware(err, req, res, next) // eslint-disable-line no-unused-vars
   {
-    /*jshint unused:false*/
-
     if (_.includes(expressModule.config.ignoredErrorCodes, err.code))
     {
       return;
@@ -43,7 +41,7 @@ module.exports = function createErrorHandlerMiddleware(expressModule, options)
       });
     }
 
-    var login = req.session && req.session.user
+    const login = req.session && req.session.user
       ? req.session.user.login
       : 'guest';
 
@@ -52,7 +50,7 @@ module.exports = function createErrorHandlerMiddleware(expressModule, options)
       try
       {
         expressModule.warn(
-          "%s %s\n%s\nUser: %s (%s)\nHeaders:\n%s\nRequest body:\n%s",
+          '%s %s\n%s\nUser: %s (%s)\nHeaders:\n%s\nRequest body:\n%s',
           req.method,
           req.url,
           err.stack || err.message,
@@ -64,13 +62,13 @@ module.exports = function createErrorHandlerMiddleware(expressModule, options)
       }
       catch (err)
       {
-        expressModule.warn("%s %s\n%s\nUser: %s (%s)", req.method, req.url, err.stack, login, req.ip);
+        expressModule.warn('%s %s\n%s\nUser: %s (%s)', req.method, req.url, err.stack, login, req.ip);
       }
     }
     else
     {
       expressModule.warn(
-        "%s %s\n%s\nUser: %s (%s)\nHeaders:\n%s",
+        '%s %s\n%s\nUser: %s (%s)\nHeaders:\n%s',
         req.method,
         req.url,
         err.stack || err.message,
@@ -80,12 +78,12 @@ module.exports = function createErrorHandlerMiddleware(expressModule, options)
       );
     }
 
-    if (!res.connection || !res.connection.writable)
+    if (!res.connection || !res.connection.writable || res.headersSent)
     {
       return;
     }
 
-    var accept = req.headers.accept || '';
+    const accept = req.headers.accept || '';
 
     if (accept.indexOf('html') !== -1)
     {
@@ -101,7 +99,7 @@ module.exports = function createErrorHandlerMiddleware(expressModule, options)
 
     if (accept.indexOf('json') !== -1)
     {
-      var error = {
+      const error = {
         message: err.message,
         stack: err.stack
       };
@@ -121,18 +119,18 @@ module.exports = function createErrorHandlerMiddleware(expressModule, options)
 
 function prepareStack(basePath, err)
 {
-  var stack = (err.stack || '').split('\n').slice(1);
+  const stack = (err.stack || '').split('\n').slice(1);
 
   if (stack.length === 0)
   {
     return [];
   }
 
-  var no = stack.length;
+  let no = stack.length;
 
   return stack.map(function(stack)
   {
-    var matches = stack.match(/at (.*?) \((.*?):([0-9]+):([0-9]+)\)/);
+    let matches = stack.match(/at (.*?) \((.*?):([0-9]+):([0-9]+)\)/);
 
     if (matches !== null)
     {

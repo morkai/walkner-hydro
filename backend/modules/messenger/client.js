@@ -1,9 +1,9 @@
-// Part of <http://miracle.systems/p/walkner-wmes> licensed under <CC BY-NC-SA 4.0>
+// Part of <https://miracle.systems/p/walkner-wmes> licensed under <CC BY-NC-SA 4.0>
 
 'use strict';
 
-var _ = require('lodash');
-var axon = require('axon');
+const _ = require('lodash');
+const axon = require('axon');
 
 exports.DEFAULT_CONFIG = {
   pubHost: '127.0.0.1',
@@ -12,14 +12,27 @@ exports.DEFAULT_CONFIG = {
   repPort: 5051,
   pushHost: null,
   pushPort: 5052,
-  responseTimeout: 5000
+  responseTimeout: 5000,
+  broadcastTopics: []
 };
 
 exports.start = function startMessengerClientModule(app, module, done)
 {
-  var subSocket;
-  var reqSocket;
-  var pushSocket = null;
+  let subSocket;
+  let reqSocket;
+  let pushSocket = null;
+
+  _.forEach(module.config.broadcastTopics, function(broadcastTopic)
+  {
+    app.broker.subscribe(broadcastTopic, function(message, topic, meta)
+    {
+      module.request('@broadcast', {
+        topic: topic,
+        message: message,
+        meta: meta
+      });
+    });
+  });
 
   createSubSocket();
   createReqSocket();
@@ -34,11 +47,11 @@ exports.start = function startMessengerClientModule(app, module, done)
 
     if (pushSocket === null)
     {
-      module.debug("push socket not used.");
+      module.debug('push socket not used.');
     }
     else
     {
-      module.debug("push socket listening on port %d...", module.config.pushPort);
+      module.debug('push socket listening on port %d...', module.config.pushPort);
     }
 
     setImmediate(done);
@@ -66,6 +79,7 @@ exports.start = function startMessengerClientModule(app, module, done)
    * @param {string} type
    * @param {*} [data]
    * @param {function} [responseHandler]
+   * @returns {undefined}
    */
   module.push = function(type, data, responseHandler)
   {
@@ -82,7 +96,7 @@ exports.start = function startMessengerClientModule(app, module, done)
    */
   function createSubSocket()
   {
-    var connected = false;
+    let connected = false;
 
     subSocket = axon.socket('sub');
 
@@ -91,14 +105,14 @@ exports.start = function startMessengerClientModule(app, module, done)
 
     subSocket.on('error', function(err)
     {
-      module.error("[sub] %s", err.message);
+      module.error('[sub] %s', err.message);
     });
 
     subSocket.on('connect', function()
     {
       connected = true;
 
-      module.debug("[sub] Connected on port %d...", module.config.pubPort);
+      module.debug('[sub] Connected on port %d...', module.config.pubPort);
 
       app.broker.publish('messenger.client.connected', {
         moduleName: module.name,
@@ -112,7 +126,7 @@ exports.start = function startMessengerClientModule(app, module, done)
     {
       if (connected)
       {
-        module.debug("[sub] Disconnected. Reconnecting...");
+        module.debug('[sub] Disconnected. Reconnecting...');
 
         connected = false;
       }
@@ -126,7 +140,7 @@ exports.start = function startMessengerClientModule(app, module, done)
    */
   function createReqSocket()
   {
-    var connected = false;
+    let connected = false;
 
     reqSocket = axon.socket('req');
 
@@ -135,14 +149,14 @@ exports.start = function startMessengerClientModule(app, module, done)
 
     reqSocket.on('error', function(err)
     {
-      module.error("[req] %s", err.message);
+      module.error('[req] %s', err.message);
     });
 
     reqSocket.on('connect', function()
     {
       connected = true;
 
-      module.debug("[req] Connected on port %d...", module.config.repPort);
+      module.debug('[req] Connected on port %d...', module.config.repPort);
 
       app.broker.publish('messenger.client.connected', {
         moduleName: module.name,
@@ -156,7 +170,7 @@ exports.start = function startMessengerClientModule(app, module, done)
     {
       if (connected)
       {
-        module.debug("[req] Disconnected. Reconnecting...");
+        module.debug('[req] Disconnected. Reconnecting...');
 
         connected = false;
 
@@ -172,7 +186,8 @@ exports.start = function startMessengerClientModule(app, module, done)
 
   /**
    * @private
-   * @param {function(Error, object)} done
+   * @param {function(Error, Object)} done
+   * @returns {undefined}
    */
   function createPushSocket(done)
   {
@@ -181,7 +196,7 @@ exports.start = function startMessengerClientModule(app, module, done)
       return done(null, null);
     }
 
-    var push = axon.socket('req');
+    const push = axon.socket('req');
 
     push.set('hwm', 10);
     push.bind(module.config.pushPort, module.config.pushHost);
@@ -198,10 +213,11 @@ exports.start = function startMessengerClientModule(app, module, done)
 
   /**
    * @private
-   * @param {object} socket
+   * @param {Object} socket
    * @param {string} type
    * @param {*} [data]
    * @param {function} [responseHandler]
+   * @returns {undefined}
    */
   function sendMessage(socket, type, data, responseHandler)
   {
@@ -214,8 +230,8 @@ exports.start = function startMessengerClientModule(app, module, done)
       responseHandler = function() {};
     }
 
-    var timer = null;
-    var reply = null;
+    let timer = null;
+    let reply = null;
 
     reply = _.once(function(err)
     {
@@ -236,24 +252,25 @@ exports.start = function startMessengerClientModule(app, module, done)
     {
       return reply({
         code: 'NO_CONNECTION',
-        message: socket.type === 'client' ? "Not connected to the server." : "No clients connected."
+        message: socket.type === 'client' ? 'Not connected to the server.' : 'No clients connected.'
       });
     }
 
     socket.send(type, data, reply);
 
-    timer = app.timeout(module.config.responseTimeout, function()
+    timer = app.timeout(data && data.responseTimeout || module.config.responseTimeout, function()
     {
       timer = null;
 
-      reply({code: 'RESPONSE_TIMEOUT', message: "Response timeout."});
+      reply({code: 'RESPONSE_TIMEOUT', message: 'Response timeout.'});
     });
   }
 
   /**
    * @private
    * @param {string} topic
-   * @param {object} message
+   * @param {Object} message
+   * @returns {undefined}
    */
   function handleBroadcastMessage(topic, message)
   {

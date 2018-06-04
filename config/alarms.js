@@ -48,7 +48,9 @@ exports.events = {
 
 exports.mongoose = {
   uri: mongodb.uri,
-  options: mongodb,
+  options: Object.assign(mongodb.mongoClient, {
+    poolSize: 3
+  }),
   maxConnectTries: 10,
   connectAttemptDelay: 500,
   models: [

@@ -1,10 +1,8 @@
-// Copyright (c) 2014, Łukasz Walukiewicz <lukasz@walukiewicz.eu>. Some Rights Reserved.
-// Licensed under CC BY-NC-SA 4.0 <http://creativecommons.org/licenses/by-nc-sa/4.0/>.
-// Part of the walkner-hydro project <http://lukasz.walukiewicz.eu/p/walkner-hydro>
+// Part of <https://miracle.systems/p/walkner-utilio> licensed under <CC BY-NC-SA 4.0>
 
 'use strict';
 
-var setUpAlarmsRoutes = require('./routes');
+const setUpAlarmsRoutes = require('./routes');
 
 exports.DEFAULT_CONFIG = {
   mongooseId: 'mongoose',
@@ -16,61 +14,52 @@ exports.DEFAULT_CONFIG = {
 
 exports.start = function startAlarmsFrontendModule(app, module)
 {
-  var messengerClient = app[module.config.messengerClientId];
-
-  if (!messengerClient)
-  {
-    throw new Error(
-      "alarms/frontend module requires the messenger/client module!"
-    );
-  }
-
-  setUpAlarmsClientMessages();
+  app.onModuleReady(
+    [
+      module.config.messengerClientId
+    ],
+    setUpAlarmsClientMessages
+  );
 
   app.onModuleReady(
     [
       module.config.mongooseId,
       module.config.userId,
       module.config.expressId,
-      module.config.controllerId
+      module.config.controllerId,
+      module.config.messengerClientId
     ],
     setUpAlarmsRoutes.bind(null, app, module)
   );
 
   /**
    * @param {string} alarmId
-   * @param {object|null} user
-   * @param {function(Error|null)} done
+   * @param {?Object} user
+   * @param {function(?Error)} done
    */
   module.ack = function(alarmId, user, done)
   {
-    messengerClient.request(
-      'alarms.ack', {alarmId: alarmId, user: user}, done
-    );
+    app[module.config.messengerClientId].request('alarms.ack', {alarmId: alarmId, user: user}, done);
   };
 
   /**
    * @param {string} alarmId
-   * @param {object|null} user
-   * @param {function(Error|null)} done
+   * @param {?Object} user
+   * @param {function(?Error)} done
    */
   module.run = function(alarmId, user, done)
   {
-    messengerClient.request(
-      'alarms.run', {alarmId: alarmId, user: user}, done
-    );
+    app[module.config.messengerClientId].request('alarms.run', {alarmId: alarmId, user: user}, done);
   };
 
   /**
    * @param {string} alarmId
-   * @param {object|null} user
-   * @param {function(Error|null)} done
+   * @param {?Object} user
+   * @param {function(?Error)} done
    */
   module.stop = function(alarmId, user, done)
   {
-    messengerClient.request(
-      'alarms.stop', {alarmId: alarmId, user: user}, done
-    );
+    app[module.config.messengerClientId].request('alarms.stop', {alarmId: alarmId, user: user}, done);
   };
 
   function setUpAlarmsClientMessages()
@@ -79,7 +68,7 @@ exports.start = function startAlarmsFrontendModule(app, module)
     {
       app.broker.subscribe(topic, function(message)
       {
-        messengerClient.request(topic, {alarmId: message.model._id});
+        app[module.config.messengerClientId].request(topic, {alarmId: message.model._id});
       });
     });
   }

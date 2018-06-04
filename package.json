@@ -16,40 +16,43 @@
     "url": "http://github.com/morkai/walkner-hydro.git"
   },
   "engine": [
-    "node >=6.9"
+    "node >=8.0.0"
   ],
   "main": "./backend/main",
   "dependencies": {
     "axon": "~2.0.3",
-    "bcrypt": "~1.0.1",
-    "body-parser": "~1.15.2",
+    "bcrypt": "^1.0.3",
+    "body-parser": "~1.18.2",
     "content-disposition": "~0.5.2",
     "cookie": "~0.3.1",
     "cookie-parser": "~1.4.3",
-    "csv": "~0.3.7",
-    "ejs": "~2.5.2",
+    "csv": "~1.1.1",
+    "deep-equal": "^1.0.1",
+    "ejs": "~2.5.7",
     "ejs-amd": "~1.0.0",
     "escodegen": "~1.8.1",
     "esprima": "~3.1.2",
     "estraverse": "~4.2.0",
-    "express": "~4.14.0",
-    "express-session": "~1.14.1",
+    "express": "~4.16.3",
+    "express-session": "~1.15.5",
+    "fs-extra": "~6.0.1",
     "h5.buffers": "~0.1.1",
     "h5.main": "morkai/h5.main#7fb51e2571",
     "h5.modbus": "morkai/h5.modbus#8eb063d6f0",
     "h5.pubsub": "morkai/h5.pubsub#c1a899cb7e",
-    "h5.rql": "morkai/h5.rql#5622189665",
-    "h5.step": "~0.1.0",
-    "lodash": "~4.17.2",
+    "h5.rql": "morkai/h5.rql#f7b3dbe926",
+    "h5.step": "morkai/h5.step.git#14ea69a759",
+    "lodash": "~4.17.4",
     "messageformat": "~0.2.2",
     "messageformat-amd": "morkai/messageformat-amd.git#d41fd5caba",
     "methods": "~1.1.2",
-    "moment": "~2.17.1",
-    "mongodb": "~2.2.16",
-    "mongoose": "~4.7.4",
-    "nodemailer": "~2.7.0",
-    "socket.io": "~1.7.2",
-    "transliteration": "~1.1.16"
+    "moment": "~2.21.0",
+    "mongodb": "~3.0.4",
+    "mongoose": "~5.0.11",
+    "nodemailer": "~4.6.3",
+    "requirejs": "^2.3.5",
+    "socket.io": "~1.7.4",
+    "transliteration": "~1.6.2"
   },
   "devDependencies": {
     "grunt": "~1.0.1",
@@ -60,7 +63,7 @@
     "grunt-contrib-requirejs": "~1.0.0",
     "grunt-ejs-amd": "git+http://github.com/morkai/grunt-ejs-amd.git#07b9f7ae3a",
     "grunt-messageformat-amd": "git+http://github.com/morkai/grunt-messageformat-amd.git#052e4d4ee5",
-    "grunt-run": "~0.6.0",
+    "grunt-run": "~0.8.0",
     "grunt-text-replace": "~0.4.0"
   }
 }

@@ -1,55 +1,49 @@
-// Copyright (c) 2014, Łukasz Walukiewicz <lukasz@walukiewicz.eu>. Some Rights Reserved.
-// Licensed under CC BY-NC-SA 4.0 <http://creativecommons.org/licenses/by-nc-sa/4.0/>.
-// Part of the walkner-hydro project <http://lukasz.walukiewicz.eu/p/walkner-hydro>
+// Part of <https://miracle.systems/p/walkner-utilio> licensed under <CC BY-NC-SA 4.0>
 
 'use strict';
 
-var RunningAlarm = require('./RunningAlarm');
+const _ = require('lodash');
+const RunningAlarm = require('./RunningAlarm');
 
 exports.DEFAULT_CONFIG = {
   controllerId: 'controller',
   messengerServerId: 'messenger/server',
   mongooseId: 'mongoose',
   mailSenderId: 'mail/sender',
-  gammuId: 'gammu'
+  smsSenderId: 'sms/sender',
+  twilioId: 'twilio'
 };
 
 exports.start = function startAlarmsBackendModule(app, module)
 {
-  var mongoose = app[module.config.mongooseId];
-  var controller = app[module.config.controllerId];
+  const mongoose = app[module.config.mongooseId];
 
   if (!mongoose)
   {
-    throw new Error("alarms module requires the mongoose module!");
+    throw new Error('alarms module requires the mongoose module!');
   }
 
-  if (!controller)
-  {
-    throw new Error("alarms module requires the controller module!");
-  }
+  const Alarm = mongoose.model('Alarm');
+  const runningAlarms = {};
 
   app.onModuleReady(module.config.messengerServerId, setUpServerMessages);
 
-  var Alarm = mongoose.model('Alarm');
-  var runningAlarms = {};
+  app.onModuleReady(module.config.controllerId, function()
+  {
+    if (app[module.config.controllerId].tags.length === 0)
+    {
+      app.broker.subscribe('controller.tagValuesChanged', runAlarms).setLimit(1);
+    }
+    else
+    {
+      runAlarms();
+    }
+  });
 
   app.broker.subscribe('controller.tagValuesChanged', function(changes)
   {
-    Object.keys(changes).forEach(function(tagName)
-    {
-      app.broker.publish('alarms.tagChanged.' + tagName);
-    });
+    _.forEach(changes, (unused, tagName) => { app.broker.publish(`alarms.tagChanged.${tagName}`); });
   });
-
-  if (controller.tags.length === 0)
-  {
-    app.broker.subscribe('controller.tagValuesChanged', runAlarms).setLimit(1);
-  }
-  else
-  {
-    runAlarms();
-  }
 
   /**
    * @private
@@ -60,13 +54,13 @@ exports.start = function startAlarmsBackendModule(app, module)
     {
       if (err)
       {
-        module.error("Failed to retrieve running alarms: %s", err.message);
+        module.error(`Failed to retrieve running alarms: ${err.message}`);
       }
       else
       {
-        models.forEach(function(model)
+        _.forEach(models, function(model)
         {
-          var runningAlarm = new RunningAlarm(app, module, model);
+          const runningAlarm = new RunningAlarm(app, module, model);
 
           runningAlarms[model.id] = runningAlarm;
 
@@ -81,7 +75,7 @@ exports.start = function startAlarmsBackendModule(app, module)
    */
   function setUpServerMessages()
   {
-    var messengerServer = app[module.config.messengerServerId];
+    const messengerServer = app[module.config.messengerServerId];
 
     messengerServer.handle('alarms.added', handleAlarmAddedMessage);
     messengerServer.handle('alarms.edited', handleAlarmEditedMessage);
@@ -93,7 +87,7 @@ exports.start = function startAlarmsBackendModule(app, module)
 
   /**
    * @private
-   * @param {object} message
+   * @param {Object} message
    * @param {function} reply
    */
   function handleAlarmAddedMessage(message, reply)
@@ -103,7 +97,7 @@ exports.start = function startAlarmsBackendModule(app, module)
 
   /**
    * @private
-   * @param {object} message
+   * @param {Object} message
    * @param {function} reply
    */
   function handleAlarmEditedMessage(message, reply)
@@ -121,7 +115,7 @@ exports.start = function startAlarmsBackendModule(app, module)
 
   /**
    * @private
-   * @param {object} message
+   * @param {Object} message
    * @param {function} reply
    */
   function handleAlarmDeletedMessage(message, reply)
@@ -131,15 +125,15 @@ exports.start = function startAlarmsBackendModule(app, module)
 
   /**
    * @private
-   * @param {object} message
+   * @param {Object} message
    * @param {function} reply
+   * @returns {undefined}
    */
   function handleAlarmRunMessage(message, reply)
   {
-    var alarmId = message.alarmId;
-    var runningAlarm = runningAlarms[alarmId];
+    const alarmId = message.alarmId;
 
-    if (runningAlarm)
+    if (runningAlarms[alarmId])
     {
       return reply();
     }
@@ -151,21 +145,19 @@ exports.start = function startAlarmsBackendModule(app, module)
         return reply(err);
       }
 
-      var runningAlarm = new RunningAlarm(app, module, model);
+      const runningAlarm = new RunningAlarm(app, module, model);
 
       runningAlarm.run(message.user, function(err)
       {
         if (err)
         {
-          module.error(
-            "Failed to run alarm %s: %s", runningAlarm.model.name, err.message
-          );
+          module.error(`Failed to run alarm [${runningAlarm.model.name}]: ${err.message}`);
         }
         else
         {
           runningAlarms[alarmId] = runningAlarm;
 
-          module.debug("Alarm run: %s", runningAlarm.model.name);
+          module.info(`Alarm run: ${runningAlarm.model.name}`);
         }
 
         reply(err);
@@ -175,12 +167,13 @@ exports.start = function startAlarmsBackendModule(app, module)
 
   /**
    * @private
-   * @param {object} message
+   * @param {Object} message
    * @param {function} reply
+   * @returns {undefined}
    */
   function handleAlarmStopMessage(message, reply)
   {
-    var runningAlarm = runningAlarms[message.alarmId];
+    const runningAlarm = runningAlarms[message.alarmId];
 
     if (!runningAlarm)
     {
@@ -191,15 +184,13 @@ exports.start = function startAlarmsBackendModule(app, module)
     {
       if (err)
       {
-        module.error(
-          "Failed to stop alarm %s: %s", runningAlarm.model.name, err.message
-        );
+        module.error(`Failed to stop alarm [${runningAlarm.model.name}]: ${err.message}`);
       }
       else
       {
         delete runningAlarms[runningAlarm.model.id];
 
-        module.info("Stopped alarm: %s", runningAlarm.model.name);
+        module.info(`Stopped alarm: ${runningAlarm.model.name}`);
 
         runningAlarm.destroy();
       }
@@ -210,12 +201,13 @@ exports.start = function startAlarmsBackendModule(app, module)
 
   /**
    * @private
-   * @param {object} message
+   * @param {Object} message
    * @param {function} reply
+   * @returns {undefined}
    */
   function handleAlarmAckMessage(message, reply)
   {
-    var runningAlarm = runningAlarms[message.alarmId];
+    const runningAlarm = runningAlarms[message.alarmId];
 
     if (!runningAlarm)
     {
@@ -226,15 +218,11 @@ exports.start = function startAlarmsBackendModule(app, module)
     {
       if (err)
       {
-        module.error(
-          "Failed to acknowledge alarm %s: %s",
-          runningAlarm.model.name,
-          err.message
-        );
+        module.error(`Failed to acknowledge alarm [${runningAlarm.model.name}]: ${err.message}`);
       }
       else
       {
-        module.info("Acknowledged alarm: %s", runningAlarm.model.name);
+        module.info(`Acknowledged alarm: ${runningAlarm.model.name}`);
       }
 
       reply(err);

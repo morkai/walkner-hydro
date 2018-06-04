@@ -1,27 +1,25 @@
-// Copyright (c) 2014, Łukasz Walukiewicz <lukasz@walukiewicz.eu>. Some Rights Reserved.
-// Licensed under CC BY-NC-SA 4.0 <http://creativecommons.org/licenses/by-nc-sa/4.0/>.
-// Part of the walkner-hydro project <http://lukasz.walukiewicz.eu/p/walkner-hydro>
+// Part of <https://miracle.systems/p/walkner-utilio> licensed under <CC BY-NC-SA 4.0>
 
 'use strict';
 
-var step = require('h5.step');
-var esprima = require('esprima');
-var estraverse = require('estraverse');
-var escodegen = require('escodegen');
+const step = require('h5.step');
+const esprima = require('esprima');
+const estraverse = require('estraverse');
+const escodegen = require('escodegen');
 
 /**
  * @private
  * @const
  * @type {string}
  */
-var TAG_VALUES_VARIABLE_NAME = '$__values__';
+const TAG_VALUES_VARIABLE_NAME = '$';
 
 /**
  * @private
  * @const
- * @type {Array.<estraverse.Syntax>}
+ * @type {Array<estraverse.Syntax>}
  */
-var ILLEGAL_STATEMENT_TYPES = [
+const ILLEGAL_STATEMENT_TYPES = [
   estraverse.Syntax.WhileStatement,
   estraverse.Syntax.DoWhileStatement,
   estraverse.Syntax.ForStatement,
@@ -32,9 +30,9 @@ var ILLEGAL_STATEMENT_TYPES = [
 /**
  * @private
  * @const
- * @type {Array.<string>}
+ * @type {Array<string>}
  */
-var ILLEGAL_FUNCTION_CALLS = [
+const ILLEGAL_FUNCTION_CALLS = [
   'eval',
   'require',
   'Function'
@@ -43,9 +41,9 @@ var ILLEGAL_FUNCTION_CALLS = [
 module.exports = parseCondition;
 
 /**
- * @param {object.<string, *>} tagNamesMap
+ * @param {Object<string, *>} tagNamesMap
  * @param {string} code
- * @param {function(Error|null, string=, Array.<string>=)} done
+ * @param {function(?Error, string=, Array.<string>=)} done
  */
 function parseCondition(tagNamesMap, code, done)
 {
@@ -82,9 +80,7 @@ function parseCondition(tagNamesMap, code, done)
     {
       try
       {
-        this.tags = collectTagVariables(
-          tagNamesMap, this.tree, this.localVariables
-        );
+        this.tags = collectTagVariables(tagNamesMap, this.tree, this.localVariables);
       }
       catch (err)
       {
@@ -95,11 +91,10 @@ function parseCondition(tagNamesMap, code, done)
     },
     function changeLastExpressionToReturnStatementStep()
     {
-      var testFuncBody = this.tree.body[0].body.body;
-      var lastStatement = testFuncBody[testFuncBody.length - 1];
+      const testFuncBody = this.tree.body[0].body.body;
+      const lastStatement = testFuncBody[testFuncBody.length - 1];
 
-      if (lastStatement
-        && lastStatement.type === esprima.Syntax.ExpressionStatement)
+      if (lastStatement && lastStatement.type === esprima.Syntax.ExpressionStatement)
       {
         lastStatement.type = esprima.Syntax.ReturnStatement;
         lastStatement.argument = lastStatement.expression;
@@ -109,7 +104,7 @@ function parseCondition(tagNamesMap, code, done)
     },
     function regenerateCodeStep()
     {
-      var code;
+      let code;
 
       try
       {
@@ -130,12 +125,12 @@ function parseCondition(tagNamesMap, code, done)
 
 /**
  * @private
- * @param {object} tree
- * @returns {Array.<string>}
+ * @param {Object} tree
+ * @returns {Array<string>}
  */
 function collectLocalVariablesAndValidate(tree)
 {
-  var localVariables = [
+  const localVariables = [
     'Array',
     'Boolean',
     'Date',
@@ -153,11 +148,11 @@ function collectLocalVariablesAndValidate(tree)
   estraverse.traverse(tree, {
     enter: function(node, parent)
     {
-      var err;
+      let err;
 
       if (ILLEGAL_STATEMENT_TYPES.indexOf(node.type) !== -1)
       {
-        err = new Error("Illegal statement: " + node.type + ".");
+        err = new Error(`Illegal statement: ${node.type}.`);
         err.code = 'ILLEGAL_STATEMENT';
         err.nodeLoc = node.loc;
         err.nodeType = node.type;
@@ -194,7 +189,7 @@ function collectLocalVariablesAndValidate(tree)
         && parent.type === estraverse.Syntax.CallExpression
         && ILLEGAL_FUNCTION_CALLS.indexOf(node.name) !== -1)
       {
-        err = new Error("Illegal function call: " + node.name + ".");
+        err = new Error(`Illegal function call: ${node.name}.`);
         err.code = 'ILLEGAL_FUNCTION_CALL';
         err.nodeLoc = node.loc;
         err.nodeType = node.type;
@@ -209,14 +204,14 @@ function collectLocalVariablesAndValidate(tree)
 
 /**
  * @private
- * @param {object.<string, *>} tagNamesMap
- * @param {object} tree
- * @param {Array.<string>} localVariables
- * @returns {Array.<string>}
+ * @param {Object<string, *>} tagNamesMap
+ * @param {Object} tree
+ * @param {Array<string>} localVariables
+ * @returns {Array<string>}
  */
 function collectTagVariables(tagNamesMap, tree, localVariables)
 {
-  var tags = {};
+  const tags = {};
 
   estraverse.traverse(tree, {
     enter: function(node, parent)
@@ -236,9 +231,7 @@ function collectTagVariables(tagNamesMap, tree, localVariables)
 
       if (node.type === estraverse.Syntax.MemberExpression)
       {
-        return handleMemberExpressionNode(
-          localVariables, tagNamesMap, tags, node
-        );
+        return handleMemberExpressionNode(localVariables, tagNamesMap, tags, node);
       }
 
       if (node.type === estraverse.Syntax.Identifier)
@@ -253,7 +246,7 @@ function collectTagVariables(tagNamesMap, tree, localVariables)
 
 /**
  * @private
- * @param {object} tree
+ * @param {Object} tree
  */
 function markAsSkipped(tree)
 {
@@ -267,32 +260,43 @@ function markAsSkipped(tree)
 
 /**
  * @private
- * @param {Array.<string>} localVariables
- * @param {object.<string, *>} tagNamesMap
- * @param {object.<string, boolean>} tags
- * @param {object} node
- * @returns {estraverse.VisitorOption|undefined}
+ * @param {Array<string>} localVariables
+ * @param {Object<string, *>} tagNamesMap
+ * @param {Object<string, boolean>} tags
+ * @param {Object} node
+ * @returns {(estraverse.VisitorOption|undefined)}
  * @throws {Error}
  */
 function handleMemberExpressionNode(localVariables, tagNamesMap, tags, node)
 {
-  if (localVariables.indexOf(getLeftmostIdentifierName(node)) !== -1)
+  const leftmostIdentifier = getLeftmostIdentifierName(node);
+
+  if (localVariables.indexOf(leftmostIdentifier) !== -1)
   {
     return markAsSkipped(node);
   }
 
-  var tagName = getTagNameFromMemberExpression(node);
+  let tagName;
+
+  if (leftmostIdentifier === TAG_VALUES_VARIABLE_NAME
+    && node.computed
+    && node.property.type === estraverse.Syntax.Literal)
+  {
+    tagName = node.property.value;
+  }
+  else
+  {
+    tagName = getTagNameFromMemberExpression(node);
+  }
 
   if (tagName !== null)
   {
-    var brackets = tagName.match(/\[(.*?)\]/g);
-    var wildcardTagName = brackets === null
+    const brackets = tagName.match(/\[(.*?)\]/g);
+    const wildcardTagName = brackets === null
       ? tagName
       : tagName.replace(/\[(.*?)\]/g, '.*');
 
-    assertTagNameExistence(
-      tagNamesMap, node, wildcardTagName, brackets !== null
-    );
+    assertTagNameExistence(tagNamesMap, node, wildcardTagName, brackets !== null);
 
     tags[wildcardTagName] = true;
 
@@ -304,21 +308,19 @@ function handleMemberExpressionNode(localVariables, tagNamesMap, tags, node)
 
 /**
  * @private
- * @param {object.<string, *>} tagNamesMap
- * @param {object} node
+ * @param {Object<string, *>} tagNamesMap
+ * @param {Object} node
  * @param {string} tagName
  * @param {boolean} wildcards
  * @throws {Error}
  */
 function assertTagNameExistence(tagNamesMap, node, tagName, wildcards)
 {
-  var exists;
+  let exists;
 
   if (wildcards)
   {
-    var tagNameRegExp = new RegExp(
-      '^' + escapeRegExp(tagName).replace(/\\\.\\\*/g, '\\.[a-zA-Z0-9]+') + '$'
-    );
+    const tagNameRegExp = new RegExp('^' + escapeRegExp(tagName).replace(/\\\.\\\*/g, '\\.[a-zA-Z0-9]+') + '$');
 
     exists = Object.keys(tagNamesMap).some(function(tagName)
     {
@@ -339,10 +341,11 @@ function assertTagNameExistence(tagNamesMap, node, tagName, wildcards)
 /**
  * @private
  * @param {Array.<string>} localVariables
- * @param {object.<string, *>} tagNamesMap
- * @param {object.<string, boolean>} tags
- * @param {object} node
- * @returns {estraverse.VisitorOption|undefined}
+ * @param {Object<string, *>} tagNamesMap
+ * @param {Object<string, boolean>} tags
+ * @param {Object} node
+ * @returns {(estraverse.VisitorOption|undefined)}
+ * @throws {Error}
  */
 function handleIdentifierNode(localVariables, tagNamesMap, tags, node)
 {
@@ -365,8 +368,8 @@ function handleIdentifierNode(localVariables, tagNamesMap, tags, node)
 
 /**
  * @private
- * @param {object} memberExpression
- * @returns {string|null}
+ * @param {Object} memberExpression
+ * @returns {?string}
  */
 function getLeftmostIdentifierName(memberExpression)
 {
@@ -385,7 +388,7 @@ function getLeftmostIdentifierName(memberExpression)
 
 /**
  * @private
- * @param {object} node
+ * @param {Object} node
  * @returns {string}
  * @throws {Error}
  */
@@ -400,11 +403,11 @@ function getTagNameFromMemberExpression(node)
     throw createIllegalComplexTagNameError(node.property);
   }
 
-  var prefix = node.object.type === estraverse.Syntax.Identifier
+  const prefix = node.object.type === estraverse.Syntax.Identifier
     ? node.object.name
     : getTagNameFromMemberExpression(node.object);
 
-  var suffix;
+  let suffix;
 
   if (node.property.type === estraverse.Syntax.Identifier)
   {
@@ -422,9 +425,9 @@ function getTagNameFromMemberExpression(node)
 
 /**
  * @private
- * @param {object} node
+ * @param {Object} node
  * @param {string} tagName
- * @param {Array.<string>|null} brackets
+ * @param {?Array<string>} brackets
  */
 function transformToTagValue(node, tagName, brackets)
 {
@@ -435,15 +438,15 @@ function transformToTagValue(node, tagName, brackets)
     name: TAG_VALUES_VARIABLE_NAME
   };
 
-  var propertyCode = "'" + tagName + "'";
+  let propertyCode = `'${tagName}'`;
 
   if (Array.isArray(brackets))
   {
     brackets.forEach(function(bracket)
     {
-      var varName = bracket.substr(1, bracket.length - 2);
+      const varName = bracket.substr(1, bracket.length - 2);
 
-      propertyCode = propertyCode.replace(bracket, ".' + " + varName + " + '");
+      propertyCode = propertyCode.replace(bracket, `.' + ${varName} + '`);
     });
   }
 
@@ -452,7 +455,7 @@ function transformToTagValue(node, tagName, brackets)
 
 /**
  * @private
- * @param {object} node
+ * @param {Object} node
  * @returns {boolean}
  */
 function isInvalidPropertyType(node)
@@ -463,7 +466,7 @@ function isInvalidPropertyType(node)
 
 /**
  * @private
- * @param {object} node
+ * @param {Object} node
  * @returns {boolean}
  */
 function isInvalidObjectType(node)
@@ -475,30 +478,30 @@ function isInvalidObjectType(node)
 /**
  * @private
  * @param {string} tagName
- * @param {object} node
+ * @param {Object} node
  * @returns {Error}
  */
 function createUnknownTagNameError(tagName, node)
 {
-  var err = new Error("Unknown tag name: " + tagName);
+  const err = new Error(`Unknown tag name: ${tagName}`);
+
   err.code = 'UNKNOWN_TAG_NAME';
   err.tagName = tagName;
   err.nodeLoc = node.loc;
   err.nodeType = node.type;
 
-  throw err;
+  return err;
 }
 
 /**
  * @private
- * @param {object} node
+ * @param {Object} node
  * @returns {Error}
  */
 function createReservedVariableNameError(node)
 {
-  var err = new Error(
-    TAG_VALUES_VARIABLE_NAME + " cannot be used as a local var."
-  );
+  const err = new Error(`[${TAG_VALUES_VARIABLE_NAME}] cannot be used as a local var.`);
+
   err.code = 'RESERVED_VARIABLE_NAME';
   err.varName = TAG_VALUES_VARIABLE_NAME;
   err.nodeLoc = node.loc;
@@ -508,12 +511,13 @@ function createReservedVariableNameError(node)
 
 /**
  * @private
- * @param {object} node
+ * @param {Object} node
  * @returns {Error}
  */
 function createIllegalComplexTagNameError(node)
 {
-  var err = new Error("Complex expressions in tag names are not allowed.");
+  const err = new Error('Complex expressions in tag names are not allowed.');
+
   err.code = 'ILLEGAL_COMPLEX_TAG_NAME';
   err.nodeLoc = node.loc;
   err.nodeType = node.type;

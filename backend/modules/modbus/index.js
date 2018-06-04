@@ -1,10 +1,11 @@
-// Part of <https://miracle.systems/p/walkner-furmon> licensed under <CC BY-NC-SA 4.0>
+// Part of <https://miracle.systems/p/walkner-maxos> licensed under <CC BY-NC-SA 4.0>
 
 'use strict';
 
 const fs = require('fs');
 const _ = require('lodash');
 const csv = require('csv');
+const deepEqual = require('deep-equal');
 const modbus = require('h5.modbus');
 const Tag = require('./Tag');
 
@@ -24,7 +25,8 @@ exports.DEFAULT_CONFIG = {
   masters: {},
   tagsFile: null,
   tags: {},
-  ignoreRe: null
+  ignoreRe: null,
+  resetTagsDelay: 1337
 };
 
 exports.start = function startModbusModule(app, module, done)
@@ -34,34 +36,36 @@ exports.start = function startModbusModule(app, module, done)
   module.masters = {};
   module.tags = {};
   module.values = {};
+  module.getTagValue = function(tagName)
+  {
+    return module.values[tagName];
+  };
   module.setTagValue = function(tagName, newValue, done)
   {
     if (!done)
     {
-      done = function() {};
+      done = () => {};
     }
 
     if (module.config.ignoreRe && module.config.ignoreRe.test(tagName))
     {
-      done();
+      module.debug(`Tried to set ignored tag: ${tagName}`);
 
-      return;
+      return done();
     }
 
     const tag = module.tags[tagName];
 
     if (typeof tag === 'undefined')
     {
-      done(new Error('UNKNOWN_TAG'));
+      module.debug(`Tried to set unknown tag: ${tagName}`);
 
-      return;
+      return done(Object.assign(new Error('UNKNOWN_TAG'), {tagName}));
     }
 
-    if (newValue === tag.getValue())
+    if (deepEqual(newValue, tag.getValue()))
     {
-      done();
-
-      return;
+      return done();
     }
 
     tag.writeValue(newValue, done);
@@ -185,35 +189,41 @@ exports.start = function startModbusModule(app, module, done)
       trim: true,
       columns: true
     };
-    const csvReader = csv().from.string(tagsCsv, csvOptions);
+    const csvReader = csv.parse(tagsCsv, csvOptions);
+    const complete = _.once(done);
 
-    csvReader.on('record', function(record)
+    csvReader.on('error', complete);
+    csvReader.on('finish', complete);
+    csvReader.on('readable', () =>
     {
-      if (_.isEmpty(record.name) || tags[record.name])
+      let record;
+
+      while (record = csvReader.read()) // eslint-disable-line no-cond-assign
       {
-        return;
+        if (_.isEmpty(record.name) || tags[record.name])
+        {
+          continue;
+        }
+
+        _.forEach(record, (value, key) => // eslint-disable-line no-loop-func
+        {
+          if (/^[A-Z]/.test(key))
+          {
+            delete record[key];
+          }
+          else if (value === '-' || value === '?')
+          {
+            record[key] = null;
+          }
+          else if (/^[0-9]+(\.[0-9]+)?$/.test(value))
+          {
+            record[key] = parseFloat(value);
+          }
+        });
+
+        tags[record.name] = record;
       }
-
-      _.forEach(record, function(value, key)
-      {
-        if (/^[A-Z]/.test(key))
-        {
-          delete record[key];
-        }
-        else if (value === '-' || value === '?')
-        {
-          record[key] = null;
-        }
-        else if (/^[0-9]+(\.[0-9]+)?$/.test(value))
-        {
-          record[key] = parseFloat(value);
-        }
-      });
-
-      tags[record.name] = record;
     });
-
-    csvReader.on('end', done);
   }
 
   /**
@@ -239,7 +249,7 @@ exports.start = function startModbusModule(app, module, done)
           severity: 'debug',
           master: masterName,
           unit: -1,
-          message: err.message,
+          message: err.stack,
           code: err.code
         });
       }
@@ -280,15 +290,17 @@ exports.start = function startModbusModule(app, module, done)
 
       module.tags[statusTagName].setValue(wasConnected);
 
-      if (resetTagsTimer === null)
+      if (resetTagsTimer !== null)
       {
-        resetTagsTimer = app.timeout(1337, function()
-        {
-          resetTagsTimer = null;
-
-          _.forEach(master.tags, tag => { tag.setValue(null); });
-        });
+        return;
       }
+
+      resetTagsTimer = app.timeout(module.config.resetTagsDelay || 1337, function()
+      {
+        resetTagsTimer = null;
+
+        _.forEach(master.tags, tag => { tag.setValue(null); });
+      });
     });
 
     module.masters[masterName] = master;
@@ -331,7 +343,8 @@ exports.start = function startModbusModule(app, module, done)
       if (config.writeAllTheThings
         && (!master || master.writeAllTheThings !== false)
         && tagConfig.kind !== 'virtual'
-        && tagConfig.kind !== 'setting')
+        && tagConfig.kind !== 'setting'
+        && tagConfig.kind !== 'memory')
       {
         _.assign(tagConfig, {
           kind: 'register',
@@ -404,6 +417,11 @@ exports.start = function startModbusModule(app, module, done)
           interval: module.config.masters[masterName].interval || (25 + Math.round(Math.random() * 25))
         });
 
+        transaction.on('request', function()
+        {
+          this.startTime = Date.now();
+        });
+
         transaction.on('complete', function(err, res)
         {
           master.emit('transaction complete', err, res);
@@ -417,7 +435,7 @@ exports.start = function startModbusModule(app, module, done)
           {
             app.broker.publish('modbus.error', {
               severity: 'debug',
-              message: err.message,
+              message: err.stack,
               master: masterName,
               unit: unit,
               request: request
@@ -617,8 +635,8 @@ exports.start = function startModbusModule(app, module, done)
 
       for (let i = 0, l = tInfo.tags.length; i < l; ++i)
       {
-        var tag = module.tags[tInfo.tags[i]];
-        var newValue = bits
+        const tag = module.tags[tInfo.tags[i]];
+        const newValue = bits
           ? data[tag.address - tInfo.startingAddress]
           : readTypedValue(tInfo, tag, data);
 
@@ -635,7 +653,7 @@ exports.start = function startModbusModule(app, module, done)
   {
     _.forEach(tagNames, function(tagName)
     {
-      var tag = module.tags[tagName];
+      const tag = module.tags[tagName];
 
       if (tag)
       {
@@ -653,7 +671,7 @@ exports.start = function startModbusModule(app, module, done)
    */
   function readTypedValue(tInfo, tag, buffer)
   {
-    var offset = (tag.address - tInfo.startingAddress) * 2;
+    const offset = (tag.address - tInfo.startingAddress) * 2;
 
     switch (tag.type)
     {
@@ -702,7 +720,7 @@ exports.start = function startModbusModule(app, module, done)
       {
         const tag = module.tags[doc._id];
 
-        if (tag)
+        if (tag && tag.kind === 'setting')
         {
           tag.setValue(doc.value, now);
         }

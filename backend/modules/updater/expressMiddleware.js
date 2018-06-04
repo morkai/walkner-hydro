@@ -1,4 +1,4 @@
-// Part of <http://miracle.systems/p/walkner-wmes> licensed under <CC BY-NC-SA 4.0>
+// Part of <https://miracle.systems/p/walkner-wmes> licensed under <CC BY-NC-SA 4.0>
 
 'use strict';
 
@@ -9,7 +9,7 @@ module.exports = function(app, updaterModule, req, res, next)
     return next();
   }
 
-  var restartDelay = updaterModule.config.restartDelay
+  const restartDelay = updaterModule.config.restartDelay
     - (Date.now() - updaterModule.restarting)
     + 5000;
 
@@ -17,8 +17,8 @@ module.exports = function(app, updaterModule, req, res, next)
     text: function()
     {
       res.send(
-        "503 - Service Unavailable - Restarting... try again in "
-          + Math.ceil(restartDelay / 1000) + "s"
+        '503 - Service Unavailable - Restarting... try again in '
+          + Math.ceil(restartDelay / 1000) + 's'
       );
     },
     html: function()

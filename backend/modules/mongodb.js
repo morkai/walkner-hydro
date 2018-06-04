@@ -1,13 +1,12 @@
-// Part of <http://miracle.systems/p/walkner-wmes> licensed under <CC BY-NC-SA 4.0>
+// Part of <https://miracle.systems/p/walkner-wmes> licensed under <CC BY-NC-SA 4.0>
 
 'use strict';
 
-var mongodb = require('mongodb');
+const mongodb = require('mongodb');
 
 exports.DEFAULT_CONFIG = {
   uri: 'mongodb://127.0.0.1:27017/test',
-  server: {},
-  db: {},
+  mongoClient: {},
   keepAliveQueryInterval: 30000
 };
 
@@ -15,16 +14,17 @@ exports.start = function startMongodbModule(app, module, done)
 {
   let keepAliveFailed = false;
 
-  mongodb.MongoClient.connect(module.config.uri, module.config, onComplete);
+  mongodb.MongoClient.connect(module.config.uri, module.config.mongoClient, onComplete);
 
-  function onComplete(err, db)
+  function onComplete(err, client)
   {
     if (err)
     {
       return done(err);
     }
 
-    module.db = db;
+    module.client = client;
+    module.db = client.db();
 
     setUpEventListeners();
     setUpKeepAliveQuery();
@@ -36,12 +36,12 @@ exports.start = function startMongodbModule(app, module, done)
 
   function setUpEventListeners()
   {
-    module.db.on('error', (err) => module.error(err.stack));
-    module.db.on('parseError', (err) => module.error(err.stack));
-    module.db.on('timeout', () => module.warn('Timeout.'));
-    module.db.on('close', () => module.warn('Closed.'));
-    module.db.on('reconnect', () => module.debug('Reconnected.'));
-    module.db.on('authenticated', () => module.debug('Authenticated.'));
+    module.client.on('error', (err) => module.error(err.stack));
+    module.client.on('parseError', (err) => module.error(err.stack));
+    module.client.on('timeout', () => module.warn('Timeout.'));
+    module.client.on('close', () => module.warn('Closed.'));
+    module.client.on('reconnect', () => module.debug('Reconnected.'));
+    module.client.on('authenticated', () => module.debug('Authenticated.'));
   }
 
   function setUpKeepAliveQuery()

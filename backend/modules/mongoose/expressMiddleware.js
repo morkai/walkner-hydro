@@ -12,7 +12,7 @@ module.exports = function(app, module, req, res, next)
   res.status(503).format({
     text: function()
     {
-      res.send("503 - Service Unavailable - No database connection. Please try again later.");
+      res.send('503 - Service Unavailable - No database connection. Please try again later.');
     },
     html: function()
     {

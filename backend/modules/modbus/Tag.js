@@ -1,8 +1,9 @@
-// Part of <https://miracle.systems/p/walkner-furmon> licensed under <CC BY-NC-SA 4.0>
+// Part of <https://miracle.systems/p/walkner-maxos> licensed under <CC BY-NC-SA 4.0>
 
 'use strict';
 
 const _ = require('lodash');
+const deepEqual = require('deep-equal');
 const deltaUtils = require('./deltaUtils');
 const scaleFunctions = require('./scaleFunctions');
 
@@ -72,10 +73,19 @@ function Tag(broker, modbus, name, config)
    */
   this.kind = typeof config.kind === 'string' ? config.kind : 'virtual';
 
-  /**
-   * @type {number}
-   */
-  this.code = typeof config.code === 'number' ? config.code : 0x03;
+  if (typeof config.code === 'number')
+  {
+    this.code = config.code;
+  }
+  else
+  {
+    this.code = deltaUtils.getFunctionCode(config.kind);
+
+    if (this.code === -1)
+    {
+      this.code = 0x03;
+    }
+  }
 
   if (this.kind === 'virtual')
   {
@@ -194,7 +204,7 @@ Tag.prototype.toJSON = function()
  */
 Tag.prototype.isConnected = function()
 {
-  var master = this.modbus.masters[this.master];
+  const master = this.modbus.masters[this.master];
 
   return master ? master.isConnected() : false;
 };
@@ -212,7 +222,7 @@ Tag.prototype.isReadable = function()
  */
 Tag.prototype.isWritable = function()
 {
-  return this.writable && (this.address !== null || this.kind === 'setting');
+  return this.writable && (this.address !== null || this.kind === 'setting' || this.kind === 'memory');
 };
 
 /**
@@ -234,7 +244,7 @@ Tag.prototype.setValue = function(newValue, lastChangeTime)
 
   const oldValue = this.modbus.values[this.name];
 
-  if (newValue === oldValue)
+  if (deepEqual(newValue, oldValue))
   {
     return false;
   }
@@ -291,6 +301,9 @@ Tag.prototype.writeValue = function(value, done)
 
     case 'setting':
       return this.writeSettingValue(value, done);
+
+    case 'memory':
+      return this.writeMemoryValue(value, done);
 
     default:
       return done(new Error('TAG_WRITE_UNSUPPORTED'));
@@ -416,6 +429,18 @@ Tag.prototype.writeSettingValue = function(value, done)
 
 /**
  * @private
+ * @param {*} value
+ * @param {function} done
+ */
+Tag.prototype.writeMemoryValue = function(value, done)
+{
+  this.setValue(this.valueToRawValue(value));
+
+  setImmediate(done);
+};
+
+/**
+ * @private
  * @param {Transaction} transaction
  * @param {Error|null} err
  * @param {Response} res
@@ -537,6 +562,11 @@ Tag.prototype.rawValueToValue = function(rawValue)
  */
 Tag.prototype.valueToRawValue = function(value)
 {
+  if (value === undefined)
+  {
+    value = null;
+  }
+
   switch (this.type)
   {
     case 'double':
@@ -549,7 +579,26 @@ Tag.prototype.valueToRawValue = function(value)
       break;
 
     case 'string':
+    case 'text':
       value = String(value);
+      break;
+
+    case 'object':
+      try
+      {
+        if (typeof value === 'string')
+        {
+          value = JSON.parse(value);
+        }
+        else if (!_.isPlainObject(value))
+        {
+          value = null;
+        }
+      }
+      catch (err)
+      {
+        value = null;
+      }
       break;
 
     default:

@@ -1,7 +1,7 @@
-window.LOCALE = 'pl';
-localStorage.setItem('LOCALE', 'pl');
-appLocale = (localStorage.getItem('LOCALE') || (navigator.languages ? navigator.languages[0] : navigator.language) || window.LOCALE || 'pl').split('-')[0];
-appLocale = 'pl';//appLocale === 'pl' ? 'pl' : 'en';
+window.appLocale = window.LOCALE = 'pl';
+
+localStorage.setItem('LOCALE', window.appLocale);
+
 require = {
   baseUrl: '/',
   paths: <%- paths %>,

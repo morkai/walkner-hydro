@@ -9,7 +9,7 @@ Water pump station control and monitoring application in Node.js.
 Node.js is a server side software system designed for writing scalable
 Internet applications in JavaScript.
 
-  * __Version__: 0.10.x
+  * __Version__: 8.x.x
   * __Website__: http://nodejs.org/
   * __Download__: http://nodejs.org/download/
   * __Installation guide__: https://github.com/joyent/node/wiki/Installation
@@ -18,7 +18,7 @@ Internet applications in JavaScript.
 
 MongoDB is a scalable, high-performance, open source NoSQL database.
 
-  * __Version__: 2.4.x
+  * __Version__: 3.6.x
   * __Website__: http://mongodb.org/
   * __Download__: http://www.mongodb.org/downloads
   * __Installation guide__: http://docs.mongodb.org/manual/installation/
@@ -142,4 +142,4 @@ pm2 startup
 
 walkner-hydro is released under the [CC BY-NC-SA 4.0 License](https://github.com/morkai/walkner-hydro/blob/master/license.md).
 
-Copyright (c) 2014, Łukasz Walukiewicz (lukasz@walukiewicz.eu). Some Rights Reserved.
+Copyright (c) 2018, Łukasz Walukiewicz (lukasz@miracle.systems). Some Rights Reserved.

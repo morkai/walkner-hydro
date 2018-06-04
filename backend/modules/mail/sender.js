@@ -1,11 +1,11 @@
-// Part of <http://miracle.systems/p/walkner-wmes> licensed under <CC BY-NC-SA 4.0>
+// Part of <https://miracle.systems/p/walkner-wmes> licensed under <CC BY-NC-SA 4.0>
 
 'use strict';
 
-var path = require('path');
-var fs = require('fs');
-var _ = require('lodash');
-var step = require('h5.step');
+const path = require('path');
+const fs = require('fs');
+const _ = require('lodash');
+const step = require('h5.step');
 
 exports.DEFAULT_CONFIG = {
   smtp: null,
@@ -30,16 +30,16 @@ const HEADERS = {
 
 exports.start = function startMailSenderModule(app, module)
 {
-  var nodemailer;
-  var request;
+  let nodemailer;
+  let request;
 
   if (module.config.smtp && module.config.remoteSenderUrl)
   {
-    throw new Error("`smtp` and `remoteSenderUrl` cannot be used at the same time!");
+    throw new Error('`smtp` and `remoteSenderUrl` cannot be used at the same time!');
   }
   else if (!module.config.smtp && !module.config.remoteSenderUrl && !module.config.emailsPath)
   {
-    module.warn("No `smtp`, `remoteSenderUrl` or `emailsPath` specified.");
+    module.warn('No `smtp`, `remoteSenderUrl` or `emailsPath` specified.');
   }
   else if (module.config.smtp)
   {
@@ -50,8 +50,8 @@ exports.start = function startMailSenderModule(app, module)
     request = require('request');
   }
 
-  var transport = module.config.smtp ? nodemailer.createTransport(module.config.smtp) : null;
-  var recentlySentFromFile = {};
+  const transport = module.config.smtp ? nodemailer.createTransport(module.config.smtp) : null;
+  const recentlySentFromFile = {};
 
   app.broker.subscribe('directoryWatcher.changed')
     .setFilter(function(fileInfo) { return /\.email$/.test(fileInfo.fileName); })
@@ -60,14 +60,15 @@ exports.start = function startMailSenderModule(app, module)
   setInterval(cleanRecentlySentFromFile, 30 * 60 * 1000);
 
   /**
-   * @param {string|Array.<string>} to
+   * @param {(string|Array.<string>)} to
    * @param {string} subject
    * @param {string} text
-   * @param {function(Error|null, object)} done
+   * @param {function((Error|null), Object)} done
+   * @returns {undefined}
    */
   module.send = function(to, subject, text, done)
   {
-    var mailOptions;
+    let mailOptions;
 
     if (arguments.length > 2)
     {
@@ -81,6 +82,13 @@ exports.start = function startMailSenderModule(app, module)
     {
       mailOptions = to;
       done = subject;
+    }
+
+    if (_.isEmpty(mailOptions.to))
+    {
+      module.debug('Not sending e-mail: %s', JSON.stringify(mailOptions));
+
+      return setImmediate(done);
     }
 
     if (module.config.remoteSenderUrl !== null)
@@ -97,7 +105,7 @@ exports.start = function startMailSenderModule(app, module)
     }
     else
     {
-      module.debug("Not sending e-mail: %s", JSON.stringify(mailOptions));
+      module.debug('Not sending e-mail: %s', JSON.stringify(mailOptions));
 
       setImmediate(done);
     }
@@ -105,7 +113,7 @@ exports.start = function startMailSenderModule(app, module)
 
   function sendThroughRemote(body, done)
   {
-    var options = {
+    const options = {
       url: module.config.remoteSenderUrl,
       method: 'POST',
       json: true,
@@ -151,7 +159,7 @@ exports.start = function startMailSenderModule(app, module)
       replyTo: String(module.config.replyTo)
     });
 
-    var email = [];
+    const email = [];
 
     _.forEach(['subject', 'to', 'cc', 'bcc', 'from', 'replyTo'], function(header)
     {
@@ -161,7 +169,7 @@ exports.start = function startMailSenderModule(app, module)
       }
     });
 
-    var htmlBody = _.isString(mailOptions.html) && !_.isEmpty(mailOptions.html);
+    const htmlBody = _.isString(mailOptions.html) && !_.isEmpty(mailOptions.html);
 
     if (htmlBody)
     {
@@ -173,7 +181,7 @@ exports.start = function startMailSenderModule(app, module)
     step(
       function openFileStep()
       {
-        var emailFileName = (Date.now() + Math.random() * 99999999).toString(36).toUpperCase() + '.email';
+        const emailFileName = (Date.now() + Math.random() * 99999999).toString(36).toUpperCase() + '.email';
 
         fs.open(path.join(module.config.emailsPath, emailFileName), 'wx+', this.next());
       },
@@ -190,7 +198,7 @@ exports.start = function startMailSenderModule(app, module)
       },
       function closeFileStep(err)
       {
-        var fd = this.fd;
+        const fd = this.fd;
         this.fd = null;
 
         if (err)
@@ -218,25 +226,25 @@ exports.start = function startMailSenderModule(app, module)
     {
       if (err)
       {
-        return module.error("Failed to read contents of file [%s]: %s", fileInfo.fileName, err.message);
+        return module.error('Failed to read contents of file [%s]: %s', fileInfo.fileName, err.message);
       }
 
-      var bodyIndex = contents.indexOf('Body:');
+      let bodyIndex = contents.indexOf('Body:');
 
       if (bodyIndex === -1)
       {
         bodyIndex = contents.indexOf('body:');
       }
 
-      var headers = contents.substring(0, bodyIndex).trim().split('\n');
-      var body = contents.substring(bodyIndex + 'Body:'.length).trim();
-      var mailOptions = {};
+      const headers = contents.substring(0, bodyIndex).trim().split('\n');
+      const body = contents.substring(bodyIndex + 'Body:'.length).trim();
+      const mailOptions = {};
 
       _.forEach(headers, function(header)
       {
-        var colonIndex = header.indexOf(':');
-        var headerName = HEADERS[header.substring(0, colonIndex).trim().toLowerCase()];
-        var headerValue = header.substring(colonIndex + 1).trim();
+        const colonIndex = header.indexOf(':');
+        const headerName = HEADERS[header.substring(0, colonIndex).trim().toLowerCase()];
+        const headerValue = header.substring(colonIndex + 1).trim();
 
         if (headerName)
         {
@@ -257,7 +265,9 @@ exports.start = function startMailSenderModule(app, module)
       {
         if (err)
         {
-          module.error("Failed to send email from file [%s]: %s", fileInfo.fileName, err.message);
+          module.error('Failed to send email from file [%s]: %s', fileInfo.fileName, err.message);
+
+          setTimeout(resendFromFile, 60000, fileInfo);
         }
         else
         {
@@ -267,9 +277,16 @@ exports.start = function startMailSenderModule(app, module)
     });
   }
 
+  function resendFromFile(fileInfo)
+  {
+    delete recentlySentFromFile[fileInfo.fileName];
+
+    sendFromFile(fileInfo);
+  }
+
   function cleanRecentlySentFromFile()
   {
-    var halfHourAgo = Date.now() - 30 * 60 * 1000;
+    const halfHourAgo = Date.now() - 30 * 60 * 1000;
 
     _.forEach(recentlySentFromFile, function(sentAt, fileName)
     {
@@ -282,12 +299,7 @@ exports.start = function startMailSenderModule(app, module)
 
   app.onModuleReady(module.config.expressId, function()
   {
-    if (!transport)
-    {
-      return;
-    }
-
-    var express = app[module.config.expressId];
+    const express = app[module.config.expressId];
 
     express.options('/mail;send', function(req, res)
     {
@@ -310,12 +322,12 @@ exports.start = function startMailSenderModule(app, module)
       {
         if (err)
         {
-          module.error("Failed to send e-mail [%s] to [%s]: %s", req.body.subject, req.body.to, err.message);
+          module.error('Failed to send e-mail [%s] to [%s]: %s', req.body.subject, req.body.to, err.message);
 
           return next(err);
         }
 
-        module.debug("Sent e-mail to [%s]: %s", req.body.to, req.body.subject);
+        module.debug('Sent e-mail to [%s]: %s', req.body.to, req.body.subject);
 
         res.sendStatus(204);
       });

@@ -1,57 +1,53 @@
-// Copyright (c) 2014, Łukasz Walukiewicz <lukasz@walukiewicz.eu>. Some Rights Reserved.
-// Licensed under CC BY-NC-SA 4.0 <http://creativecommons.org/licenses/by-nc-sa/4.0/>.
-// Part of the walkner-hydro project <http://lukasz.walukiewicz.eu/p/walkner-hydro>
+// Part of <https://miracle.systems/p/walkner-utilio> licensed under <CC BY-NC-SA 4.0>
 
 'use strict';
 
-var lodash = require('lodash');
-var step = require('h5.step');
-var crud = require('../express/crud');
-var parseCondition = require('./parseCondition');
+const _ = require('lodash');
+const step = require('h5.step');
+const parseCondition = require('./parseCondition');
 
 module.exports = function setUpAlarmsRoutes(app, alarmsModule)
 {
-  var express = app[alarmsModule.config.expressId];
-  var auth = app[alarmsModule.config.userId].auth;
-  var controller = app[alarmsModule.config.controllerId];
-  var Alarm = app[alarmsModule.config.mongooseId].model('Alarm');
+  const express = app[alarmsModule.config.expressId];
+  const auth = app[alarmsModule.config.userId].auth;
+  const controller = app[alarmsModule.config.controllerId];
+  const Alarm = app[alarmsModule.config.mongooseId].model('Alarm');
 
-  var canView = auth('ALARMS_VIEW');
-  var canManage = auth('ALARMS_MANAGE');
+  const canView = auth('ALARMS:VIEW');
+  const canManage = auth('ALARMS:MANAGE');
+  const canAck = auth('ALARMS:ACK');
 
   express.get(
     '/alarms',
     canView,
     setUpCurrentActionProjection,
-    crud.browseRoute.bind(null, app, Alarm)
+    express.crud.browseRoute.bind(null, app, Alarm)
   );
 
-  express.post(
-    '/alarms', canManage, parseConditions, crud.addRoute.bind(null, app, Alarm)
-  );
+  express.post('/alarms', canManage, parseConditions, express.crud.addRoute.bind(null, app, Alarm));
 
-  express.get('/alarms/:id', canView, crud.readRoute.bind(null, app, Alarm));
+  express.get('/alarms/:id', canView, express.crud.readRoute.bind(null, app, Alarm));
 
   express.put(
     '/alarms/:id',
     canManage,
     parseConditions,
-    crud.editRoute.bind(null, app, Alarm)
+    express.crud.editRoute.bind(null, app, Alarm)
   );
 
-  express.post('/alarms/:id', canManage, updateAlarmRoute);
+  express.post('/alarms/:id', canUpdate, updateAlarmRoute);
 
-  express.delete('/alarms/:id', canManage, crud.deleteRoute.bind(null, app, Alarm));
+  express.delete('/alarms/:id', canManage, express.crud.deleteRoute.bind(null, app, Alarm));
 
   /**
    * @prvate
-   * @param {object} req
-   * @param {object} res
-   * @param {function(Error|null)} next
+   * @param {Object} req
+   * @param {Object} res
+   * @param {function(?Error)} next
    */
   function setUpCurrentActionProjection(req, res, next)
   {
-    var fields = req.rql.fields;
+    const fields = req.rql.fields;
 
     if (fields.severity || fields.actionIndex)
     {
@@ -79,9 +75,9 @@ module.exports = function setUpAlarmsRoutes(app, alarmsModule)
 
   /**
    * @private
-   * @param {object} req
-   * @param {object} res
-   * @param {function(Error|null)} next
+   * @param {Object} req
+   * @param {Object} res
+   * @param {function(?Error)} next
    */
   function parseConditions(req, res, next)
   {
@@ -102,12 +98,9 @@ module.exports = function setUpAlarmsRoutes(app, alarmsModule)
       },
       function parseStopConditionStep()
       {
-
         if (req.body.stopConditionMode === Alarm.StopConditionMode.SPECIFIED)
         {
-          parseCondition(
-            controller.values, req.body.stopCondition, this.next()
-          );
+          parseCondition(controller.values, req.body.stopCondition, this.next());
         }
         else
         {
@@ -130,10 +123,27 @@ module.exports = function setUpAlarmsRoutes(app, alarmsModule)
     );
   }
 
+  function canUpdate(req, res, next)
+  {
+    if (req.body.action === 'ack')
+    {
+      canAck(req, res, next);
+    }
+    else
+    {
+      canManage(req, res, next);
+    }
+  }
+
+  /**
+   * @private
+   * @param {Object} req
+   * @param {Object} res
+   * @param {function(?Error)} next
+   * @returns {undefined}
+   */
   function updateAlarmRoute(req, res, next)
   {
-    /*jshint -W015*/
-
     switch (req.body.action)
     {
       case 'ack':
@@ -148,10 +158,10 @@ module.exports = function setUpAlarmsRoutes(app, alarmsModule)
 
           if (alarm === null)
           {
-            return res.send(404);
+            return res.sendStatus(404);
           }
 
-          var user = lodash.isObject(req.session.user)
+          const user = _.isObject(req.session.user)
             ? req.session.user
             : null;
 
@@ -163,18 +173,13 @@ module.exports = function setUpAlarmsRoutes(app, alarmsModule)
             }
             else
             {
-              res.send(204);
+              res.sendStatus(204);
             }
           });
         });
 
       default:
-        return res.send(400, {
-          error: {
-            message: 'Unsupported action: ' + req.body.action,
-            code: 'UNSUPPORTED_ACTION'
-          }
-        });
+        return next(express.createHttpError(`Unsupported action: ${req.body.action}`, 400, 'UNSUPPORTED_ACTION'));
     }
   }
 };

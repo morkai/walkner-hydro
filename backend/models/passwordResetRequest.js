@@ -4,13 +4,8 @@
 
 module.exports = function setUpPasswordResetRequestModel(app, mongoose)
 {
-  var passwordResetRequest = mongoose.Schema({
-    _id: {
-      type: String,
-      required: true,
-      unique: true,
-      trim: true
-    },
+  var passwordResetRequest = new mongoose.Schema({
+    _id: String,
     createdAt: {
       type: Date,
       required: true

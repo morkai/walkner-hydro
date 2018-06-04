@@ -1,29 +1,59 @@
-// Part of <https://miracle.systems/p/walkner-furmon> licensed under <CC BY-NC-SA 4.0>
+// Part of <https://miracle.systems/p/walkner-wmes> licensed under <CC BY-NC-SA 4.0>
 
 'use strict';
 
-var _ = require('lodash');
-var bcrypt = require('bcrypt');
-var crypto = require('crypto');
-var step = require('h5.step');
+const fs = require('fs-extra');
+const _ = require('lodash');
+const bcrypt = require('bcrypt');
+const crypto = require('crypto');
+const step = require('h5.step');
 
 module.exports = function setUpUsersRoutes(app, usersModule)
 {
-  var express = app[usersModule.config.expressId];
-  var userModule = app[usersModule.config.userId];
-  var mongoose = app[usersModule.config.mongooseId];
-  var User = mongoose.model('User');
-  var PasswordResetRequest = mongoose.model('PasswordResetRequest');
+  const express = app[usersModule.config.expressId];
+  const userModule = app[usersModule.config.userId];
+  const settingsModule = app[usersModule.config.settingsId];
+  const mongoose = app[usersModule.config.mongooseId];
+  const User = mongoose.model('User');
+  const PasswordResetRequest = mongoose.model('PasswordResetRequest');
 
-  var canView = userModule.auth('USERS:VIEW');
-  var canBrowse = userModule.auth('LOCAL', 'USERS:VIEW');
-  var canManage = userModule.auth('USERS:MANAGE');
+  const canView = userModule.auth('USERS:VIEW');
+  const canBrowse = userModule.auth.apply(userModule, usersModule.config.browsePrivileges);
+  const canManage = userModule.auth('USERS:MANAGE');
+
+  if (settingsModule)
+  {
+    express.get(
+      '/users/settings',
+      canBrowse,
+      function limitToUsersSettings(req, res, next)
+      {
+        req.rql.selector = {
+          name: 'regex',
+          args: ['_id', '^users\\.']
+        };
+
+        return next();
+      },
+      express.crud.browseRoute.bind(null, app, settingsModule.Setting)
+    );
+    express.put('/users/settings/:id', canManage, settingsModule.updateRoute);
+  }
 
   express.get('/users', canBrowse, express.crud.browseRoute.bind(null, app, User));
-  express.post('/users', canManage, hashPassword, express.crud.addRoute.bind(null, app, User));
+  express.post('/users', canManage, checkLogin, hashPassword, express.crud.addRoute.bind(null, app, User));
   express.get('/users/:id', canViewDetails, express.crud.readRoute.bind(null, app, User));
-  express.put('/users/:id', canEdit, restrictSpecial, hashPassword, express.crud.editRoute.bind(null, app, User));
+  express.put(
+    '/users/:id',
+    canEdit,
+    restrictSpecial,
+    checkLogin,
+    hashPassword,
+    express.crud.editRoute.bind(null, app, User)
+  );
   express.delete('/users/:id', canManage, restrictSpecial, express.crud.deleteRoute.bind(null, app, User));
+
+  express.post('/users/:id/anonymize', userModule.auth('SUPER'), anonymizeUserRoute);
 
   express.post('/login', loginRoute);
   express.get('/logout', logoutRoute);
@@ -45,15 +75,17 @@ module.exports = function setUpUsersRoutes(app, usersModule)
 
   function canEdit(req, res, next)
   {
-    var user = req.session.user;
+    const user = req.session.user;
 
     if (user && req.params.id === user._id)
     {
-      if (req.body.privileges && user.privileges.indexOf('USERS:MANAGE') === -1)
+      if (!user.privileges || user.privileges.indexOf('USERS:MANAGE') === -1)
       {
         req.body = _.pick(req.body, [
-          'login', 'email', 'password', 'password', 'password2',
-          'firstName', 'lastName', 'sex'
+          '_id',
+          'login', 'email', 'password', 'password2',
+          'firstName', 'lastName', 'sex', 'mobile', 'personellId',
+          'mrps'
         ]);
       }
 
@@ -75,6 +107,42 @@ module.exports = function setUpUsersRoutes(app, usersModule)
     return next();
   }
 
+  function checkLogin(req, res, next)
+  {
+    const rawLogin = req.body.login;
+
+    if (!_.isString(rawLogin) || !req.body.active)
+    {
+      return next();
+    }
+
+    const login = req.body.login = rawLogin.trim();
+    const conditions = {
+      login,
+      active: true
+    };
+
+    if (req.body._id)
+    {
+      conditions._id = {$ne: req.body._id};
+    }
+
+    User.findOne(conditions, {_id: 1}).lean().exec(function(err, user)
+    {
+      if (err)
+      {
+        return next(err);
+      }
+
+      if (user)
+      {
+        return next(app.createError('LOGIN_USED', 400));
+      }
+
+      return next();
+    });
+  }
+
   function loginRoute(req, res, next)
   {
     userModule.authenticate(req.body, function(err, user)
@@ -93,7 +161,7 @@ module.exports = function setUpUsersRoutes(app, usersModule)
         return next(err);
       }
 
-      var oldSessionId = req.sessionID;
+      const oldSessionId = req.sessionID;
 
       req.session.regenerate(function(err)
       {
@@ -108,6 +176,7 @@ module.exports = function setUpUsersRoutes(app, usersModule)
         user.loggedIn = true;
         user.ipAddress = userModule.getRealIp({}, req);
         user.local = userModule.isLocalIpAddress(user.ipAddress);
+        user.super = _.includes(user.privileges, 'SUPER');
 
         req.session.user = user;
 
@@ -134,11 +203,11 @@ module.exports = function setUpUsersRoutes(app, usersModule)
 
   function logoutRoute(req, res, next)
   {
-    var user = _.isObject(req.session.user)
+    const user = _.isObject(req.session.user)
       ? req.session.user
       : null;
 
-    var oldSessionId = req.sessionID;
+    const oldSessionId = req.sessionID;
 
     req.session.regenerate(function(err)
     {
@@ -147,11 +216,11 @@ module.exports = function setUpUsersRoutes(app, usersModule)
         return next(err);
       }
 
-      const guestUser = _.assign({}, userModule.guest, {
-        loggedIn: false,
-        ipAddress: userModule.getRealIp({}, req),
-        local: userModule.isLocalIpAddress(userModule.guest.ipAddress)
-      });
+      const guestUser = _.assign({}, userModule.guest);
+      guestUser.loggedIn = false;
+      guestUser.ipAddress = userModule.getRealIp({}, req);
+      guestUser.local = userModule.isLocalIpAddress(guestUser.ipAddress);
+      guestUser.super = false;
 
       req.session.user = guestUser;
 
@@ -181,14 +250,14 @@ module.exports = function setUpUsersRoutes(app, usersModule)
 
   function requestPasswordResetRoute(req, res, next)
   {
-    var mailSender = app[usersModule.config.mailSenderId];
+    const mailSender = app[usersModule.config.mailSenderId];
 
     if (!mailSender)
     {
       return res.sendStatus(500);
     }
 
-    var body = req.body;
+    const body = req.body;
 
     if (!_.isString(body.subject)
       || !_.isString(body.text)
@@ -212,18 +281,12 @@ module.exports = function setUpUsersRoutes(app, usersModule)
 
         if (!user)
         {
-          err = new Error('NOT_FOUND');
-          err.status = 404;
-
-          return this.skip(err);
+          return this.skip(app.createError('NOT_FOUND', 404));
         }
 
         if (!/^.+@.+\.[a-z]+$/.test(user.email))
         {
-          err = new Error('INVALID_EMAIL');
-          err.status = 400;
-
-          return this.skip(err);
+          return this.skip(app.createError('INVALID_EMAIL', 400));
         }
 
         this.user = user;
@@ -255,8 +318,8 @@ module.exports = function setUpUsersRoutes(app, usersModule)
           return this.skip(err);
         }
 
-        var subject = body.subject;
-        var text = body.text
+        const subject = body.subject;
+        const text = body.text
           .replace(/\{REQUEST_ID\}/g, this.passwordResetRequest._id)
           .replace(/\{LOGIN\}/g, this.user.login)
           .replace(/\{PASSWORD\}/g, body.passwordText);
@@ -291,18 +354,12 @@ module.exports = function setUpUsersRoutes(app, usersModule)
 
         if (!passwordResetRequest)
         {
-          err = new Error('REQUEST_NOT_FOUND');
-          err.status = 404;
-
-          return this.skip(err);
+          return this.skip(app.createError('REQUEST_NOT_FOUND', 404));
         }
 
         if ((Date.now() - passwordResetRequest.createdAt.getTime()) > 3600 * 24 * 1000)
         {
-          err = new Error('REQUEST_EXPIRED');
-          err.status = 400;
-
-          return this.skip(err);
+          return this.skip(app.createError('REQUEST_EXPIRED', 400));
         }
 
         this.passwordResetRequest = passwordResetRequest;
@@ -320,10 +377,7 @@ module.exports = function setUpUsersRoutes(app, usersModule)
 
         if (!user)
         {
-          err = new Error('USER_NOT_FOUND');
-          err.status = 400;
-
-          return this.skip(err);
+          return this.skip(app.createError('USER_NOT_FOUND', 400));
         }
 
         this.user = user;
@@ -344,14 +398,14 @@ module.exports = function setUpUsersRoutes(app, usersModule)
 
         if (this.passwordResetRequest)
         {
-          var passwordResetRequest = this.passwordResetRequest;
+          const passwordResetRequest = this.passwordResetRequest;
 
-          passwordResetRequest.remove(function(err)
+          passwordResetRequest.remove(err =>
           {
             if (err)
             {
               usersModule.error(
-                "Failed to remove the password reset request [%s]: %s",
+                'Failed to remove the password reset request [%s]: %s',
                 passwordResetRequest._id,
                 err.message
               );
@@ -365,13 +419,395 @@ module.exports = function setUpUsersRoutes(app, usersModule)
     );
   }
 
-  /**
-   * @private
-   * @param {Object} req
-   * @param {Object} res
-   * @param {function(Error)} next
-   * @returns {undefined}
-   */
+  function anonymizeUserRoute(req, res)
+  {
+    const modelsToUpdate = {
+      BehaviorObsCard: {
+        condition: ['users'],
+        update: ['creator', 'updater', 'observer', 'superior']
+      },
+      D8Area: {
+        condition: ['manager']
+      },
+      D8Entry: {
+        condition: ['observers.user', 'changes.user'],
+        update: ['creator', 'updater', 'owner', 'manager', 'members', 'observers.user', 'changes.user']
+      },
+      Event: {
+        condition: ['user'],
+        update: ['user'],
+        custom: anonymizeEvents
+      },
+      FteLeaderEntry: {
+        condition: ['creator', 'updater']
+      },
+      FteMasterEntry: {
+        condition: ['creator', 'updater']
+      },
+      HourlyPlan: {
+        condition: ['creator', 'updater']
+      },
+      InvalidOrder: {
+        condition: ['updater']
+      },
+      IsaEvent: {
+        condition: ['user', 'data.responder']
+      },
+      IsaRequest: {
+        condition: ['requester', 'responder', 'finisher']
+      },
+      IsaShiftPersonnel: {
+        condition: ['users+']
+      },
+      KaizenOrder: {
+        condition: ['finisher', 'observers.user', 'changes.user'],
+        update: [
+          'creator',
+          'updater',
+          'confirmer',
+          'finisher',
+          'nearMissOwners',
+          'suggestionOwners',
+          'kaizenOwners',
+          'owners',
+          'observers.user',
+          'changes.user'
+        ]
+      },
+      KaizenProductFamily: {
+        condition: ['owners']
+      },
+      MinutesForSafetyCard: {
+        condition: ['users'],
+        update: [
+          'creator',
+          'updater',
+          'owner',
+          'orgPropositions.who',
+          'techPropositions.who',
+          'participants'
+        ]
+      },
+      OpinionSurvey: {
+        condition: ['superiors'],
+        update: ['superiors.full!', 'superiors.short!'],
+        custom: anonymizeOpinionSurveys
+      },
+      OpinionSurveyAction: {
+        condition: ['creator', 'updater', 'participants'],
+        update: ['creator', 'updater', 'owners', 'superior']
+      },
+      OpinionSurveyResponse: {
+        condition: ['creator']
+      },
+      Order: {
+        condition: ['changes.user']
+      },
+      PaintShopEvent: {
+        condition: ['user']
+      },
+      PlanChange: {
+        condition: ['user']
+      },
+      PressWorksheet: {
+        condition: ['creator', 'updater', 'master', 'operator', 'operators']
+      },
+      // TODO Data?
+      ProdChangeRequest: {
+        condition: ['creator', 'confirmer']
+      },
+      ProdDowntime: {
+        condition: ['corroborator', 'creator', 'master', 'leader', 'operator', 'operators', 'changes.user']
+      },
+      ProdDowntimeAlert: {
+        condition: ['usedObjects'],
+        update: ['userWhitelist+', 'userBlacklist+', 'usedObjects', 'actions.userWhitelist+', 'actions.userBlacklist+']
+      },
+      ProdLogEntry: {
+        condition: ['creator'],
+        custom: anonymizeProdLogEntries
+      },
+      ProdShift: {
+        condition: ['creator', 'master', 'leader', 'operator', 'operators']
+      },
+      ProdShiftOrder: {
+        condition: ['creator', 'master', 'leader', 'operator', 'operators']
+      },
+      PscsResult: {
+        condition: ['creator', 'user']
+      },
+      PurchaseOrder: {
+        condition: ['changes.user', 'user']
+      },
+      PurchaseOrderPrint: {
+        condition: ['printedBy', 'cancelledBy']
+      },
+      QiResult: {
+        condition: ['users'],
+        update: ['creator', 'updater', 'inspector', 'nokOwner', 'leader', 'correctiveActions.who+']
+      },
+      Setting: {
+        condition: ['updater']
+      },
+      Suggestion: {
+        condition: ['finisher', 'observers.user', 'changes.user'],
+        update: [
+          'creator',
+          'updater',
+          'confirmer',
+          'finisher',
+          'suggestionOwners',
+          'kaizenOwners',
+          'owners',
+          'observers.user',
+          'changes.user'
+        ]
+      }
+    };
+
+    req.setTimeout(0);
+
+    const userId = req.params.id;
+
+    usersModule.info(`[anonymize] [${userId}] Started...`);
+
+    step(
+      function()
+      {
+        User.anonymize(userId, this.next());
+      },
+      function(err, user)
+      {
+        if (err)
+        {
+          return this.skip(err);
+        }
+
+        if (user)
+        {
+          app.broker.publish('users.edited', {
+            user: userModule.createUserInfo(req.session.user, req),
+            model: user
+          });
+        }
+
+        anonymizeNextModel(userId, Object.keys(modelsToUpdate), modelsToUpdate, this.next());
+      },
+      function(err)
+      {
+        if (err)
+        {
+          usersModule.error(`[anonymize] [${userId}] ${err.message}`);
+        }
+        else
+        {
+          usersModule.info(`[anonymize] [${userId}] Finished!`);
+        }
+
+        res.sendStatus(204);
+      }
+    );
+  }
+
+  function anonymizeEvents(Event, userId, done)
+  {
+    const $set = {};
+    const data = User.anonymizeData(userId);
+
+    Object.keys(data).forEach(prop =>
+    {
+      $set[`data.model.${prop}`] = data[prop];
+    });
+
+    Event.collection.update(
+      {type: /^users/, 'data.model._id': userId},
+      {$set},
+      done
+    );
+  }
+
+  function anonymizeOpinionSurveys(OpinionSurvey, userId, done)
+  {
+    if (!app.opinionSurveys || !app.opinionSurveys.config)
+    {
+      return done();
+    }
+
+    fs.emptyDir(app.opinionSurveys.config.surveysPath, done);
+  }
+
+  function anonymizeProdLogEntries(ProdLogEntry, userId, done)
+  {
+    const conditions = {
+      type: {$in: ['changeMaster', 'changeLeader', 'changeOperator']},
+      'data.id': userId
+    };
+    const update = {$set: {
+      'data.label': '?'
+    }};
+
+    ProdLogEntry.collection.update(conditions, update, done);
+  }
+
+  function anonymizeNextModel(userId, modelQueue, modelsToUpdate, done)
+  {
+    if (modelQueue.length === 0)
+    {
+      return done();
+    }
+
+    const modelName = modelQueue.shift();
+    const {condition, update, custom} = modelsToUpdate[modelName];
+    let Model = null;
+
+    try
+    {
+      Model = mongoose.model(modelName);
+    }
+    catch (err)
+    {
+      return setImmediate(anonymizeNextModel, userId, modelQueue, modelsToUpdate, done);
+    }
+
+    const conditions = {$or: []};
+    const updates = [];
+    const fields = {};
+
+    condition.forEach(prop =>
+    {
+      if (prop === 'users')
+      {
+        conditions.$or.push({users: userId});
+      }
+      else
+      {
+        conditions.$or.push({[`${prop.replace(/[+!]+/g, '')}.id`]: userId});
+
+        if (!update)
+        {
+          updates.push(createAnonymizeUpdate(prop, userId));
+
+          fields[prop.replace(/[+!]+/g, '').split('.')[0]] = 1;
+        }
+      }
+    });
+
+    (update || []).forEach(prop =>
+    {
+      updates.push(createAnonymizeUpdate(prop, userId));
+
+      fields[prop.replace(/[+!]+/g, '').split('.')[0]] = 1;
+    });
+
+    usersModule.debug(`[anonymize] [${userId}] ${modelName}...`);
+
+    step(
+      function()
+      {
+        anonymizeNextBatch(Model, conditions, fields, updates, this.group());
+
+        if (typeof custom === 'function')
+        {
+          custom(Model, userId, this.group());
+        }
+      },
+      function(err)
+      {
+        if (err)
+        {
+          usersModule.warn(`[anonymize] [${userId}] Failed to anonymize: ${err.message}\n${JSON.stringify(conditions)}`);
+        }
+
+        setImmediate(anonymizeNextModel, userId, modelQueue, modelsToUpdate, done);
+      }
+    );
+  }
+
+  function createAnonymizeUpdate(prop, userId)
+  {
+    const path = prop.replace(/[+!]+/g, '').split('.');
+    const modifier = prop.endsWith('!')
+      ? '!'
+      : prop.endsWith('+')
+        ? '+'
+        : '';
+    const isList = modifier === '+' || path[0].endsWith('s');
+    const isDirect = modifier === '!';
+
+    return model =>
+    {
+      let o = model[path[0]];
+
+      if (!o)
+      {
+        return;
+      }
+
+      if ((isList && !Array.isArray(o)) || (!isList && Array.isArray(o)))
+      {
+        return;
+      }
+
+      if (path.length > 1 && !isDirect)
+      {
+        o = o[path[1]];
+      }
+
+      if (!o)
+      {
+        return;
+      }
+
+      if (isList)
+      {
+        o.forEach(user =>
+        {
+          if ((user.id !== userId) && (user._id !== userId))
+          {
+            return;
+          }
+
+          if (user.label)
+          {
+            user.label = '?';
+          }
+
+          if (isDirect && user[path[1]])
+          {
+            user[path[1]] = '?';
+          }
+        });
+      }
+      else if (o.id === userId || o._id === userId)
+      {
+        if (o.label)
+        {
+          o.label = '?';
+        }
+
+        if (isDirect && o[path[1]])
+        {
+          o[path[1]] = '?';
+        }
+      }
+    };
+  }
+
+  function anonymizeNextBatch(Model, conditions, fields, updates, done)
+  {
+    const cursor = Model.find(conditions, fields).lean().cursor({batchSize: 10});
+    const complete = _.once(done);
+
+    cursor.once('error', complete);
+    cursor.once('end', complete);
+    cursor.on('data', model =>
+    {
+      updates.forEach(update => update(model));
+
+      Model.collection.update({_id: model._id}, {$set: model}, () => {});
+    });
+  }
+
   function hashPassword(req, res, next)
   {
     if (!_.isObject(req.body))
@@ -379,7 +815,7 @@ module.exports = function setUpUsersRoutes(app, usersModule)
       return next();
     }
 
-    var password = req.body.password;
+    const password = req.body.password;
 
     if (!_.isString(password) || password.length === 0)
     {

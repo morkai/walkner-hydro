@@ -1,58 +1,51 @@
-// Copyright (c) 2014, Łukasz Walukiewicz <lukasz@walukiewicz.eu>. Some Rights Reserved.
-// Licensed under CC BY-NC-SA 4.0 <http://creativecommons.org/licenses/by-nc-sa/4.0/>.
-// Part of the walkner-hydro project <http://lukasz.walukiewicz.eu/p/walkner-hydro>
-
-/*jshint maxparams:5*/
+// Part of <https://miracle.systems/p/walkner-utilio> licensed under <CC BY-NC-SA 4.0>
 
 'use strict';
 
-var ObjectID = require('mongodb').ObjectID;
+const _ = require('lodash');
+const ObjectID = require('mongodb').ObjectID;
 
 /**
- * @param {object} app
- * @param {object} alarmsModule
- * @param {object} runningAlarm
- * @param {object} action
- * @param {function(Error|null, Array.<object>|null)} done
+ * @param {Object} app
+ * @param {Object} alarmsModule
+ * @param {Object} runningAlarm
+ * @param {Object} action
+ * @param {function(?Error, ?Array<Object>)} done
+ * @returns {undefined}
  */
 exports.findUsers = function(app, alarmsModule, runningAlarm, action, done)
 {
-  var userIds = Array.isArray(action.parameters.users)
-    ? action.parameters.users
-    : [];
+  let userIds = Array.isArray(action.parameters.users) ? action.parameters.users : [];
 
   userIds = userIds
-    .map(function(userId)
+    .map(user =>
     {
       try
       {
-        return ObjectID.createFromHexString(userId);
+        return ObjectID.createFromHexString(user.id);
       }
       catch (err)
       {
         return null;
       }
     })
-    .filter(function(userId)
-    {
-      return userId !== null;
-    });
+    .filter(userId => userId !== null);
 
   if (userIds.length === 0)
   {
     return done(null, userIds);
   }
 
-  var User = app[alarmsModule.config.mongooseId].model('User');
-  var condition = {_id: {$in: userIds}};
-  var fields = {login: 1, mobile: 1, email: 1};
-  var options = {lean: true};
+  const User = app[alarmsModule.config.mongooseId].model('User');
+  const condition = {_id: {$in: userIds}};
+  const fields = {login: 1, mobile: 1, email: 1};
+  const options = {lean: true};
 
   User.find(condition, fields, options, function(err, users)
   {
     if (err)
     {
-      app.broker.publish('alarms.actions.usersFindFailed', {
+      app.broker.publish('alarms.actions.findUsersFailed', {
         model: runningAlarm.toJSON(),
         action: {
           no: action.no,
@@ -64,3 +57,54 @@ exports.findUsers = function(app, alarmsModule, runningAlarm, action, done)
     done(err, users);
   });
 };
+
+/**
+ * @param {?number} currentTimeValue
+ * @param {{mobile: Array<Object>}} user
+ * @returns {boolean}
+ */
+exports.filterSmsRecipient = function(currentTimeValue, user)
+{
+  if (currentTimeValue == null)
+  {
+    const currentDate = new Date();
+
+    currentTimeValue = currentDate.getHours() * 1000 + currentDate.getMinutes();
+  }
+
+  return _.some(user.mobile, function(mobile)
+  {
+    var match = true;
+    var fromTime = parseMobileTime(mobile.fromTime);
+    var toTime = parseMobileTime(mobile.toTime === '00:00' ? '24:00' : mobile.toTime);
+
+    if (toTime.value < fromTime.value)
+    {
+      match = currentTimeValue < toTime.value || currentTimeValue >= fromTime.value;
+    }
+    else if (fromTime.value < toTime.value)
+    {
+      match = currentTimeValue >= fromTime.value && currentTimeValue < toTime.value;
+    }
+
+    if (match)
+    {
+      user.mobile = mobile.number;
+    }
+
+    return match;
+  });
+};
+
+function parseMobileTime(time)
+{
+  var parts = time.split(':');
+  var hours = parseInt(parts[0], 10);
+  var minutes = parseInt(parts[1], 10);
+
+  return {
+    hours: hours,
+    minutes: minutes,
+    value: hours * 1000 + minutes
+  };
+}

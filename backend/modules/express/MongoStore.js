@@ -1,9 +1,9 @@
-// Part of <http://miracle.systems/p/walkner-wmes> licensed under <CC BY-NC-SA 4.0>
+// Part of <https://miracle.systems/p/walkner-wmes> licensed under <CC BY-NC-SA 4.0>
 
 'use strict';
 
-var util = require('util');
-var Store = require('express-session').Store;
+const util = require('util');
+const Store = require('express-session').Store;
 
 module.exports = MongoStore;
 
@@ -40,8 +40,8 @@ function MongoStore(db, options)
    * @private
    * @type {number}
    */
-  this.defaultExpirationTime =
-    (options.defaultExpirationTime || MongoStore.Options.defaultExpirationTime) * 1000;
+  this.defaultExpirationTime
+    = (options.defaultExpirationTime || MongoStore.Options.defaultExpirationTime) * 1000;
 
   /**
    * @private
@@ -124,7 +124,7 @@ util.inherits(MongoStore, Store);
 
 MongoStore.prototype.touch = function(sid, session, done)
 {
-  var now = Date.now();
+  const now = Date.now();
 
   if ((this.touchInterval > 0 && (now - session.updatedAt) < this.touchInterval)
     || (this.touchChance > 0 && Math.random() > this.touchChance))
@@ -132,8 +132,8 @@ MongoStore.prototype.touch = function(sid, session, done)
     return done(null);
   }
 
-  var sessions = this.collection();
-  var expires = Date.parse(session.cookie.expires) || (Date.now() + this.defaultExpirationTime);
+  const sessions = this.collection();
+  const expires = Date.parse(session.cookie.expires) || (Date.now() + this.defaultExpirationTime);
 
   sessions.update({_id: sid}, {$set: {expires, updatedAt: now}}, done);
 };
@@ -144,7 +144,7 @@ MongoStore.prototype.touch = function(sid, session, done)
  */
 MongoStore.prototype.get = function(sid, done)
 {
-  var store = this;
+  const store = this;
 
   this.collection().findOne({_id: sid}, {_id: 0, data: 1, updatedAt: 1}, function(err, doc)
   {
@@ -158,8 +158,8 @@ MongoStore.prototype.get = function(sid, done)
       return done();
     }
 
-    var session = typeof doc.data === 'string' ? JSON.parse(doc.data) : doc.data;
-    var expires = typeof session.cookie.expires === 'string'
+    const session = typeof doc.data === 'string' ? JSON.parse(doc.data) : doc.data;
+    const expires = typeof session.cookie.expires === 'string'
       ? new Date(session.cookie.expires)
       : session.cookie.expires;
 
@@ -181,9 +181,9 @@ MongoStore.prototype.get = function(sid, done)
  */
 MongoStore.prototype.set = function(sid, session, done)
 {
-  var sessions = this.collection();
-  var now = Date.now();
-  var doc = {
+  const sessions = this.collection();
+  const now = Date.now();
+  const doc = {
     _id: sid,
     updatedAt: now,
     expires: Date.parse(session.cookie.expires),
@@ -195,7 +195,7 @@ MongoStore.prototype.set = function(sid, session, done)
     doc.expires = now + this.defaultExpirationTime;
   }
 
-  var opts = {
+  const opts = {
     upsert: true,
     safe: this.safe
   };
@@ -253,6 +253,7 @@ MongoStore.prototype.destruct = function()
 
 /**
  * @private
+ * @returns {Object}
  */
 MongoStore.prototype.collection = function()
 {

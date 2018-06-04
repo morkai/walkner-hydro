@@ -1,12 +1,12 @@
-// Part of <http://miracle.systems/p/walkner-wmes> licensed under <CC BY-NC-SA 4.0>
+// Part of <https://miracle.systems/p/walkner-wmes> licensed under <CC BY-NC-SA 4.0>
 
 'use strict';
 
-var exec = require('child_process').exec;
+const exec = require('child_process').exec;
 
 module.exports = function(options, done)
 {
-  var cmd = '"' + options.gitExe + '" pull';
+  const cmd = '"' + options.gitExe + '" pull';
 
   exec(cmd, {cwd: options.cwd, timeout: 30000}, function(err, stdout, stderr)
   {

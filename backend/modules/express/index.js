@@ -1,4 +1,4 @@
-// Part of <http://miracle.systems/p/walkner-wmes> licensed under <CC BY-NC-SA 4.0>
+// Part of <https://miracle.systems/p/walkner-wmes> licensed under <CC BY-NC-SA 4.0>
 
 'use strict';
 
@@ -41,6 +41,7 @@ catch (err) { console.log('Failed to load MongoStore %s', err.message); }
 
 exports.DEFAULT_CONFIG = {
   mongooseId: 'mongoose',
+  userId: 'user',
   staticPath: 'public',
   staticBuildPath: 'public-build',
   sessionCookieKey: 'express.sid',
@@ -57,7 +58,9 @@ exports.DEFAULT_CONFIG = {
   textBody: {},
   urlencodedBody: {},
   ignoredErrorCodes: ['ECONNRESET', 'ECONNABORTED'],
-  routes: (app, expressModule) => { /* jshint unused:false */ }
+  jsonToXlsxExe: null,
+  longRouteDuration: 0,
+  routes: (app, expressModule) => {} // eslint-disable-line no-unused-vars
 };
 
 exports.start = function startExpressModule(app, expressModule, done)
@@ -78,11 +81,11 @@ exports.start = function startExpressModule(app, expressModule, done)
     ? new MongoStore(mongoose.connection.db, config.sessionStore)
     : session ? new session.MemoryStore() : null;
 
-  expressModule.router = express.Router();
+  expressModule.router = express.Router(); // eslint-disable-line new-cap
 
   expressModule.createHttpError = function(message, statusCode)
   {
-    var httpError = new Error(message);
+    const httpError = new Error(message);
     httpError.status = statusCode || 400;
 
     return httpError;
@@ -160,6 +163,11 @@ exports.start = function startExpressModule(app, expressModule, done)
     });
   }
 
+  if (expressModule.config.longRouteDuration > 0)
+  {
+    expressApp.use(timeLongRequest);
+  }
+
   app.broker.publish('express.beforeRouter', {
     module: expressModule
   });
@@ -190,7 +198,7 @@ exports.start = function startExpressModule(app, expressModule, done)
         expressApp.use(pmx.expressErrorHandler());
       }
 
-      var errorHandlerOptions = {
+      const errorHandlerOptions = {
         title: config.title,
         basePath: path.resolve(__dirname, '../../../')
       };
@@ -244,12 +252,47 @@ exports.start = function startExpressModule(app, expressModule, done)
 
   /**
    * @private
-   * @param {object} ejsAmdHelpers
+   * @param {Object} ejsAmdHelpers
    * @param {string} js
    * @returns {string}
    */
   function wrapEjsAmd(ejsAmdHelpers, js)
   {
     return wrapAmd('return ' + js, ejsAmdHelpers);
+  }
+
+  /**
+   * @private
+   * @param {Object} req
+   * @param {Object} res
+   * @param {function} next
+   */
+  function timeLongRequest(req, res, next)
+  {
+    const complete = () => clearTimeout(res.longRequestTimer);
+
+    res.longRequestTimer = setTimeout(logLongRequest, expressModule.config.longRouteDuration, req);
+
+    res.once('close', complete);
+    res.once('finish', complete);
+
+    next();
+  }
+
+  /**
+   * @private
+   * @param {Object} req
+   */
+  function logLongRequest(req)
+  {
+    const session = req.session ? req.session.user : {};
+    const user = app[expressModule.config.userId]
+      ? app[expressModule.config.userId].createUserInfo(session, req)
+      : session;
+
+    expressModule.debug('Long request: ' + JSON.stringify({
+      url: req.url,
+      user
+    }, null, 2));
   }
 };

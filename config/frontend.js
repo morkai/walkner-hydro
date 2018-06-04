@@ -81,7 +81,7 @@ exports.sio = {
 };
 
 exports.pubsub = {
-  statsPublishInterval: 60000,
+  statsPublishInterval: 180000,
   republishTopics: [
     'events.saved',
     'users.added', 'users.edited', 'users.deleted',
@@ -92,7 +92,9 @@ exports.pubsub = {
 
 exports.mongoose = {
   uri: mongodb.uri,
-  options: mongodb,
+  options: Object.assign(mongodb.mongoClient, {
+    poolSize: 8
+  }),
   maxConnectTries: 10,
   connectAttemptDelay: 500,
   models: [
@@ -110,7 +112,7 @@ exports.express = {
     maxAge: 3600 * 24 * 30 * 1000
   },
   sessionStore: {
-    touchInterval: 3600 * 8 * 1000,
+    touchInterval: 10 * 60 * 1000,
     touchChance: 0
   },
   cookieSecret: '|-|y|)r0',
@@ -194,8 +196,4 @@ exports.updater = {
       mainCssFile: exports.mainCssFile
     }
   ]
-};
-
-exports['mail/sender'] = {
-  from: 'Hydro Bot <hydro@localhost>'
 };

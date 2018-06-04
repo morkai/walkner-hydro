@@ -6,7 +6,7 @@
 
 var _ = require('lodash');
 
-module.exports = function setupAlarmModel(app, mongoose)
+module.exports = function setUpAlarmModel(app, mongoose)
 {
   /**
    * @enum {number}

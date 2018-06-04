@@ -1,20 +1,16 @@
-// Part of <http://miracle.systems/p/walkner-wmes> licensed under <CC BY-NC-SA 4.0>
+// Part of <https://miracle.systems/p/walkner-wmes> licensed under <CC BY-NC-SA 4.0>
 
 'use strict';
 
 const _ = require('lodash');
 const mongoose = require('mongoose');
 const expressMiddleware = require('./expressMiddleware');
-let autoIncrement = null;
-
-try { autoIncrement = require('mongoose-auto-increment'); }
-catch (err) {} // eslint-disable-line no-empty
 
 exports.DEFAULT_CONFIG = {
   maxConnectTries: 10,
   connectAttemptDelay: 500,
   uri: 'mongodb://localhost/test',
-  options: {},
+  mongoClient: {},
   models: null,
   keepAliveQueryInterval: 30000,
   stopOnConnectError: true
@@ -27,9 +23,11 @@ exports.start = function startDbModule(app, module, done)
 
   module = app[module.name] = _.assign(mongoose, module);
 
+  module.Promise = global.Promise;
+
   module.connection.on('connecting', () => module.debug('Connecting...'));
   module.connection.on('connected', () => module.debug('Connected.'));
-  module.connection.on('open', () => module.warn('Open.'));
+  module.connection.on('open', () => module.debug('Open.'));
   module.connection.on('reconnected', () => module.debug('Reconnected.'));
   module.connection.on('disconnecting', () => module.warn('Disconnecting...'));
   module.connection.on('disconnected', () => module.warn('Disconnected.'));
@@ -53,9 +51,9 @@ exports.start = function startDbModule(app, module, done)
       return;
     }
 
-    module.connect(module.config.uri, module.config.options, function(err)
-    {
-      if (err)
+    module.connect(module.config.uri, module.config.mongoClient)
+      .then(() => initialize())
+      .catch(err =>
       {
         if (i >= module.config.maxConnectTries)
         {
@@ -63,10 +61,7 @@ exports.start = function startDbModule(app, module, done)
         }
 
         return setTimeout(tryToConnect.bind(null, i + 1), module.config.connectAttemptDelay);
-      }
-
-      initialize();
-    });
+      });
   }
 
   function initialize(err)
@@ -87,7 +82,6 @@ exports.start = function startDbModule(app, module, done)
     {
       initialized = true;
 
-      initializeAutoIncrement();
       setUpKeepAliveQuery();
       loadModels();
     }
@@ -102,17 +96,6 @@ exports.start = function startDbModule(app, module, done)
     const modelsList = module.config.models || require(app.pathTo('models', 'index'));
 
     app.loadFiles(modelsDir, modelsList, [app, module], done);
-  }
-
-  /**
-   * @private
-   */
-  function initializeAutoIncrement()
-  {
-    if (autoIncrement)
-    {
-      autoIncrement.initialize(module.connection);
-    }
   }
 
   function setUpKeepAliveQuery()

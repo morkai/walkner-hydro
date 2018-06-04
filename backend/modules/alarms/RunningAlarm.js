@@ -1,36 +1,34 @@
-// Copyright (c) 2014, Łukasz Walukiewicz <lukasz@walukiewicz.eu>. Some Rights Reserved.
-// Licensed under CC BY-NC-SA 4.0 <http://creativecommons.org/licenses/by-nc-sa/4.0/>.
-// Part of the walkner-hydro project <http://lukasz.walukiewicz.eu/p/walkner-hydro>
+// Part of <https://miracle.systems/p/walkner-utilio> licensed under <CC BY-NC-SA 4.0>
 
 'use strict';
 
-var actions = require('./actions');
+const actions = require('./actions');
 
 module.exports = RunningAlarm;
 
 /**
  * @constructor
- * @param {object} app
- * @param {object} alarmsModule
+ * @param {Object} app
+ * @param {Object} alarmsModule
  * @param {Alarm} model
  */
 function RunningAlarm(app, alarmsModule, model)
 {
   /**
    * @private
-   * @type {object}
+   * @type {Object}
    */
   this.app = app;
 
   /**
    * @private
-   * @type {object}
+   * @type {Object}
    */
   this.alarmsModule = alarmsModule;
 
   /**
    * @private
-   * @type {object}
+   * @type {Object}
    */
   this.controller = app[alarmsModule.config.controllerId];
 
@@ -65,13 +63,13 @@ function RunningAlarm(app, alarmsModule, model)
 
   /**
    * @private
-   * @type {function(object)|null}
+   * @type {?function(Object)}
    */
   this.startConditionFunction = null;
 
   /**
    * @private
-   * @type {function(object)|null}
+   * @type {?function(Object)}
    */
   this.stopConditionFunction = null;
 
@@ -127,6 +125,11 @@ RunningAlarm.prototype.isStopped = function()
   return !this.model || this.model.isStopped();
 };
 
+/**
+ * @param {?Object} user
+ * @param {function(?Error)} done
+ * @returns {undefined}
+ */
 RunningAlarm.prototype.run = function(user, done)
 {
   if (!this.model.isStopped())
@@ -136,26 +139,29 @@ RunningAlarm.prototype.run = function(user, done)
 
   this.model.state = this.Alarm.State.RUNNING;
 
-  var runningAlarm = this;
-
-  this.model.save(function(err)
+  this.model.save((err) =>
   {
     if (err)
     {
       return done(err);
     }
 
-    runningAlarm.broker.publish('alarms.run', {
+    this.broker.publish('alarms.run', {
       user: user,
-      model: runningAlarm.toJSON()
+      model: this.toJSON()
     });
 
     done();
 
-    runningAlarm.checkConditions();
+    this.checkConditions();
   });
 };
 
+/**
+ * @param {?Object} user
+ * @param {function(?Error)} done
+ * @returns {undefined}
+ */
 RunningAlarm.prototype.stop = function(user, done)
 {
   if (this.model.isStopped())
@@ -168,24 +174,27 @@ RunningAlarm.prototype.stop = function(user, done)
   clearTimeout(this.nextStartActionTimer);
   this.nextStartActionTimer = null;
 
-  var runningAlarm = this;
-
-  this.model.save(function(err)
+  this.model.save((err) =>
   {
     if (err)
     {
       return done(err);
     }
 
-    runningAlarm.broker.publish('alarms.stopped', {
+    this.broker.publish('alarms.stopped', {
       user: user,
-      model: runningAlarm.toJSON()
+      model: this.toJSON()
     });
 
     done();
   });
 };
 
+/**
+ * @param {?Object} user
+ * @param {function(?Error)} done
+ * @returns {undefined}
+ */
 RunningAlarm.prototype.ack = function(user, done)
 {
   if (!this.model.isActive() || !this.model.isManualStop())
@@ -275,13 +284,12 @@ RunningAlarm.prototype.doConditionCheck = function()
 RunningAlarm.prototype.scheduleNextConditionsCheck = function(time)
 {
   this.nextStartActionTimer = setTimeout(
-    function(runningAlarm)
+    () =>
     {
-      runningAlarm.nextStartActionTimer = null;
-      runningAlarm.checkConditions();
+      this.nextStartActionTimer = null;
+      this.checkConditions();
     },
-    Math.max(time - Date.now(), 100),
-    this
+    Math.max(time - Date.now(), 100)
   );
 };
 
@@ -295,8 +303,8 @@ RunningAlarm.prototype.executeNextStartAction = function()
     return;
   }
 
-  var startActions = this.model.startActions;
-  var startActionCount = startActions.length;
+  const startActions = this.model.startActions;
+  const startActionCount = startActions.length;
 
   if (startActionCount === 0)
   {
@@ -313,17 +321,13 @@ RunningAlarm.prototype.executeNextStartAction = function()
     return;
   }
 
-  var currentStartActionIndex = this.model.getCurrentStartActionIndex(
-    this.startConditionMetAt
-  );
+  const currentStartActionIndex = this.model.getCurrentStartActionIndex(this.startConditionMetAt);
 
   if (this.currentActionIndex === -1)
   {
     if (currentStartActionIndex === -1)
     {
-      this.scheduleNextConditionsCheck(
-        this.model.getStartActionExecutionTime(0, this.startConditionMetAt)
-      );
+      this.scheduleNextConditionsCheck(this.model.getStartActionExecutionTime(0, this.startConditionMetAt));
     }
     else
     {
@@ -333,9 +337,7 @@ RunningAlarm.prototype.executeNextStartAction = function()
   else if (currentStartActionIndex === this.currentActionIndex)
   {
     this.scheduleNextConditionsCheck(
-      this.model.getStartActionExecutionTime(
-        this.currentActionIndex, this.startConditionMetAt
-      )
+      this.model.getStartActionExecutionTime(this.currentActionIndex, this.startConditionMetAt)
     );
   }
   else
@@ -350,7 +352,7 @@ RunningAlarm.prototype.executeNextStartAction = function()
  */
 RunningAlarm.prototype.executeStartAction = function(actionIndex)
 {
-  var runningAlarm = this;
+  const runningAlarm = this;
 
   if (this.model.isRunning())
   {
@@ -370,23 +372,16 @@ RunningAlarm.prototype.executeStartAction = function(actionIndex)
 
     runningAlarm.currentActionIndex = actionIndex;
 
-    var model = runningAlarm.model;
-    var action = model.startActions[actionIndex].toObject();
+    const model = runningAlarm.model;
+    const action = model.startActions[actionIndex].toObject();
 
     action.no = actionIndex + 1;
 
-    runningAlarm.alarmsModule.info(
-      "Executing %s action %d of alarm %s...",
-      action.type,
-      action.no,
-      model.name
-    );
+    runningAlarm.alarmsModule.info(`Executing [${action.type}] action [${action.no}] of alarm [${model.name}]...`);
 
     if (typeof actions[action.type] === 'object')
     {
-      actions[action.type].execute(
-        runningAlarm.app, runningAlarm.alarmsModule, runningAlarm, action
-      );
+      actions[action.type].execute(runningAlarm.app, runningAlarm.alarmsModule, runningAlarm, action);
     }
 
     runningAlarm.broker.publish('alarms.actionExecuted', {
@@ -395,9 +390,7 @@ RunningAlarm.prototype.executeStartAction = function(actionIndex)
       severity: action.severity
     });
 
-    var nextActionStartTime = model.getStartActionExecutionTime(
-      actionIndex + 1, runningAlarm.startConditionMetAt
-    );
+    const nextActionStartTime = model.getStartActionExecutionTime(actionIndex + 1, runningAlarm.startConditionMetAt);
 
     if (nextActionStartTime !== -1)
     {
@@ -408,28 +401,24 @@ RunningAlarm.prototype.executeStartAction = function(actionIndex)
 
 /**
  * @private
- * @param {function(Error|null)} [done]
+ * @param {function(?Error)} [done]
  */
 RunningAlarm.prototype.activate = function(done)
 {
-  var runningAlarm = this;
-
   this.model.state = this.Alarm.State.ACTIVE;
 
-  this.model.save(function(err, model)
+  this.model.save((err, model) =>
   {
     if (err)
     {
-      runningAlarm.alarmsModule.error(
-        "Failed to activate alarm: %s", err.message
-      );
+      this.alarmsModule.error(`Failed to activate alarm: ${err.message}`);
     }
     else
     {
-      runningAlarm.alarmsModule.info("Alarm activated: %s", model.name);
+      this.alarmsModule.info(`Alarm activated: ${model.name}`);
 
-      runningAlarm.broker.publish('alarms.activated', {
-        model: runningAlarm.toJSON()
+      this.broker.publish('alarms.activated', {
+        model: this.toJSON()
       });
     }
 
@@ -442,13 +431,11 @@ RunningAlarm.prototype.activate = function(done)
 
 /**
  * @private
- * @param {object} [user]
- * @param {function(Error|null)} [done]
+ * @param {Object} [user]
+ * @param {function(?Error)} [done]
  */
 RunningAlarm.prototype.deactivate = function(user, done)
 {
-  var runningAlarm = this;
-
   clearTimeout(this.nextStartActionTimer);
   this.nextStartActionTimer = null;
 
@@ -456,25 +443,19 @@ RunningAlarm.prototype.deactivate = function(user, done)
 
   this.model.state = this.Alarm.State.RUNNING;
 
-  this.model.save(function(err, model)
+  this.model.save((err, model) =>
   {
     if (err)
     {
-      runningAlarm.alarmsModule.error(
-        "Failed to deactivate alarm: %s", err.message
-      );
+      this.alarmsModule.error(`Failed to deactivate alarm: ${err.message}`);
     }
     else
     {
-      runningAlarm.alarmsModule.info(
-        "Alarm deactivated by %s: %s",
-        user ? user.login : 'system',
-        model.name
-      );
+      this.alarmsModule.info(`Alarm deactivated by [${user ? user.login : 'system'}]: ${model.name}`);
 
-      runningAlarm.broker.publish('alarms.deactivated', {
+      this.broker.publish('alarms.deactivated', {
         user: user,
-        model: runningAlarm.toJSON()
+        model: this.toJSON()
       });
     }
 
@@ -483,12 +464,13 @@ RunningAlarm.prototype.deactivate = function(user, done)
       done(err);
     }
 
-    runningAlarm.checkConditions();
+    this.checkConditions();
   });
 };
 
 /**
  * @private
+ * @returns {boolean}
  */
 RunningAlarm.prototype.checkStartCondition = function()
 {
@@ -506,6 +488,7 @@ RunningAlarm.prototype.checkStartCondition = function()
 
 /**
  * @private
+ * @returns {boolean}
  */
 RunningAlarm.prototype.checkStopCondition = function()
 {
@@ -538,11 +521,10 @@ RunningAlarm.prototype.checkStopCondition = function()
 
 /**
  * @private
- * @param {object} checkError
+ * @param {Object} checkError
  * @param {string} conditionKind
  */
-RunningAlarm.prototype.handleConditionCheckFailure =
-  function(checkError, conditionKind)
+RunningAlarm.prototype.handleConditionCheckFailure = function(checkError, conditionKind)
 {
   this.broker.publish('alarms.conditionCheckFailed', {
     model: this.model.toObject(),
@@ -550,26 +532,18 @@ RunningAlarm.prototype.handleConditionCheckFailure =
     conditionKind: conditionKind
   });
 
-  var alarmName = this.model.name;
-  var alarmsModule = this.alarmsModule;
+  const alarmName = this.model.name;
+  const alarmsModule = this.alarmsModule;
 
   this.stop(null, function(err)
   {
     if (err)
     {
-      alarmsModule.error(
-        "Failed to stop alarm %s because of a condition check failure: %s",
-        err.message,
-        alarmName
-      );
+      alarmsModule.error(`Failed to stop alarm [${alarmName}] because of a condition check failure: ${err.message}`);
     }
     else
     {
-      alarmsModule.debug(
-        "Stopped alarm %s because of a condition check failure: %s",
-        alarmName,
-        checkError
-      );
+      alarmsModule.warn(`Stopped alarm [${alarmName}] because of a condition check failure:`, checkError);
     }
   });
 };
@@ -579,13 +553,9 @@ RunningAlarm.prototype.handleConditionCheckFailure =
  */
 RunningAlarm.prototype.watchTagValues = function()
 {
-  var broker = this.broker;
-  var checkConditions = this.checkConditions.bind(this);
-
-  function subscribe(tagName)
-  {
-    broker.subscribe('alarms.tagChanged.' + tagName, checkConditions);
-  }
+  const broker = this.broker;
+  const checkConditions = this.checkConditions.bind(this);
+  const subscribe = (tagName) => { broker.subscribe('alarms.tagChanged.' + tagName, checkConditions); };
 
   this.model.startConditionTags.forEach(subscribe);
   this.model.stopConditionTags.forEach(subscribe);
@@ -596,14 +566,14 @@ RunningAlarm.prototype.watchTagValues = function()
  */
 RunningAlarm.prototype.compileConditionFunctions = function()
 {
-  var startFunction = this.model.startFunction.trim();
+  const startFunction = this.model.startFunction.trim();
 
   if (startFunction.length > 0)
   {
     this.startConditionFunction = this.compileConditionFunction(startFunction);
   }
 
-  var stopFunction = this.model.stopFunction.trim();
+  const stopFunction = this.model.stopFunction.trim();
 
   if (stopFunction.length > 0)
   {
@@ -613,23 +583,18 @@ RunningAlarm.prototype.compileConditionFunctions = function()
 
 /**
  * @private
- * @returns {function(object)}
+ * @param {string} code
+ * @returns {function(Object)}
  */
 RunningAlarm.prototype.compileConditionFunction = function(code)
 {
-  /*jshint evil:true*/
-
   try
   {
-    return new Function('$__values__', code);
+    return new Function('$', code); // eslint-disable-line no-new-func
   }
   catch (err)
   {
-    this.alarmsModule.error(
-      "Failed to compile condition function for alarm %s: %s",
-      this.model.name,
-      err.message
-    );
+    this.alarmsModule.error(`Failed to compile condition function for alarm [${this.model.name}]: ${err.message}`);
 
     this.broker.publish('alarms.compileFailed', {
       model: this.model.toObject(),

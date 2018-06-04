@@ -1,20 +1,16 @@
-// Copyright (c) 2014, Łukasz Walukiewicz <lukasz@walukiewicz.eu>. Some Rights Reserved.
-// Licensed under CC BY-NC-SA 4.0 <http://creativecommons.org/licenses/by-nc-sa/4.0/>.
-// Part of the walkner-hydro project <http://lukasz.walukiewicz.eu/p/walkner-hydro>
+// Part of <https://miracle.systems/p/walkner-utilio> licensed under <CC BY-NC-SA 4.0>
 
 'use strict';
 
-var findUsers = require('./helpers').findUsers;
+const findUsers = require('./helpers').findUsers;
 
 exports.execute = function(app, alarmsModule, runningAlarm, action)
 {
-  var mailSender = app[alarmsModule.config.mailSenderId];
+  const mailSender = app[alarmsModule.config.mailSenderId];
 
   if (!mailSender)
   {
-    return alarmsModule.warn(
-      "Cannot send emails: mailSender module not available!"
-    );
+    return alarmsModule.warn('Cannot send emails: mailSender module not available!');
   }
 
   findUsers(app, alarmsModule, runningAlarm, action, function(err, users)
@@ -24,31 +20,23 @@ exports.execute = function(app, alarmsModule, runningAlarm, action)
       return;
     }
 
+    const subject = runningAlarm.model.name;
+
     if (err)
     {
-      return alarmsModule.error(
-        "Failed to retrieve users for email action %s: %s",
-        runningAlarm.model.name,
-        err.message
-      );
+      return alarmsModule.error(`Failed to retrieve users for email action [${subject}]: ${err.message}`);
     }
 
-    var recipients = users
-      .map(function(user) { return user.email; })
-      .filter(function(email) { return email; })
-      .join(', ');
+    const recipients = users
+      .map(user => user.email)
+      .filter(email => !!email);
 
     if (recipients.length === 0)
     {
-      return alarmsModule.warn(
-        "Not sending any e-mails: no recipients for action %d of alarm: %s",
-        action.no,
-        runningAlarm.model.name
-      );
+      return alarmsModule.warn(`Not sending any e-mails: no recipients for action [${action.no}] of alarm: ${subject}`);
     }
 
-    var subject = runningAlarm.model.name;
-    var text = action.parameters.text;
+    const text = action.parameters.text;
 
     mailSender.send(recipients, subject, text, function(err)
     {
@@ -60,10 +48,7 @@ exports.execute = function(app, alarmsModule, runningAlarm, action)
       if (err)
       {
         alarmsModule.error(
-          "Failed to send email to %s as part of alarm %s: %s",
-          recipients,
-          runningAlarm.model.name,
-          err.message
+          `Failed to send email to [${recipients.join('; ')}] as part of alarm [${subject}]: ${err.message}`
         );
 
         app.broker.publish('alarms.actions.emailFailed', {
@@ -78,9 +63,7 @@ exports.execute = function(app, alarmsModule, runningAlarm, action)
       }
       else
       {
-        alarmsModule.debug(
-          "Sent email to %s with subject: %s", recipients, subject
-        );
+        alarmsModule.debug(`Sent email to [${recipients.join('; ')}] with subject: ${subject}`);
 
         app.broker.publish('alarms.actions.emailSent', {
           model: runningAlarm.toJSON(),
